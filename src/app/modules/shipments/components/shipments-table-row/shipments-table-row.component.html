@@ -1,0 +1,112 @@
+<div class="list-table">
+  <div class="body">
+    <div class="row">
+      <!-- SHIPMENT ID -->
+      <div class="cell">
+        <div class="cell-content">
+          <a [routerLink]="shipment.id" role="button" class="d-flex flex-wrap text-link sm-dark text-tiny-bold">
+            <span>{{ shipment.shipmentId }}</span>
+          </a>
+        </div>
+      </div>
+      <!-- CLIENT REFERENCE -->
+      <div class="cell d-none d-md-flex align-items-center">
+        <div class="cell-content d-flex flex-column align-items-start justify-content-center references">
+          <div class="text-tiny-bold color-text-primary">{{ shipment.reference1 }}</div>
+          <div *ngIf="shipment.reference2" class="text-tiny-regular color-text-secondary">{{ shipment.reference2 }}</div>
+        </div>
+      </div>
+      <div *ngIf="shipment.reference2 || shipment.reference1" class="cell d-md-none">
+        <div class="cell-content d-flex flex-column align-items-start justify-content-center references">
+          <div class="text-tiny-bold color-text-primary">{{ shipment.reference1 }}</div>
+          <div *ngIf="shipment.reference2" class="text-tiny-regular color-text-secondary">{{ shipment.reference2 }}</div>
+        </div>
+      </div>
+
+      <!-- STATUS -->
+      <div class="d-flex justify-content-between cell">
+        <div *ngIf="shipment.status === ShipmentStatus.CompliancePending; else tracker" class="d-flex indicator-circle">
+          <app-shipment-state-indicator-circles
+            [shipmentTaskStates]="shipment.complianceState"
+            [isCancelled]="shipment.trackingState === TrackingState.Cancelled"
+          ></app-shipment-state-indicator-circles>
+        </div>
+        <ng-template #tracker>
+          <app-tracker [state]="shipment.trackingState"></app-tracker>
+        </ng-template>
+      </div>
+      <!-- STATUS UPDATES -->
+      <div class="cell d-none d-md-block flex-column align-items-start justify-content-center py-2">
+        <div class="cell-content text-micro-regular color-text-secondary">
+          {{ shipment.statusUpdates }}
+        </div>
+      </div>
+      <!--      PAY INVOICE-->
+      <div class="cell">
+        <button
+          *ngIf="
+            shipment.invoiceStatusRollup === InvoiceStatusRollup.INVOICE_SENT_OR_PARTIAL_PAYMENT && shipment.relatedInvoices.length > 0
+          "
+          class="pay-invoice text-link md-dark"
+          (click)="onPayInvoiceClick()"
+        >
+          <svg-icon key="card" [fontSize]="22"></svg-icon>
+          {{ 'SHIPMENTS.PAY_INVOICE' | translate }}
+        </button>
+        <div
+          *ngIf="
+            shipment.invoiceStatusRollup === InvoiceStatusRollup.POP_RECEIVED_OR_PAID_VIA_STRIPE ||
+            shipment.invoiceStatusRollup === InvoiceStatusRollup.PAID
+          "
+          class="d-flex align-items-center color-text-tertiary"
+        >
+          <svg-icon key="check" [fontSize]="22"></svg-icon>
+          <div class="text-small-bold ml-2">
+            {{ 'SHIPMENTS.INVOICE_PAID' | translate }}
+          </div>
+        </div>
+      </div>
+      <!-- CLIENT TODOS -->
+      <div class="px-3 color-text-primary cell d-none d-md-flex align-items-center">
+        <div class="cell-content client-todos">
+          <a
+            *ngIf="shipment.numberOfTasks"
+            [routerLink]="shipment.id"
+            role="button"
+            class="d-flex flex-column align-items-center text-decoration-none color-text-secondary"
+          >
+            <div class="d-flex">
+              <span class="text-micro-regular">{{ shipment.numberOfTasks }}</span>
+              <svg-icon key="task" class="action-icon ml-1"></svg-icon>
+            </div>
+            <span class="text-micro-regular">{{ 'COMMON.CLIENT' | translate }}</span>
+          </a>
+          <a
+            *ngIf="shipment.totalOutstandingTasks"
+            [routerLink]="shipment.id"
+            [appTooltip]="'SHIPMENTS.SHIPMENTS_LIST.TOTAL_OUTSTANDING_TASKS_TOOLTIP' | translate"
+            appTooltipStrategy="hover"
+            role="button"
+            class="d-flex flex-column align-items-center text-decoration-none color-text-secondary total-tasks"
+          >
+            <div class="d-flex">
+              <span class="text-micro-regular">{{ shipment.totalOutstandingTasks }}</span>
+              <svg-icon key="task" class="action-icon ml-1"></svg-icon>
+            </div>
+            <span class="text-micro-regular">{{ 'COMMON.TOTAL' | translate }}</span>
+          </a>
+
+          <a
+            *ngIf="shipment.numberOfMessages"
+            [routerLink]="shipment.id"
+            role="button"
+            class="d-flex text-decoration-none color-text-secondary"
+          >
+            <div class="text-micro-regular">{{ shipment.numberOfMessages }}</div>
+            <svg-icon key="messages" class="action-icon ml-1"></svg-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

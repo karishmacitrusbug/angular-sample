@@ -1,0 +1,71 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+
+:host {
+  flex: 1;
+}
+
+.page-content {
+  height: 100%;
+}
+
+.left-container {
+  display: flex;
+  padding-top: 24px;
+}
+
+.right-container {
+  background-color: #fff;
+  min-height: 100%;
+}
+
+.search-bar {
+  flex: 0;
+  margin-left: auto;
+  margin-right: 25px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.tracking-items {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.tracking-item:not(:first-of-type) {
+  margin-top: 8px;
+}
+
+.header {
+  font-size: 24px;
+}
+
+.tracker {
+  padding: 20px 24px 16px;
+}
+
+.estimated-dates {
+  border-left: 1px solid map-get(colors.$color, 'divider');
+}
+
+.log {
+  margin-top: 16px;
+}
+
+.arrow-icon {
+  transition: transform 125ms;
+
+  &.opened {
+    transform: rotate(180deg);
+  }
+}
+
+.empty-state {
+  background-color: rgba(255, 255, 255, 50%);
+  clip-path: polygon(0 2rem, 2rem 0, 100% 0, 100% 100%, 0 100%);
+  height: 100%;
+  margin: 0 16px 24px 0;
+}

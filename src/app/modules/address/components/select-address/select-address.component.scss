@@ -1,0 +1,118 @@
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'abstracts/colors';
+@use 'abstracts/bootstrap';
+@use 'abstracts/units';
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep mat-tab-group {
+    overflow: hidden;
+
+    .mat-tab-body-content {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.header {
+  font-size: units.rem-calc(22);
+  line-height: units.rem-calc(25);
+
+  .title {
+    color: map-get(colors.$color, 'background-05');
+    font-weight: bold;
+  }
+}
+
+.address-tabs,
+.header,
+.filter {
+  padding: 0 bootstrap.$grid-gutter-width;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    padding: 0 40px;
+  }
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.filter {
+  height: 65px;
+  margin-bottom: 10px;
+}
+
+.address-tabs {
+  .filter {
+    padding: 0;
+  }
+}
+
+.button-hint {
+  display: none;
+  color: rgba(0, 0, 0, 40%);
+  font-size: units.rem-calc(11);
+  line-height: units.rem-calc(17);
+
+  @include bootstrap.media-breakpoint-up(md) {
+    display: block;
+  }
+}
+
+.addresses {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  padding: bootstrap.$grid-gutter-width bootstrap.$grid-gutter-width 0;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    padding: 40px 40px 0;
+  }
+}
+
+.gradient {
+  position: relative;
+
+  &::before {
+    background-image: linear-gradient(to top, #fff, rgba(#fff, 0));
+    bottom: 100%;
+    content: '';
+    height: 40px;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+}
+
+.no-addresses {
+  align-items: center;
+  background-color: map-get(colors.$color, 'background-02');
+  clip-path: polygon(0 2rem, 2rem 0, 100% 0, 100% 100%, 0 100%);
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  justify-content: center;
+  margin: 2rem;
+  padding: 4rem;
+  gap: bootstrap.$grid-gutter-width;
+  text-align: center;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    flex-direction: row;
+    gap: 0;
+    text-align: left;
+  }
+
+  .text-link {
+    font-size: inherit;
+  }
+}

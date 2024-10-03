@@ -1,0 +1,46 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+
+:host {
+  flex: 1;
+}
+
+router-outlet {
+  display: none;
+}
+
+.page-container {
+  grid-template-columns: max-content 1fr 250px;
+}
+
+.subtitle {
+  color: rgba(map-get(colors.$color, 'navigation-text'), 0.7);
+}
+
+.header {
+  color: map-get(colors.$color, 'navigation-text');
+  font-weight: map-get(variables.$font-weight, 'light');
+}
+
+.save-and-close {
+  background-color: transparent;
+  border: 0;
+  color: map-get(colors.$color, 'navigation-text');
+  cursor: pointer;
+  outline: none;
+  padding: 0.25rem;
+
+  .svg-icon-close {
+    margin-left: 0.25rem;
+    margin-top: 2px;
+  }
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep .mat-ripple-element {
+    background-color: rgba(map-get(colors.$color, 'navigation-text'), 0.08);
+  }
+}
+
+.accept-quote-section {
+  padding-top: 105px;
+}

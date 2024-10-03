@@ -1,0 +1,27 @@
+<div class="dialog-container">
+  <div class="dialog-title">
+    <div class="title">
+      {{ 'COST_EXPLANATION_DIALOG.TITLE' | translate }}
+    </div>
+  </div>
+  <div class="dialog-content">
+    <ng-container
+      *ngFor="let costExplanation of costExplanations"
+      [ngTemplateOutlet]="costExplanationTemplate"
+      [ngTemplateOutletContext]="costExplanation"
+    ></ng-container>
+  </div>
+  <div class="dialog-footer">
+    <div class="cross"></div>
+    <div class="d-flex justify-content-center align-items-center button-container">
+      <button mat-button class="primary-button" (click)="onCloseButtonClick()">{{ 'COST_EXPLANATION_DIALOG.GOT_IT' | translate }}</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #costExplanationTemplate let-costName="costName" let-costDescription="costDescription">
+  <div>
+    <div class="text-small-bold color-text-secondary">{{ costName | translate }}</div>
+    <div class="text-small-regular color-text-secondary mt-2">{{ costDescription | translate }}</div>
+  </div>
+</ng-template>

@@ -1,0 +1,187 @@
+<app-page-container [hasContentPadding]="false">
+  <ng-container *appPageContainerTitle>
+    <h1 class="page-title">
+      {{ 'SHIPMENTS.SHIPMENTS_LIST.YOUR_SHIPMENTS' | translate }}
+    </h1>
+    <div class="d-none d-md-block text-normal-light mt-1 color-navigation-text">
+      {{
+        'SHIPMENTS.SHIPMENTS_LIST.SUB_TITLE'
+          | translate
+            : {
+                pendingShipments: numberOfPendingShipments$ | async,
+                completedShipments: numberOfCompletedShipments$ | async
+              }
+      }}
+    </div>
+    <div class="d-md-none text-normal-light mt-1 color-navigation-text">
+      {{
+        'SHIPMENTS.SHIPMENTS_LIST.SUB_TITLE_MOBILE'
+          | translate
+            : {
+                pendingShipments: numberOfPendingShipments$ | async,
+                completedShipments: numberOfCompletedShipments$ | async
+              }
+      }}
+    </div>
+  </ng-container>
+
+  <div *ngIf="isLoading$ | async; else siteContent" class="d-flex align-items-center justify-content-center flex-grow-1 loading-spinner">
+    <app-loading-indicator></app-loading-indicator>
+  </div>
+
+  <ng-template #siteContent>
+    <div class="d-flex page-content">
+      <div class="shipments-table">
+        <mat-tab-group [(selectedIndex)]="selectedTabIndex" (selectedIndexChange)="onSelectedTabIndexChange($event)">
+          <mat-tab>
+            <!-- ALL SHIPMENTS -->
+            <ng-container *ngIf="shipments$ | async as allShipmentsList">
+              <ng-template mat-tab-label>
+                {{ 'COMMON.ALL' | translate }}
+                <span class="count">({{ allShipmentsList.length }})</span>
+              </ng-template>
+              <div class="shipments-tab" [class.big-margin]="hasAdvancedFilters$ | async">
+                <app-shipments-table
+                  [shipments]="allShipmentsList"
+                  [tableStatus]="ShipmentStatus.Mixed"
+                  [tooltip]="'SHIPMENTS.SHIPMENTS_LIST.ALL_TOOLTIP' | translate"
+                  [columnSorted]="(sortingPreferences$ | async).all"
+                  noResultsLabel="SHIPMENTS.SHIPMENTS_LIST.NO_SHIPMENTS"
+                  (payInvoice)="onPayInvoice($event)"
+                  (sortByColumn)="onSort(ShipmentListTabQuery.All, $event)"
+                ></app-shipments-table>
+              </div>
+            </ng-container>
+          </mat-tab>
+          <mat-tab>
+            <!-- PENGING SHIPMENTS -->
+            <ng-container *ngIf="pendingShipments$ | async as pendingShipmentsList">
+              <ng-template mat-tab-label>
+                {{ 'SHIPMENTS.SHIPMENTS_LIST.SHIPMENT_PENDING' | translate }}
+                <span class="count">({{ pendingShipmentsList.length }})</span>
+              </ng-template>
+              <div class="shipments-tab" [class.big-margin]="hasAdvancedFilters$ | async">
+                <app-shipments-table
+                  [shipments]="pendingShipmentsList"
+                  [tableStatus]="ShipmentStatus.CompliancePending"
+                  [tooltip]="'SHIPMENTS.SHIPMENTS_LIST.SHIPMENT_PENDING_TOOLTIP' | translate"
+                  [columnSorted]="(sortingPreferences$ | async).pending"
+                  noResultsLabel="SHIPMENTS.SHIPMENTS_LIST.NO_SHIPMENT_PENDING_SHIPMENTS"
+                  (payInvoice)="onPayInvoice($event)"
+                  (sortByColumn)="onSort(ShipmentListTabQuery.ShipmentPending, $event)"
+                ></app-shipments-table>
+              </div>
+            </ng-container>
+          </mat-tab>
+          <mat-tab>
+            <!-- EN-ROUTE SHIPMENTS -->
+            <ng-container *ngIf="enrouteShipments$ | async as enrouteShipmentsList">
+              <ng-template mat-tab-label>
+                {{ 'SHIPMENTS.SHIPMENTS_LIST.ENROUTE' | translate }}
+                <span class="count">({{ enrouteShipmentsList.length }})</span>
+              </ng-template>
+              <div class="shipments-tab" [class.big-margin]="hasAdvancedFilters$ | async">
+                <app-shipments-table
+                  [shipments]="enrouteShipmentsList"
+                  [tableStatus]="ShipmentStatus.Tracking"
+                  [tooltip]="'SHIPMENTS.SHIPMENTS_LIST.ENROUTE_TOOLTIP' | translate"
+                  [columnSorted]="(sortingPreferences$ | async).enroute"
+                  noResultsLabel="SHIPMENTS.SHIPMENTS_LIST.NO_ENROUTE_SHIPMENTS"
+                  (payInvoice)="onPayInvoice($event)"
+                  (sortByColumn)="onSort(ShipmentListTabQuery.EnRoute, $event)"
+                ></app-shipments-table>
+              </div>
+            </ng-container>
+          </mat-tab>
+          <mat-tab>
+            <!-- COMPLETED SHIPMENTS -->
+            <ng-container *ngIf="completedShipments$ | async as completedShipmentsList">
+              <ng-template mat-tab-label>
+                {{ 'SHIPMENTS.SHIPMENTS_LIST.COMPLETED' | translate }}
+                <span class="count">({{ completedShipmentsList.length }})</span>
+              </ng-template>
+              <div class="shipments-tab" [class.big-margin]="hasAdvancedFilters$ | async">
+                <app-shipments-table
+                  [shipments]="completedShipmentsList"
+                  [tableStatus]="ShipmentStatus.Completed"
+                  [columnSorted]="(sortingPreferences$ | async).completed"
+                  (payInvoice)="onPayInvoice($event)"
+                  noResultsLabel="SHIPMENTS.SHIPMENTS_LIST.NO_COMPLETED_SHIPMENTS"
+                  (sortByColumn)="onSort(ShipmentListTabQuery.Completed, $event)"
+                ></app-shipments-table>
+              </div>
+            </ng-container>
+          </mat-tab>
+          <mat-tab *ngIf="hasAdvancedFilters$ | async">
+            <!-- FILTERED QUOTES -->
+            <ng-container *ngIf="filteredShipments$ | async as filteredShipmentsData">
+              <ng-template mat-tab-label>
+                {{ 'QUOTE_LIST.FILTERED_RESULTS' | translate }}
+                <span class="count">({{ filteredShipmentsData.length }})</span>
+              </ng-template>
+              <div class="shipments-tab" [class.big-margin]="hasAdvancedFilters$ | async">
+                <app-shipments-table
+                  [shipments]="filteredShipmentsData"
+                  [tableStatus]="ShipmentStatus.Mixed"
+                  [columnSorted]="(sortingPreferences$ | async).filtered"
+                  (payInvoice)="onPayInvoice($event)"
+                  noResultsLabel="SHIPMENTS.SHIPMENTS_LIST.NO_FILTERED_SHIPMENTS"
+                  (sortByColumn)="onSort(ShipmentListTabQuery.Filtered, $event)"
+                ></app-shipments-table>
+              </div>
+            </ng-container>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+      <!-- FILTERS -->
+      <div class="d-flex filter-section" [class.with-filter-tab]="hasAdvancedFilters$ | async">
+        <app-selection
+          class="owner-switch d-none d-lg-inline-flex"
+          [items]="[
+            { value: false, viewValue: 'COMMON.ALL' | translate },
+            { value: true, viewValue: 'COMMON.OWNED_BY_ME' | translate }
+          ]"
+          [formControl]="ownerSwitchControl"
+        ></app-selection>
+        <div class="d-flex align-items-md-end flex-md-column ml-2 ml-md-0 sub-section">
+          <app-search-field
+            ngModel
+            placeholder="{{ 'QUOTE_LIST.SEARCH_FOR' | translate }}"
+            class="search-bar"
+            (ngModelChange)="onKeywordChange($event)"
+          ></app-search-field>
+          <div class="d-flex align-items-center align-content-md-between">
+            <a
+              *ngIf="(hasAdvancedFilters$ | async) === false; else showFilters"
+              class="text-link sm-dark mt-2 ml-2 ml-md-0 d-none d-md-inline"
+              (click)="onAdvancedFiltersClick()"
+            >
+              {{ 'QUOTE_LIST.ADVANCED_FILTERS' | translate }}
+            </a>
+            <div class="ml-3 ml-md-0 d-md-none">
+              <button mat-icon-button type="button" (click)="onAdvancedFiltersClick()">
+                <svg-icon class="icon" key="filter"></svg-icon>
+              </button>
+            </div>
+            <ng-template #showFilters>
+              <div class="d-flex mt-2">
+                <div class="text-link sm-dark" (click)="onAdvancedFiltersClick()">
+                  {{ 'QUOTE_LIST.FILTERS_APPLIED' | translate : { number: numberOfAdvancedFilters$ | async } }}
+                </div>
+                <button mat-icon-button type="button" class="ml-1 close-icon">
+                  <svg-icon key="close" class="color-secondary text-center" (click)="onRemoveFiltersClick()"></svg-icon>
+                </button>
+              </div>
+            </ng-template>
+          </div>
+          <div class="d-flex mt-2" *ngIf="hasSorting(selectedTabIndex, sortingPreferences$ | async)">
+            <span class="text-link sm-dark" (click)="onClearSortingClick()">
+              {{ 'SHIPMENTS.SHIPMENTS_LIST.SORTING_APPLIED' | translate }}
+              <svg-icon key="close" class="text-center ml-1 close-icon"></svg-icon>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</app-page-container>

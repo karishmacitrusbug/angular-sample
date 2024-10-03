@@ -1,0 +1,29 @@
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+
+.header {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 2fr 1.5fr;
+  padding-left: 30px;
+}
+
+.quote-row:not(:first-of-type) {
+  margin-top: 16px;
+
+  &:last-of-type {
+    margin-bottom: 40px;
+  }
+}
+
+.empty-state {
+  @include mixins.crop-edge(31px, #fff);
+
+  border-radius: 2px;
+  height: 360px;
+  padding: 40px;
+
+  a {
+    text-decoration: none;
+  }
+}

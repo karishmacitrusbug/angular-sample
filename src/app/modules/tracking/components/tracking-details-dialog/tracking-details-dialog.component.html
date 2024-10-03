@@ -1,0 +1,71 @@
+<div class="dialog-container">
+  <div class="dialog-content mt-5">
+    <ng-container *ngIf="data.payload.selectedItem">
+      <ng-container *ngIf="(data.payload.isDetailsLoading$ | async) === false; else loadingDetails">
+        <div class="d-flex align-items-center justify-content-between mt-3">
+          <div class="d-flex">
+            <a [routerLink]="data.payload.shipmentDetailsRouterLink" class="text-link md-dark">
+              <h5 class="mr-3 d-flex">
+                {{ data.payload.selectedItem.name }}
+              </h5>
+            </a>
+            <h5 class="color-text-primary font-weight-regular">{{ data.payload.selectedItem.reference }}</h5>
+          </div>
+          <div class="d-flex align-items-center">
+            <app-context-menu class="ml-4 color-secondary icon-navigation">
+              <app-context-menu-item (click)="onReuseDataClick()">
+                {{ 'TRACKING.REUSE_DATA_ACTION' | translate }}
+              </app-context-menu-item>
+            </app-context-menu>
+          </div>
+        </div>
+        <div class="card-container mt-4">
+          <div class="d-flex align-items-center header">
+            <svg-icon [key]="data.payload.stateIcons[data.payload.selectedItem.state]"></svg-icon>
+            <h5 class="font-weight-regular color-text-primary pl-2">
+              {{ data.payload.trackerStatusTitle | translate
+              }}<ng-container *ngIf="data.payload.selectedItem.subStatus"> - {{ data.payload.selectedItem.subStatus }}</ng-container>
+            </h5>
+          </div>
+          <div class="d-flex mt-3">
+            <div class="col-9 tracker">
+              <app-tracker size="large" [state]="data.payload.selectedItem.state"></app-tracker>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <app-tracking-log-card [log]="data.payload.selectedItemDetails.log[0]"></app-tracking-log-card>
+        </div>
+        <div [@toggleContent]="data.payload.isFullHistoryShown ? 'open' : 'closed'">
+          <div *ngIf="data.payload.isFullHistoryShown" [@toggleContentOpacity]>
+            <div *ngFor="let log of data.payload.selectedItemDetails.log.slice(1)" class="mt-4">
+              <app-tracking-log-card [log]="log"></app-tracking-log-card>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="data.payload.selectedItem.state !== data.payload.TrackingState.InTransit" class="d-flex justify-content-center mt-3">
+          <div class="text-link sm-dark" (click)="toggleTrackingHistory()">
+            <button type="button" class="p-0" mat-icon-button>
+              <svg-icon key="arrow-down" class="arrow-icon" [class.opened]="data.payload.isFullHistoryShown"></svg-icon>
+            </button>
+            {{ (data.payload.isFullHistoryShown ? 'TRACKING.SHOW_LESS' : 'TRACKING.SHOW_FULL_HISTORY') | translate }}
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #loadingDetails>
+  <div class="d-flex justify-content-center align-items-center w-100 h-100">
+    <app-loading-indicator></app-loading-indicator>
+  </div>
+</ng-template>
+
+<ng-template #emptyState>
+  <div class="d-flex flex-grow-1 align-items-center justify-content-center empty-state">
+    <div class="text-normal-light color-text-primary">
+      {{ 'TRACKING.EMPTY_STATE' | translate }}
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,26 @@
+<div class="card-container">
+  <div class="d-flex align-items-center justify-content-between cell">
+    <a class="text-link sm-dark" (click)="onInvoiceClick()">
+      {{ 'COMMON.INVOICE' | translate : { invoices: 1 } | titlecase }} <span class="pl-1">{{ shipmentInvoice.name }}</span>
+    </a>
+    <div>
+      <button *ngIf="paymentNeeded" class="pay-invoice text-link md-dark" (click)="onPayInvoiceClick()">
+        <svg-icon key="card" [fontSize]="22"></svg-icon>
+        {{ 'SHIPMENTS.PAY_INVOICE' | translate }}
+      </button>
+      <div *ngIf="isPaid" class="d-flex align-items-center color-text-tertiary">
+        <svg-icon key="check" [fontSize]="22"></svg-icon>
+        <div class="text-small-bold ml-2">
+          {{ 'SHIPMENTS.INVOICE_PAID' | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex align-items-center justify-content-end text-reduced-bold cell">{{ shipmentInvoice.price | cost }}</div>
+  <app-action-buttons
+    class="ml-3"
+    (downloadClick)="onDownloadClick()"
+    (messageClick)="onMessageClick()"
+    [for]="'COMMON.INVOICE' | translate : { invoices: 1 }"
+  ></app-action-buttons>
+</div>

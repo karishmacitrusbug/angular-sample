@@ -1,0 +1,75 @@
+@use 'sass:math';
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+@use 'abstracts/units';
+@use 'abstracts/bootstrap';
+
+.title {
+  font-size: units.rem-calc(22);
+  font-weight: bold;
+}
+
+.defaults-card {
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    padding: 40px;
+  }
+}
+
+.preferences-icon {
+  font-size: units.rem-calc(48);
+  min-width: units.rem-calc(48);
+
+  @include bootstrap.media-breakpoint-up(md) {
+    font-size: units.rem-calc(56);
+  }
+}
+
+.card-title {
+  padding-left: math.div(bootstrap.$grid-gutter-width, 2);
+
+  @include bootstrap.media-breakpoint-up(md) {
+    padding-left: 20px;
+  }
+}
+
+.service-type-selection,
+.service-type-selection-hints {
+  max-width: 100%;
+  width: 360px;
+}
+
+.service-type-selection-hints {
+  display: flex;
+
+  > * {
+    flex: 1;
+    text-align: center;
+  }
+}
+
+.icon-info {
+  color: map-get(colors.$color, 'secondary');
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.pickup-address {
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep .icon {
+    align-self: start;
+  }
+}
+
+.address-card {
+  background-color: #fff;
+  border: 1px solid rgba(94, 94, 94, 12%);
+  border-radius: 2px;
+  display: block;
+
+  .addressed {
+    padding-top: 2px;
+  }
+}

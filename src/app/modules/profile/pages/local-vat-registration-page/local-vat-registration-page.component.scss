@@ -1,0 +1,38 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+
+.mb-40 {
+  margin-bottom: 2.5rem;
+}
+
+.tab-content {
+  app-search-field {
+    min-width: 300px;
+  }
+}
+
+.hint-text {
+  text-align: end;
+}
+
+.vat-card {
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid map-get(colors.$color, 'divider');
+  border-radius: 2px;
+  display: grid;
+  flex: 1;
+  gap: 16px;
+  grid-template-columns: 1fr 1fr 1fr 70px;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.country {
+  text-align: end;
+}
+
+.action-icon {
+  cursor: pointer;
+  font-size: 30px;
+}

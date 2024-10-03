@@ -1,0 +1,21 @@
+<div class="dialog-container">
+  <div class="dialog-content">
+    <app-select-address
+      [type]="payload.dialogType"
+      [title]="payload.title"
+      [initialAddresses]="payload.addresses"
+      [initialSelectedAddresses]="payload.selectedAddresses"
+      [onCreate]="payload.onCreate"
+      [onEdit]="payload.onEdit"
+      (selectedAddressesChange)="onSelectedAddressChange($event)"
+    ></app-select-address>
+  </div>
+  <div class="dialog-footer">
+    <div class="cross"></div>
+    <div class="d-flex justify-content-center align-items-center button-container">
+      <button mat-button class="primary-button" [disabled]="selectedAddresses.length === 0" (click)="onAddAddressesClick()">
+        {{ isNewAddress ? ('COMMON.SAVE' | translate) : payload.buttonText }}
+      </button>
+    </div>
+  </div>
+</div>

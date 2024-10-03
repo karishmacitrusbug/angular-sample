@@ -1,0 +1,27 @@
+<div class="d-flex justify-content-center">
+  <div class="card-container col-8">
+    <app-message-card *ngIf="shipment.totalCosts.isExcludedDutyAndTax" type="info" class="mb-5">
+      <div *appMessageCardDescription>
+        {{ 'SHIPMENTS.SHIPMENT_DETAILS.DUTIES_AND_TAXES_CHARGED_BY_CARRIER' | translate }}
+      </div>
+    </app-message-card>
+    <div *ngFor="let cost of shipmentCosts" class="d-flex justify-content-between cost-item">
+      <div class="text-tiny-regular color-text-secondary cost-name" [innerHTML]="cost.name | translate"></div>
+      <div class="text-tiny-bold color-text-primary">{{ cost.value | cost }}</div>
+    </div>
+    <div class="d-flex justify-content-between text-reduced-bold color-text-main-title total-costs">
+      <div class="d-flex">
+        <div>
+          {{
+            (shipment.totalCosts.isExcludedDutyAndTax ? 'SHIPMENTS.SHIPMENT_DETAILS.TOTAL_COSTS_EXCLUDING_DUTY_AND_TAX' : 'COMMON.TOTAL')
+              | translate
+          }}
+        </div>
+        <span *ngIf="shipment.orderType === OrderType.PRO_FORMA_QUOTE" class="ml-1">
+          - <span class="color-primary">{{ 'SHIPMENTS.SHIPMENT_DETAILS.PRO_FORMA' | translate }}</span>
+        </span>
+      </div>
+      <div>{{ totalAmount | cost }}</div>
+    </div>
+  </div>
+</div>

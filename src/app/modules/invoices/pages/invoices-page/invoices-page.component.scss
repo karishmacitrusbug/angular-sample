@@ -1,0 +1,38 @@
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'abstracts/colors';
+
+.header-section {
+  column-gap: 3rem;
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  margin-bottom: 2.5rem;
+}
+
+.message-button {
+  margin-top: 1.5rem;
+}
+
+app-search-field {
+  z-index: 1;
+}
+
+.invoice-wrapper {
+  position: relative;
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep.mat-tab-header {
+    margin-bottom: 40px;
+  }
+
+  app-search-field {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 280px;
+  }
+}
+
+.card-icon {
+  font-size: 24px;
+}

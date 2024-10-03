@@ -1,0 +1,57 @@
+<div class="list-table">
+  <div class="body">
+    <div class="row">
+      <!-- QUOTE ID -->
+      <div class="cell quote-id-cell">
+        <a [routerLink]="quoteRouterLink" role="button" class="text-tiny-bold quote-id">
+          {{ quote.name }}
+        </a>
+      </div>
+      <!-- REFERENCES -->
+      <div class="cell overflow-container references">
+        <div class="text-tiny-bold color-text-primary">
+          {{ quote.reference1 }}
+        </div>
+      </div>
+      <!-- EXPIRY DATE -->
+      <div class="text-tiny-regular color-text-secondary cell overflow-container">
+        <div>{{ quote.expiryDate | date : 'dd MMM yyyy' }}</div>
+      </div>
+      <!-- LOCAL VAT REGISTRATION -->
+      <div class="cell overflow-container">
+        <div *ngIf="quote.localVatRegistration" class="text-small-bold color-text-secondary">
+          {{ quote.localVatRegistration.registeredEntityName }}
+        </div>
+        <div class="text-small-regular color-text-tertiary" *ngIf="!quote.isLocalVatRequired && !quote.localVatRegistration">
+          {{ 'COMMON.NOT_REQUIRED' | translate }}
+        </div>
+        <a
+          *ngIf="quote.isLocalVatRequired && !quote.localVatRegistration"
+          role="button"
+          class="text-tiny-bold text-link md-dark"
+          (click)="onAddLocalVatRegistrationClick(quote.destinationCountry)"
+        >
+          {{ 'COMMON.ADD_NOW' | translate }}
+        </a>
+      </div>
+      <!-- TOTAL COSTS -->
+      <div class="cell overflow-container justify-content-end">
+        <div class="text-right text-reduced-bold color-text-primary">
+          {{ quote.fixTotalCost | cost }}
+        </div>
+      </div>
+      <!-- ACTIONS -->
+      <app-quote-actions-cell
+        class="d-flex flex-grow-1 cell"
+        [quoteState]="tableState === QuoteState.Mixed ? quote.state : tableState"
+        [quote]="quote"
+        [isSelected]="isSelectedQuote(quote)"
+        [isQuoteSelectionDisabled]="disableSelection"
+        (checkboxChange)="onMainQuoteCheckboxChange()"
+        (downloadClick)="onDownloadClick(quote)"
+        (messageClick)="onMessageClick(quote)"
+        (reuseClick)="onReuseClick(quote)"
+      ></app-quote-actions-cell>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.dashboard-container {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+}

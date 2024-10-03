@@ -1,0 +1,45 @@
+@use 'abstracts/mixins';
+@use 'abstracts/bootstrap';
+
+:host {
+  --shipments-table-columns: 2fr 2.25fr 1.25fr 3fr 2fr 150px;
+}
+
+.header {
+  align-items: center;
+  grid-template-columns: var(--shipments-table-columns);
+  padding-left: 30px;
+}
+
+.row {
+  display: none;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    display: grid;
+  }
+}
+
+.tooltip {
+  font-size: 1.75em;
+}
+
+.export-button {
+  margin-left: auto;
+  padding: 0;
+}
+
+.shipment-row:not(:first-of-type) {
+  margin-top: 16px;
+
+  &:last-of-type {
+    margin-bottom: 40px;
+  }
+}
+
+.empty-state {
+  @include mixins.crop-edge(31px, #fff);
+
+  border-radius: 2px;
+  height: 360px;
+  padding: 40px;
+}

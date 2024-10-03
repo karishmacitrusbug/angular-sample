@@ -1,0 +1,40 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+@use 'abstracts/bootstrap';
+
+.dialog-title {
+  padding: bootstrap.$grid-gutter-width 0 0 2.5rem;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    margin-top: 1.1rem;
+  }
+}
+
+.cost-explanation-container {
+  max-height: 100%;
+  overflow: auto;
+  padding-top: 40px;
+}
+
+.header {
+  font-size: 22px;
+  line-height: 25px;
+
+  .title {
+    color: map-get(colors.$color, 'background-05');
+    font-weight: bold;
+  }
+}
+
+.header,
+.footer {
+  padding: 0 40px;
+}
+
+.body {
+  padding: 40px;
+
+  & > *:not(:first-child) {
+    margin-top: 16px;
+  }
+}

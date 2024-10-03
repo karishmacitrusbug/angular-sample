@@ -1,0 +1,29 @@
+<div *ngIf="isLoading$ | async; else quoteBasics" class="loading-container">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+
+<ng-template #quoteBasics>
+  <ng-container *ngIf="vm$ | async as vm">
+    <div class="d-flex flex-column quote-basic">
+      <div class="card-container">
+        <div class="card-header">{{ 'COMMON.BASICS' | translate }}</div>
+
+        <div class="card-content">
+          <app-quote-basics
+            (submitBasics)="onSubmit()"
+            (validityChange)="onValidityChange($event)"
+            [initialValues]="vm.initialValues"
+            [allCountries]="vm.allCountries"
+            [destinationCountries]="vm.destinationCountries"
+            [validationRules]="vm.validationRules"
+          ></app-quote-basics>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button mat-button class="primary-button mt-4" (click)="onSubmit()">
+          {{ 'NEW_QUOTE.BASICS.PROCEED_TO_LINE_ITEMS' | translate }}
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>

@@ -1,0 +1,42 @@
+<div class="list-table">
+  <div class="text-micro-regular color-text-secondary pt-2 row header">
+    <div>{{ 'SHIPMENTS.SHIPMENTS_LIST.SHIPMENT_ID' | translate }}</div>
+    <div>{{ 'SHIPMENTS.SHIPMENTS_LIST.CLIENT_REFERENCE' | translate }}</div>
+    <div class="pr-2">{{ 'SHIPMENTS.SHIPMENTS_LIST.STATUS' | translate }}</div>
+    <div>{{ 'SHIPMENTS.SHIPMENTS_LIST.STATUS_UPDATES' | translate }}</div>
+    <div>{{ 'SHIPMENTS.SHIPMENTS_LIST.INVOICES' | translate }}</div>
+    <div class="d-flex">
+      <span>
+        {{ 'SHIPMENTS.SHIPMENTS_LIST.TASK_TODOS' | translate }}
+      </span>
+      <app-table-header-sort-button
+        class="ml-1"
+        [state]="columnSorted?.column === 'clientTodos' ? columnSorted.direction : undefined"
+        (sortDirectionChange)="onSortButtonClick('clientTodos', $event)"
+      ></app-table-header-sort-button>
+    </div>
+  </div>
+  <ng-container *ngIf="shipments.length; else emptyState">
+    <div
+      *ngFor="let shipment of shipments | paginate : { itemsPerPage: itemsPerPage, currentPage: currentPage, id: paginationId }"
+      class="shipment-row"
+    >
+      <app-shipments-table-row [shipment]="$any(shipment)" (payInvoice)="onPayInvoice(shipment)"></app-shipments-table-row>
+    </div>
+
+    <pagination-controls
+      *ngIf="shipments.length > itemsPerPage"
+      class="pagination"
+      (pageChange)="onPageChange($event)"
+      [previousLabel]="'COMMON.PREVIOUS' | translate"
+      [nextLabel]="'COMMON.NEXT' | translate"
+      [id]="paginationId"
+    ></pagination-controls>
+  </ng-container>
+</div>
+
+<ng-template #emptyState>
+  <div class="text-normal-light d-flex justify-content-center align-items-center mt-4 empty-state">
+    {{ noResultsLabel | translate }}
+  </div>
+</ng-template>

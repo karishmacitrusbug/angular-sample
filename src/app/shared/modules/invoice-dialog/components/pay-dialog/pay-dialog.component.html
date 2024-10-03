@@ -1,0 +1,60 @@
+<div class="dialog-container">
+  <div class="dialog-content">
+    <!-- HEADER -->
+    <div class="dialog-title">
+      <p>{{ 'PAY_DIALOG.TITLE' | translate }}</p>
+    </div>
+
+    <!-- DETAILS -->
+    <div class="d-flex mb-3">
+      <div class="d-flex flex-column mr-4">
+        <div class="text-tiny-regular color-text-tertiary">{{ 'PAY_DIALOG.AMOUNT_OUTSTANDING' | translate }}</div>
+        <div class="text-normal-bold">{{ invoice.amount | cost }}</div>
+      </div>
+
+      <div class="d-flex flex-column mr-4">
+        <div class="text-tiny-regular color-text-tertiary">{{ 'PAY_DIALOG.DUE_DATE' | translate }}</div>
+        <div class="text-normal-bold" [class.color-error]="isPastDate(invoice.dueDate)">
+          {{ 'PAY_DIALOG.DUE_ON' | translate : { date: getDueDate(invoiceDetails?.details) | date : DATE_FORMAT } }}
+        </div>
+      </div>
+
+      <app-action-buttons
+        (downloadClick)="onDownloadClick()"
+        (messageClick)="onMessageClick()"
+        [for]="'COMMON.INVOICE' | translate : { invoices: 1 }"
+      ></app-action-buttons>
+
+      <div class="d-flex flex-fill justify-content-end">
+        <div *ngIf="isLoadingDetails; else messageButton">
+          <app-loading-indicator [diameter]="40"></app-loading-indicator>
+        </div>
+        <ng-template #messageButton>
+          <app-message-button
+            *ngIf="invoiceDetails?.defaultTeamMember"
+            [user]="invoiceDetails?.defaultTeamMember"
+            (buttonClick)="onMessageManager()"
+          ></app-message-button>
+        </ng-template>
+      </div>
+    </div>
+
+    <div class="card-container mt-4">
+      <div class="text-reduced-regular" [innerHTML]="'PAY_DIALOG.DESCRIPTION' | translate"></div>
+      <div class="divider mt-5 mb-4"></div>
+      <div class="d-flex justify-content-between">
+        <div class="text-normal-bold">{{ 'PAY_DIALOG.TOTAL' | translate }}</div>
+        <div class="text-normal-bold">{{ invoice.amount | cost }}</div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+      <button *ngIf="invoice.stripeUrl" mat-button class="secondary-button" (click)="onPayClick()">
+        <svg-icon key="card" class="mr-1"></svg-icon> {{ 'PAY_DIALOG.PAY_INVOICE' | translate }}
+      </button>
+      <button mat-button class="primary-button ml-4" (click)="onDownloadClick()">
+        <svg-icon key="download" class="mr-1"></svg-icon> {{ 'PAY_DIALOG.DOWNLOAD_INVOICE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'abstracts/colors';
+@use 'abstracts/units';
+@use 'abstracts/bootstrap';
+
+:host {
+  height: 100%;
+}
+
+.dialog-container {
+  height: 100%;
+
+  input,
+  app-select {
+    background-color: #fff;
+    border-radius: 2px;
+    padding: 8px;
+  }
+}
+
+.dialog-title {
+  padding: bootstrap.$grid-gutter-width 0 0 2.5rem;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    margin-top: 1.1rem;
+  }
+}
+
+.dialog-content {
+  padding-top: 1.5rem;
+}
+
+.dialog-footer {
+  padding-right: units.rem-calc(40);
+}
+
+form {
+  flex: 1;
+  overflow-y: auto;
+}

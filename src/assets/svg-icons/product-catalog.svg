@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 16" fill="none">
+  <g opacity="0.8">
+    <path
+      d="M1 13L1 3.375C1 3.375 2.5 2.5 4.5 2.5C6.5 2.5 8 3.375 8 3.375V13C8 13 6.5 12.125 4.5 12.125C2.5 12.125 1 13 1 13Z"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M8 13V3.375C8 3.375 9.5 2.5 11.5 2.5C13.5 2.5 15 3.375 15 3.375V13C15 13 13.5 12.125 11.5 12.125C9.5 12.125 8 13 8 13Z"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M10.5 5.6218C10.8609 5.54813 11.2083 5.5 11.5 5.5C11.7917 5.5 12.1391 5.54813 12.5 5.6218"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M10.5 8.6218C10.8609 8.54813 11.2083 8.5 11.5 8.5C11.7917 8.5 12.1391 8.54813 12.5 8.6218"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M3.5 5.6218C3.86091 5.54813 4.20829 5.5 4.5 5.5C4.79171 5.5 5.13909 5.54813 5.5 5.6218"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M3.5 8.6218C3.86091 8.54813 4.20829 8.5 4.5 8.5C4.79171 8.5 5.13909 8.54813 5.5 8.6218"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+</svg>
+  

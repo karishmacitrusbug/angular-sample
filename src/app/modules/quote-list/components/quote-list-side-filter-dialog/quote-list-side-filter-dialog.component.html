@@ -1,0 +1,49 @@
+<div class="dialog-container">
+  <div class="dialog-content">
+    <div class="dialog-title d-flex align-items-center">
+      <svg-icon key="filter" class="filter-icon mr-2"></svg-icon>
+      {{ 'COMMON.FILTERS' | translate }}
+    </div>
+    <form [formGroup]="formGroup">
+      <!-- CREATED DATE -->
+      <app-form-control>
+        <svg-icon key="date" appFormControlIcon></svg-icon>
+        <mat-form-field appFormControlInput class="form-control-input">
+          <mat-label>{{ 'QUOTE_LIST.FILTERS.CREATED_DATE' | translate }}</mat-label>
+          <mat-date-range-input [formGroup]="createdDateRangeGroup" [rangePicker]="picker">
+            <input
+              matStartDate
+              formControlName="start"
+              [placeholder]="'QUOTE_LIST.FILTERS.START_DATE_PLACEHOLDER' | translate"
+              data-hj-allow
+            />
+            <input matEndDate formControlName="end" [placeholder]="'QUOTE_LIST.FILTERS.END_DATE_PLACEHOLDER' | translate" data-hj-allow />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </app-form-control>
+      <!-- SHIP TO COUNTRY -->
+      <app-form-control class="mt-4">
+        <span appFormControlLabel>{{ 'QUOTE_LIST.FILTERS.SHIP_TO_COUNTRY' | translate }}</span>
+        <svg-icon key="plane-landing" appFormControlIcon></svg-icon>
+        <app-multi-autocomplete [formControl]="shipToCountryControl" appFormControlInput class="form-control-input">
+          <ng-container *ngFor="let country of countries">
+            <ng-container *appMultiAutocompleteOption="country.value; searchValue: country.viewValue">{{ country.viewValue }}</ng-container>
+          </ng-container>
+        </app-multi-autocomplete>
+      </app-form-control>
+      <!-- CLIENT REFERENCE 1 -->
+      <app-form-control class="mt-4">
+        <span appFormControlLabel>{{ 'QUOTE_LIST.FILTERS.CLIENT_REFERENCE' | translate }}</span>
+        <svg-icon key="reference-number" appFormControlIcon></svg-icon>
+        <input appFormControlInput class="form-control-input" [formControl]="clientReferenceControl1" data-hj-allow />
+      </app-form-control>
+    </form>
+  </div>
+  <div class="dialog-footer">
+    <button mat-button class="primary-button filter-button" (click)="onSubmit()">
+      {{ 'QUOTE_LIST.FILTERS.FILTER_MY_QUOTES' | translate }}
+    </button>
+  </div>
+</div>

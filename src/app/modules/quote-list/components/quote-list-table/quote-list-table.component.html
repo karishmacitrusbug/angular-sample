@@ -1,0 +1,83 @@
+<div class="text-micro-regular color-text-secondary header">
+  <div class="px-2">{{ 'QUOTE_LIST.ID' | translate }}</div>
+  <div class="px-2">{{ 'COMMON.REFERENCE' | translate : { count: 1 } | titlecase }}</div>
+  <div class="px-2 d-flex">
+    {{ 'QUOTE_LIST.EXPIRY_DATE' | translate }}
+    <app-table-header-sort-button
+      [state]="columnSorted?.col === quoteListSortableColumns.ExpiryDate ? columnSorted.direction : undefined"
+      (sortDirectionChange)="onSortDirectionChange($event, state, quoteListSortableColumns.ExpiryDate)"
+    ></app-table-header-sort-button>
+  </div>
+  <div class="px-2">{{ 'QUOTE_LIST.LOCAL_VAT_REGISTRATION' | translate }}</div>
+  <div class="px-2 d-flex justify-content-end">
+    {{ 'QUOTE_LIST.TOTAL_COST' | translate }}
+    <app-table-header-sort-button
+      [state]="columnSorted?.col === quoteListSortableColumns.FixTotalCost ? columnSorted.direction : undefined"
+      (sortDirectionChange)="onSortDirectionChange($event, state, quoteListSortableColumns.FixTotalCost)"
+    ></app-table-header-sort-button>
+  </div>
+  <div *ngIf="state === QuoteState.Complete || state === QuoteState.Mixed" class="d-flex justify-content-end">
+    <div [appTooltip]="isAcceptQuotesDisabled ? ('QUOTE_LIST.ACCEPT_QUOTES_TOOLTIP' | translate) : ''" appTooltipStrategy="hover">
+      <button
+        mat-button
+        class="primary-button"
+        (click)="onAcceptClick()"
+        [disabled]="selectedQuoteIds.length === 0 || isAcceptQuotesDisabled"
+      >
+        {{ 'QUOTE_LIST.ACCEPT_QUOTES' | translate }}
+      </button>
+    </div>
+  </div>
+  <div *ngIf="state === QuoteState.Expired" class="d-flex text-right justify-content-end">
+    <div class="col-10 px-2">
+      <em>{{ 'QUOTE_LIST.CREATE_A_NEW_QUOTE' | translate }}</em>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="quotes.length > 0; else emptyState">
+  <div
+    *ngFor="let quote of quotes | paginate : { itemsPerPage: itemsPerPage, currentPage: currentPage, id: paginationId }"
+    class="quote-row"
+  >
+    <app-quote-table-row
+      [quote]="quote"
+      [quoteIdsSelection]="quoteIdsSelection"
+      [tableState]="state"
+      [isQuoteSelectionDisabled]="isAcceptQuotesDisabled"
+      (selectQuoteToggle)="toggleQuoteSelection($event)"
+      (downloadClick)="onDownloadClick($event)"
+      (messageClick)="onMessageClick($event)"
+      (reuseClick)="onReuseQuoteClick($any(quote))"
+      (addLocalVatRegistrationClick)="onAddLocalVatRegistrationClick($event)"
+    ></app-quote-table-row>
+  </div>
+
+  <pagination-controls
+    *ngIf="quotes.length > itemsPerPage"
+    class="pagination"
+    (pageChange)="onPageChange($event)"
+    [previousLabel]="'COMMON.PREVIOUS' | translate"
+    [nextLabel]="'COMMON.NEXT' | translate"
+    [id]="paginationId"
+  ></pagination-controls>
+</ng-container>
+
+<ng-template #emptyState>
+  <div class="text-normal-light d-flex justify-content-center align-items-center mt-4 empty-state">
+    <ng-container *ngIf="!isSearching; else emptySearchText">
+      <ng-container *ngIf="quoteTab !== QuoteListTabIndex.Filtered; else filteredEmptyState">
+        <span>{{ 'QUOTE_LIST.EMPTY_STATE' | translate : { state: state } }}</span>
+        <a *ngIf="quoteTab === QuoteListTabIndex.Complete" [routerLink]="['/', RouteSegment.NewQuote]" class="text-link md-dark pl-1">
+          {{ 'QUOTE_LIST.START_A_NEW_ONE' | translate }}
+        </a>
+      </ng-container>
+      <ng-template #filteredEmptyState>
+        <span>{{ 'QUOTE_LIST.FILTERED_EMPTY_STATE' | translate }}</span>
+      </ng-template>
+    </ng-container>
+    <ng-template #emptySearchText>
+      <span>{{ 'COMMON.NO_RESULTS_FOUND' | translate }}</span>
+    </ng-template>
+  </div>
+</ng-template>

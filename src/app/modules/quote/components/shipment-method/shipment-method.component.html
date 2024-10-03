@@ -1,0 +1,79 @@
+<app-message-card type="info">
+  <div *appMessageCardTitle>{{ 'QUOTE.SHIPMENT_METHOD.HINT_TITLE' | translate }}</div>
+  <div *appMessageCardDescription>{{ 'QUOTE.SHIPMENT_METHOD.HINT_DESCRIPTION' | translate }}</div>
+</app-message-card>
+
+<div>
+  <div class="shipment-methods-container">
+    <div class="shipment-method-card-container" *ngFor="let shipmentMethod of shipmentMethods">
+      <app-shipment-method-card
+        [shipmentMethod]="shipmentMethod"
+        [isSelected]="shipmentMethod === selectedShipmentMethod"
+        (click)="onShipmentMethodClick(shipmentMethod)"
+        class="shipment-method-card"
+      ></app-shipment-method-card>
+      <span
+        *ngIf="showCurrentBestRatesHint && shipmentMethod === selectedShipmentMethod"
+        class="d-block text-micro-regular font-italic text-secondary mt-2 text-left best-rates"
+      >
+        {{ 'QUOTE.SHIPMENT_METHOD.CURRENT_BEST_RATES' | translate }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="couriers-container">
+  <ng-container *ngIf="selectedShipmentMethod?.isHandledByCb; else thirdPartyCourierList">
+    <ng-container *ngIf="freight.status !== FreightStatus.SEARCHING; else searchingRates">
+      <ng-container
+        [ngTemplateOutlet]="zeeCourierRates"
+        [ngTemplateOutletContext]="{ $implicit: zeeCouriers, freight: freight }"
+      ></ng-container>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #searchingRates>
+  <div class="searching-rates">
+    <div class="searching-rates-overlay">
+      <div class="searching-rates-overlay-background"></div>
+      <app-loading-indicator></app-loading-indicator>
+      <div class="searching-rates-description">{{ 'QUOTE.SHIPMENT_METHOD.SEARCHING_BEST_RATES' | translate }}</div>
+    </div>
+    <div class="searching-rates-dummy-couriers">
+      <ng-container
+        [ngTemplateOutlet]="zeeCourierRates"
+        [ngTemplateOutletContext]="{ $implicit: dummyCbCouriers, freight: freight }"
+      ></ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #zeeCourierRates let-couriers let-freight="freight">
+  <div class="couriers-title">{{ 'QUOTE.SHIPMENT_METHOD.CHOOSE_METHOD_TITLE' | translate }}</div>
+  <div class="couriers-description">{{ 'QUOTE.SHIPMENT_METHOD.CHOOSE_METHOD_DESCRIPTION' | translate }}</div>
+  <mat-radio-group
+    *ngIf="freight?.status !== FreightStatus.CURRENT_BEST_RATE"
+    class="courier-list-wrapper"
+    [value]="selectedCbCourierId"
+    (change)="onSelectedCbCourierIdChange($event)"
+  >
+    <mat-radio-button *ngFor="let courier of couriers" [value]="courier.id">
+      <div class="cb-courier-title">{{ courier.name }} - {{ courier.fee | currency : currency }}</div>
+      <div class="cb-courier-transit-time">{{ courier.serviceType }}</div>
+    </mat-radio-button>
+  </mat-radio-group>
+</ng-template>
+
+<ng-template #thirdPartyCourierList>
+  <div class="couriers-title">{{ 'QUOTE.SHIPMENT_METHOD.SUGGESTED_PROVIDERS_TITLE' | translate }}</div>
+  <div class="couriers-description">{{ 'QUOTE.SHIPMENT_METHOD.SUGGESTED_PROVIDERS_DESCRIPTION' | translate }}</div>
+  <ul class="third-party-courier-list">
+    <li *ngFor="let courier of thirdPartyCouriersForCurrentShipmentMethod">
+      <div class="third-party-courier-title">{{ courier.name }}</div>
+      <div class="third-party-courier-description">
+        {{ courier.description }}
+      </div>
+    </li>
+  </ul>
+</ng-template>

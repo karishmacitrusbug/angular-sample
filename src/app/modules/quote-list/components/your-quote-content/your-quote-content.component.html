@@ -1,0 +1,33 @@
+<div class="mt-4">
+  <app-based-on-weight
+    [hasPackages]="quote.packages.length > 0"
+    [weight]="quote.estimatedWeight"
+    [weightUnit]="quote.estimatedWeightUnit"
+    (addPackage)="onAddPackages(quote)"
+  ></app-based-on-weight>
+  <div class="padding-horizontal">
+    <app-message-card *ngIf="quote.orderType === OrderType.PRO_FORMA_QUOTE && quote.lineItems?.length" type="info" class="mt-5">
+      <div *appMessageCardTitle>
+        <div>{{ 'QUOTE_DETAILS.WHY_PRO_FORMA' | translate }}</div>
+        <div class="text-small-regular pt-1">
+          {{ quote.reasonForProForma || 'QUOTE_DETAILS.WHY_PRO_FORMA_DETAILS' | translate }}
+        </div>
+      </div>
+    </app-message-card>
+    <div class="mt-5">
+      <app-costs-table
+        [costs]="quote.costs"
+        [liabilityCoverFeeEnabled]="quote.liabilityCoverFeeEnabled"
+        (toggleLiabilityCoverFee)="onLiabilityCoverFeeToggle($event, quote.id)"
+        (changeShipmentMethod)="onChangeShipmentMethod()"
+      ></app-costs-table>
+      <div class="mt-5">
+        <app-estimations-and-shipping-table
+          [timeline]="quote.timeline"
+          [etaDisclaimer]="quote.etaDisclaimer"
+          [shippingNotes]="quote.shippingNotes"
+        ></app-estimations-and-shipping-table>
+      </div>
+    </div>
+  </div>
+</div>

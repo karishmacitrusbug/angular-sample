@@ -1,0 +1,83 @@
+<!-- COSTS TABLE -->
+<table class="w-100">
+  <tr *ngFor="let cost of costs$ | async">
+    <td class="py-2 text-tiny-regular color-text-secondary" [innerHTML]="cost.name"></td>
+    <td class="py-2 text-right cost-value">
+      <span class="text-tiny-bold color-text-primary" [class.color-warning]="cost.highlight">
+        {{ cost.value | cost : CurrencyCode.USD }}
+      </span>
+    </td>
+  </tr>
+</table>
+
+<!-- FREIGHT TYPE -->
+<div class="mt-4 p-3 freight-type">
+  <ng-container [ngSwitch]="freightType">
+    <ng-container *ngSwitchCase="FreightType.AIR">
+      <div class="d-flex justify-content-between text-tiny-bold">
+        <span>{{ 'QUOTE.COSTS_TABLE.ZEE_AIR_SHIPPING_NAME' | translate }}</span>
+        <span>{{ internationalDeliveryFee | cost : CurrencyCode.USD }}</span>
+      </div>
+      <p class="mt-2 mb-0 text-tiny-regular">{{ 'QUOTE.COSTS_TABLE.ZEE_AIR_SHIPPING_DESCRIPTION' | translate }}</p>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="FreightType.SEA">
+      <div class="d-flex justify-content-between text-tiny-bold">
+        <span>{{ 'QUOTE.COSTS_TABLE.SEA_FREIGHT_NAME' | translate }}</span>
+        <span>{{ 'QUOTE.COSTS_TABLE.FEE_NOT_INCLUDED' | translate }}</span>
+      </div>
+      <p class="mt-2 mb-0 text-tiny-regular">{{ 'QUOTE.COSTS_TABLE.SEA_FREIGHT_DESCRIPTION' | translate }}</p>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="FreightType.ROAD">
+      <div class="d-flex justify-content-between text-tiny-bold">
+        <span>{{ 'QUOTE.COSTS_TABLE.ROAD_FREIGHT_NAME' | translate }}</span>
+        <span>{{ 'QUOTE.COSTS_TABLE.FEE_NOT_INCLUDED' | translate }}</span>
+      </div>
+      <p class="mt-2 mb-0 text-tiny-regular">{{ 'QUOTE.COSTS_TABLE.ROAD_FREIGHT_DESCRIPTION' | translate }}</p>
+    </ng-container>
+  </ng-container>
+
+  <div class="d-flex justify-content-end mt-2">
+    <button class="text-link sm-dark" (click)="onChangeShipmentMethodClick()">
+      {{ 'QUOTE.COSTS_TABLE.CHANGE_SHIPMENT_METHOD_PROVIDER' | translate }}
+    </button>
+  </div>
+</div>
+
+<div class="mt-4 p-3 optional-item" [class.inactive]="!liabilityCoverFeeControl.value">
+  <mat-checkbox [formControl]="liabilityCoverFeeControl" class="checkbox"></mat-checkbox>
+  <div class="text-tiny-regular color-text-primary content">
+    <div class="text-tiny-bold d-flex justify-content-between">
+      {{ 'QUOTE.COSTS_TABLE.LIABLILITY_COVER_FEE' | translate }}
+      <span>{{ liabilityCoverFee | cost : CurrencyCode.USD }}</span>
+    </div>
+    <ul class="list">
+      <li><span [innerHTML]="'QUOTE.COSTS_TABLE.LIABLILITY_COVER_FEE_LINE_1' | translate"></span></li>
+      <li class="d-flex align-items-start">
+        <svg-icon key="check"></svg-icon>
+        <span [innerHTML]="'QUOTE.COSTS_TABLE.LIABLILITY_COVER_FEE_LINE_2' | translate"></span>
+      </li>
+      <li>
+        <svg-icon key="check"></svg-icon>
+        <span [innerHTML]="'QUOTE.COSTS_TABLE.LIABLILITY_COVER_FEE_LINE_3' | translate"></span>
+      </li>
+      <li>
+        <svg-icon key="check"></svg-icon>
+        <span [innerHTML]="'QUOTE.COSTS_TABLE.LIABLILITY_COVER_FEE_LINE_4' | translate"></span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- TOTAL -->
+<div class="d-flex align-items-center justify-content-between text-reduced-bold mt-4 pt-2 total">
+  <span>{{ 'QUOTE.COSTS_TABLE.TOTAL' | translate }}</span>
+  {{ totalCost | cost : CurrencyCode.USD }}
+</div>
+
+<div class="d-flex justify-content-end mt-1">
+  <button class="text-link sm-dark" (click)="onCostExplanationButtonClick()">
+    {{ 'QUOTE.COSTS_TABLE.COST_EXPLANATION' | translate }}
+  </button>
+</div>

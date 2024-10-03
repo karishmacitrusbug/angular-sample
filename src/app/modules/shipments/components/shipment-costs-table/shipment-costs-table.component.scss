@@ -1,0 +1,21 @@
+.card-container {
+  padding: 24px 24px 30px;
+}
+
+.cost-item {
+  padding-right: 16px;
+
+  &:not(:first-of-type) {
+    margin-top: 16px;
+  }
+}
+
+.total-costs {
+  border-top: 1px solid rgba(10, 24, 38, 16%);
+  margin-top: 40px;
+  padding: 8px 16px 0 0;
+}
+
+.cost-name {
+  max-width: 70%;
+}

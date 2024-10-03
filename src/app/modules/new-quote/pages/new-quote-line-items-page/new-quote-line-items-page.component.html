@@ -1,0 +1,77 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="d-flex flex-column">
+    <div class="card-container">
+      <div class="card-header">{{ 'NEW_QUOTE.LINE_ITEMS.TITLE' | translate }}</div>
+
+      <div class="card-content">
+        <div class="mw-500 d-flex flex-column">
+          <!-- CURRENCY SELECTOR -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex align-items-center">
+              <span class="text-tiny-regular color-text-tertiary">{{ 'QUOTE.LINE_ITEMS.SELECT_CURRENCY' | translate }}</span>
+              <button
+                *ngIf="vm.isReusedQuote"
+                mat-icon-button
+                class="color-secondary text-reduced-medium"
+                [appTooltip]="'QUOTE.LINE_ITEMS.REUSE_QUOTE_CURRENCY_SELECTOR_TOOLTIP' | translate"
+              >
+                <svg-icon key="info"></svg-icon>
+              </button>
+            </div>
+            <app-currency-selector class="currency-selector" [formControl]="currencyControl"></app-currency-selector>
+          </div>
+          <!-- STORE FEE SELECTOR -->
+          <div *ngIf="vm.valuationMethod !== ValuationMethod.COST_METHOD" class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <span class="text-tiny-regular color-text-tertiary">{{ 'QUOTE.LINE_ITEMS.STORE_FEES_AVAILABLE' | translate }}</span>
+              <button
+                mat-icon-button
+                class="color-secondary text-reduced-medium"
+                [appTooltip]="
+                  (vm.isReusedQuote
+                    ? 'QUOTE.LINE_ITEMS.REUSE_QUOTE_STORE_FEES_SELECTOR_TOOLTIP'
+                    : 'QUOTE.LINE_ITEMS.STORE_FEES_SELECTOR_TOOLTIP'
+                  ) | translate : { country: vm.to }
+                "
+              >
+                <svg-icon key="info"></svg-icon>
+              </button>
+            </div>
+            <div class="d-flex align-items-center">
+              <app-selection
+                [items]="[
+                  { value: true, viewValue: 'COMMON.YES' | translate },
+                  { value: false, viewValue: 'COMMON.NO' | translate }
+                ]"
+                [formControl]="storeFeesControl"
+              ></app-selection>
+            </div>
+          </div>
+        </div>
+        <app-quote-line-items
+          [initialData]="vm.lineItems"
+          (validityChange)="onValidityChange($event)"
+          [validationRules]="vm.validationRules"
+          [from]="vm.from"
+          [to]="[vm.to]"
+          [serviceType]="vm.serviceType"
+          [hideCurrencyWarning]="true"
+          [hasStoreFees]="storeFeesControl.value"
+          [customCurrency]="currencyControl.value?.value"
+          [swapColumnTranslation]="swapColumnTranslation"
+        ></app-quote-line-items>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column">
+    <div class="d-flex justify-content-end mt-4">
+      <button type="button" mat-button class="secondary-button" (click)="onClearTableClick()">
+        {{ 'COMMON.CLEAR_TABLE' | translate }}
+      </button>
+      <button type="button" mat-button class="primary-button ml-4" [disabled]="!canProceed" (click)="onSubmitClick()">
+        {{ 'NEW_QUOTE.LINE_ITEMS.PROCEED_TO_SHIPPING_METHOD' | translate }}
+      </button>
+    </div>
+  </div>
+</ng-container>

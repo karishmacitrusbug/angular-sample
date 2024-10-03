@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 40" fill="none">
+  <path
+    opacity="0.2"
+    d="M48.6667 19.5764C48.6667 13.5515 43.891 8.66736 38 8.66736V19.5764L47.4364 24.6674C48.2219 23.1476 48.6667 21.4151 48.6667 19.5764Z"
+    fill="url(#paint0_linear)"
+  />
+  <circle cx="38" cy="20" r="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path
+    d="M38 10.6674V20.0007L44.3333 23.334"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path d="M38 6V6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M38 33.3326V33.9993" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M52 20L51.3333 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M24.6665 20L23.9998 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <circle r="1.33333" transform="matrix(-1 0 0 1 38.0002 20.0007)" fill="currentColor" />
+  <path d="M3 16H4M17 16H11H7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path
+    d="M52.3223 1.71265L51.4473 3.22819L51.0098 3.98596L50.791 4.36485"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path d="M52.9845 7.125L54.5 6.25" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M19 20H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M7 24H8M17 24H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <defs>
+    <linearGradient id="paint0_linear" x1="47" y1="14.5004" x2="38" y2="20.0004" gradientUnits="userSpaceOnUse">
+      <stop stop-color="currentColor" stop-opacity="0.5" />
+      <stop offset="1" stop-color="white" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+</svg>
+  

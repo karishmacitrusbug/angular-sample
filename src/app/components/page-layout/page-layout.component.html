@@ -1,0 +1,12 @@
+<app-header
+  [logo]="logo"
+  [version]="version"
+  [settingsMenuItems]="settingsMenuItems"
+  [profileMenuItems]="profileMenuItems"
+  [logOutLink]="logOutLink"
+  [profileLink]="profileLink"
+  [helpMenuItem]="helpMenuItem"
+></app-header>
+<router-outlet></router-outlet>
+<app-intercom-launcher [icon]="'question'"></app-intercom-launcher>
+<!-- [menuItems]="menuItems" -->

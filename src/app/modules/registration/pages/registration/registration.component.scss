@@ -1,0 +1,84 @@
+@use 'abstracts/variables';
+
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.bg-pattern-left {
+  left: -142%;
+  overflow: hidden;
+  position: fixed;
+  top: -5%;
+  z-index: -1;
+}
+
+.bg-pattern-right {
+  display: none;
+  z-index: -1;
+}
+
+.registration-container {
+  flex-direction: column;
+  margin: auto;
+  max-width: 1440px;
+  padding: 1.5rem 0;
+}
+
+.registration-form-container {
+  flex: 1;
+  padding: 0 1rem;
+  z-index: 1;
+}
+
+.mockup-with-list {
+  margin-top: 40px;
+  z-index: 1;
+
+  .mockup-image {
+    max-width: 100%;
+    min-width: 300px;
+  }
+
+  .list {
+    margin-top: 2.5rem;
+
+    .svg-icon-dot {
+      font-size: 24px;
+    }
+
+    .text {
+      flex: 1;
+    }
+  }
+}
+
+@media (min-width: 769px) {
+  .bg-pattern-left {
+    left: -14%;
+    top: -32%;
+  }
+
+  .bg-pattern-right {
+    bottom: -21%;
+    display: block;
+    overflow: hidden;
+    position: fixed;
+    right: -21%;
+  }
+
+  .registration-container {
+    flex-direction: row;
+    padding: 3rem 4rem 5rem 10rem;
+  }
+
+  .mockup-with-list {
+    flex: 1;
+    margin-top: 0;
+
+    .mockup-image {
+      width: 100%;
+    }
+  }
+}

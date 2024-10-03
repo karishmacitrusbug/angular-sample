@@ -1,0 +1,67 @@
+@use 'abstracts/variables';
+
+.mt-40 {
+  margin-top: 2.5rem;
+}
+
+.bg-pattern-left {
+  left: -142%;
+  overflow: hidden;
+  position: fixed;
+  top: -5%;
+}
+
+.bg-pattern-right {
+  display: none;
+}
+
+.registration-page {
+  margin: auto;
+  padding: 1.5rem 1rem;
+  width: 100%;
+}
+
+.card-container {
+  box-shadow: 0 0 40px rgba(20, 72, 118, 8%);
+  position: relative;
+  z-index: 1;
+
+  .svg-icon-email {
+    font-size: 88px;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .details {
+    line-height: 32px;
+  }
+}
+
+@media (min-width: 769px) {
+  .bg-pattern-left {
+    left: -14%;
+    top: -32%;
+  }
+
+  .bg-pattern-right {
+    bottom: -21%;
+    display: block;
+    overflow: hidden;
+    position: fixed;
+    right: -21%;
+  }
+
+  .registration-page {
+    max-width: 960px;
+    padding-left: 80px;
+    padding-top: 80px;
+  }
+
+  .card-container {
+    .title {
+      font-size: 32px;
+    }
+  }
+}

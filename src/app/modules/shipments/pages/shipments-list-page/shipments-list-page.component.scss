@@ -1,0 +1,97 @@
+@use 'abstracts/variables';
+@use 'abstracts/bootstrap';
+
+:host {
+  flex: 1;
+}
+
+.loading-spinner {
+  height: 100%;
+}
+
+.page-content {
+  padding: 1rem 0;
+  position: relative;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    padding: 40px 4rem 4rem 0;
+  }
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep mat-tab-header {
+    margin-bottom: 2rem;
+
+    @include bootstrap.media-breakpoint-up(md) {
+      margin-left: 2rem;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.shipment-list {
+  width: 100%;
+}
+
+.filter-section {
+  width: 100%;
+  position: absolute;
+  top: 5rem;
+  transform: translateZ(0); // prevents unnecessary painting
+  z-index: 1;
+  align-items: flex-start;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    width: auto;
+    right: 4rem;
+    top: unset;
+  }
+
+  &.with-filter-tab {
+    align-items: flex-end;
+    flex-direction: column-reverse;
+  }
+
+  .sub-section {
+    width: 96%;
+
+    @include bootstrap.media-breakpoint-up(lg) {
+      width: auto;
+    }
+  }
+}
+
+.search-bar {
+  width: 100%;
+
+  @include bootstrap.media-breakpoint-up(lg) {
+    width: 280px;
+  }
+}
+
+.shipments-table {
+  width: 100%;
+}
+
+.shipments-tab {
+  margin-top: 58px;
+
+  &.big-margin {
+    margin-top: 86px;
+  }
+}
+
+.close-icon {
+  font-size: 18px;
+  padding: 0 !important; // stylelint-disable-line declaration-no-important
+}
+
+.owner-switch {
+  margin: 0.25rem 1rem;
+  width: 220px;
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep .text-tiny-bold {
+    font-size: map-get(variables.$font-size, 'micro') !important; /* stylelint-disable-line declaration-no-important */
+    padding: 0;
+  }
+}

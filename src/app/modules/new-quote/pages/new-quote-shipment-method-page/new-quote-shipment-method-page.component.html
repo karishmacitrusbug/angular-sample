@@ -1,0 +1,28 @@
+<div *ngIf="isLoading$ | async; else shipmentMethod" class="loading-container">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+
+<ng-template #shipmentMethod>
+  <div class="d-flex flex-column shipment-method">
+    <div class="card-container">
+      <div class="card-header">{{ 'NEW_QUOTE.SHIPMENT_METHOD_TITLE' | translate }}</div>
+      <div class="card-content">
+        <app-shipment-method
+          [shipmentMethods]="shipmentMethods$ | async"
+          [selectedShipmentMethodType]="selectedShipmentMethodType$ | async"
+          [freight]="freight$ | async"
+          [zeeCouriers]="zeeCouriers$ | async"
+          [thirdPartyCouriers]="thirdPartyCouriers$ | async"
+          [selectedCbCourierId]="selectedCbCourierId$ | async"
+          (selectShipmentMethod)="onSelectShipmentMethod($event)"
+          (selectCbCourierId)="onSelectCbCourierId($event)"
+        ></app-shipment-method>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button mat-button class="primary-button mt-4" [disabled]="(canProceed$ | async) === false" (click)="onSubmit()">
+        {{ 'NEW_QUOTE.SHIPMENT_METHOD.CALCULATE_QUOTE' | translate }}
+      </button>
+    </div>
+  </div>
+</ng-template>

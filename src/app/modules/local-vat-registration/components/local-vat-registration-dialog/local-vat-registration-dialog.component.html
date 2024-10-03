@@ -1,0 +1,117 @@
+<div class="dialog-container">
+  <div class="dialog-content">
+    <div class="d-flex header align-items-center">
+      <button type="button" class="color-secondary mr-2" mat-icon-button (click)="onBackIconClick()">
+        <svg-icon key="arrow-left"></svg-icon>
+      </button>
+      <h1 class="dialog-title">{{ (isEditing ? 'LOCAL_VAT_DIALOG.EDIT_TITLE' : 'LOCAL_VAT_DIALOG.ADD_TITLE') | translate }}</h1>
+    </div>
+
+    <span class="dialog-subtitle">{{ 'LOCAL_VAT_DIALOG.DESCRIPTION' | translate }}</span>
+
+    <form [formGroup]="formGroup">
+      <div class="card-container d-flex flex-column mb-3">
+        <app-form-control [error]="registeredEntityNameError$ | async">
+          <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.REGISTERED_ENTITY_NAME' | translate }}</span>
+          <svg-icon key="id" appFormControlIcon></svg-icon>
+          <input appFormControlInput [formControl]="registeredEntityNameControl" class="form-control-input" />
+        </app-form-control>
+        <app-form-control [error]="vatNumberError$ | async">
+          <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.VAT_NUMBER' | translate }}</span>
+          <svg-icon key="number" appFormControlIcon></svg-icon>
+          <input appFormControlInput [formControl]="vatNumberControl" class="form-control-input" />
+        </app-form-control>
+        <div class="d-flex">
+          <app-form-control class="w-100 mr-5" [error]="registrationTypeError$ | async">
+            <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.TYPE_OF_REGISTRATION' | translate }}</span>
+            <svg-icon key="globe" appFormControlIcon></svg-icon>
+            <app-dropdown appFormControlInput [formControl]="registrationTypeControl" [data]="registrationTypes"></app-dropdown>
+          </app-form-control>
+          <app-form-control class="w-100" [error]="toCountryError$ | async">
+            <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.SHIP_TO_COUNTRY' | translate }}</span>
+            <app-dropdown appFormControlInput [formControl]="toCountryControl" [data]="data.payload.destinationCountries"></app-dropdown>
+            <span *ngIf="data.payload.toCountryDisabled" appFormControlHint>{{
+              'LOCAL_VAT_DIALOG.DISABLED_TO_COUNTRY_HINT' | translate
+            }}</span>
+          </app-form-control>
+        </div>
+      </div>
+
+      <div class="card-container d-flex flex-column mb-3">
+        <app-form-control [error]="registeredAddressError$ | async">
+          <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.REGISTERED_ADDRESS' | translate }}</span>
+          <svg-icon key="location" appFormControlIcon></svg-icon>
+          <input
+            appFormControlInput
+            appGoogleMapAutocomplete
+            [country]="registeredCountryControl.value?.value"
+            [formControl]="registeredAddressControl"
+            (addressSelect)="onAddressSelect($event)"
+            class="form-control-input"
+          />
+        </app-form-control>
+
+        <div class="d-flex none-icon-padding">
+          <app-form-control class="w-100 mr-5" [error]="registeredCityError$ | async">
+            <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.CITY' | translate }}</span>
+            <input appFormControlInput [formControl]="registeredCityControl" class="form-control-input" />
+          </app-form-control>
+          <app-form-control class="w-100" [error]="registeredStateError$ | async">
+            <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.STATE' | translate }}</span>
+            <input appFormControlInput [formControl]="registeredStateControl" class="form-control-input" />
+          </app-form-control>
+        </div>
+
+        <div class="d-flex none-icon-padding">
+          <app-form-control class="w-100 mr-5" [error]="registeredCountryError$ | async">
+            <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.COUNTRY' | translate }}</span>
+            <app-dropdown appFormControlInput [formControl]="registeredCountryControl" [data]="data.payload.allCountries"></app-dropdown>
+          </app-form-control>
+          <app-form-control class="w-100" [error]="registeredPostalCodeError$ | async">
+            <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.POSTAL_CODE_OR_ZIP' | translate }}</span>
+            <input appFormControlInput [formControl]="registeredPostalCodeControl" class="form-control-input" />
+          </app-form-control>
+        </div>
+      </div>
+
+      <div class="card-container d-flex flex-column">
+        <h2 class="card-header mb-1">{{ 'LOCAL_VAT_DIALOG.RESPONSIBLE_PARTY' | translate }}</h2>
+        <span class="card-subtitle mb-4">
+          {{ 'LOCAL_VAT_DIALOG.RESPONSIBLE_PARTY_DESCRIPTION' | translate }}
+        </span>
+
+        <app-form-control [error]="contactPersonNameError$ | async">
+          <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.CONTACT_PERSON_NAME' | translate }}</span>
+          <svg-icon key="id" appFormControlIcon></svg-icon>
+          <input appFormControlInput [formControl]="contactPersonNameControl" class="form-control-input" />
+        </app-form-control>
+
+        <app-form-control [error]="contactPersonEmailError$ | async">
+          <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.EMAIL' | translate }}</span>
+          <svg-icon key="mail" appFormControlIcon></svg-icon>
+          <input appFormControlInput [formControl]="contactPersonEmailControl" class="form-control-input" />
+        </app-form-control>
+
+        <app-form-control class="w-50" [error]="contactPersonPhoneNumberError$ | async">
+          <span appFormControlLabel>{{ 'LOCAL_VAT_DIALOG.PHONE_NUMBER' | translate }}</span>
+          <svg-icon key="phone" appFormControlIcon></svg-icon>
+          <input appFormControlInput [formControl]="contactPersonPhoneNumberControl" class="form-control-input" />
+        </app-form-control>
+      </div>
+    </form>
+  </div>
+
+  <div class="dialog-footer">
+    <div class="cross"></div>
+    <div class="d-flex align-items-center p-4">
+      <div class="d-flex align-items-center justify-content-end w-100">
+        <button mat-button type="button" class="secondary-button mr-3" (click)="onCancelClick()">
+          {{ 'COMMON.CANCEL' | translate }}
+        </button>
+        <button mat-button type="button" class="primary-button" [disabled]="formGroup.invalid" (click)="onSubmitClick()">
+          {{ (isEditing ? 'COMMON.SAVE' : 'LOCAL_VAT_DIALOG.ADD_REGISTRATION') | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

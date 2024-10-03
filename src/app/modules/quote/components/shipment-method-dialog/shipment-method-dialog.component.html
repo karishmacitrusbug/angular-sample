@@ -1,0 +1,27 @@
+<div class="dialog-container">
+  <div class="header">
+    <h5 class="title color-blue">
+      {{ 'QUOTE.SHIPMENT_METHOD.SHIPMENT_METHOD_TITLE' | translate }}
+    </h5>
+  </div>
+  <div class="shipment-method dialog-content">
+    <app-shipment-method
+      [shipmentMethods]="shipmentMethods"
+      [selectedShipmentMethodType]="selectedShipmentMethodType"
+      [freight]="freight$ | async"
+      [zeeCouriers]="zeeCouriers$ | async"
+      [thirdPartyCouriers]="thirdPartyCouriers"
+      [selectedCbCourierId]="selectedCbCourierId"
+      (selectShipmentMethod)="onSelectShipmentMethod($event)"
+      (selectCbCourierId)="onSelectCbCourierId($event)"
+    ></app-shipment-method>
+    <div class="actions">
+      <button mat-button class="secondary-button" (click)="onDiscardClick()">
+        {{ 'COMMON.DISCARD_CHANGES' | translate }}
+      </button>
+      <button mat-button class="primary-button" [disabled]="(canProceed$ | async) === false" (click)="onSaveClick()">
+        {{ 'COMMON.SAVE' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

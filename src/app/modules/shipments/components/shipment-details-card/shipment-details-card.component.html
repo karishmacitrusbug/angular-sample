@@ -1,0 +1,251 @@
+<div class="details-card-container" [@toggleContent]="isOpen ? 'open' : 'closed'">
+  <ng-container *ngIf="shipment$ | async as shipment">
+    <div class="header d-flex p-2" (click)="onHeaderClick()">
+      <button mat-icon-button type="button" class="arrow-icon color-secondary mr-2">
+        <svg-icon key="arrow-down" [class.up]="isOpen"></svg-icon>
+      </button>
+      <div *ngIf="!isOpen" class="details" [@toggleContentOpacity]>
+        <app-detail-card [label]="'COMMON.FROM' | translate">
+          <svg-icon key="plane-take-off" *appDetailCardIcon></svg-icon>
+          <span>{{ shipment.from }}</span>
+        </app-detail-card>
+        <app-detail-card
+          [label]="
+            (shipment.ClientCurrencyInput === CurrencyCode.USD
+              ? 'SHIPMENTS.SHIPMENT_DETAILS.IMPORT_VALUE'
+              : 'SHIPMENTS.SHIPMENT_DETAILS.IMPORT_VALUE_USD'
+            ) | translate
+          "
+        >
+          <svg-icon key="value" *appDetailCardIcon></svg-icon>
+          {{ shipment.value | currency : currency }}
+        </app-detail-card>
+        <app-detail-card [label]="'SHIPMENTS.SHIPMENT_DETAILS.CHARGEABLE_WEIGHT' | translate">
+          <svg-icon key="weight" *appDetailCardIcon></svg-icon>
+          {{ shipment.estimatedWeight | number : '1.0-2' }} {{ 'COMMON.KG' | translate }}
+        </app-detail-card>
+        <app-detail-card [label]="'SHIPMENTS.SHIPMENT_DETAILS.LINE_ITEMS' | translate">
+          <svg-icon key="line-items" *appDetailCardIcon></svg-icon>
+          {{ shipment.lineItems.length }}
+        </app-detail-card>
+        <app-detail-card [label]="'SHIPMENTS.SHIPMENT_DETAILS.SHIPPING_METHOD' | translate">
+          <svg-icon key="shipping" *appDetailCardIcon></svg-icon>
+          {{ shipment.preferredFreightMethod | getShipmentMethod }}
+        </app-detail-card>
+      </div>
+    </div>
+    <div *ngIf="isOpen" [@toggleContentOpacity] class="content">
+      <!-- DETAILS -->
+      <h5 class="d-flex align-items-center font-weight-regular color-text-primary mb-40">
+        {{ 'SHIPMENTS.SHIPMENT_DETAILS.DETAILS' | translate }}
+      </h5>
+      <div class="d-flex align-items-center mb-40">
+        <div class="text-micro-regular color-text-secondary">
+          <em>{{ 'SHIPMENTS.SHIPMENT_DETAILS.YOUR_ORDER_IS_BEING_SHIPPED' | translate }}</em>
+        </div>
+        <a class="text-link sm-dark pl-1" (click)="onReuseDataClick()">{{ 'SHIPMENTS.SHIPMENT_DETAILS.REUSE_DATA' | translate }}</a>
+      </div>
+      <div class="details">
+        <app-detail-card [label]="'COMMON.FROM' | translate">
+          <svg-icon key="plane-take-off" *appDetailCardIcon></svg-icon>
+          {{ shipment.from }}
+        </app-detail-card>
+        <app-detail-card [label]="'COMMON.TO' | translate">
+          <svg-icon key="plane-landing" *appDetailCardIcon></svg-icon>
+          {{ shipment.destination }}
+        </app-detail-card>
+        <app-detail-card
+          [label]="'SHIPMENTS.SHIPMENT_DETAILS.IMPORT_VALUE_USD' | translate"
+          [tooltip]="
+            shipment.ClientCurrencyInput
+              ? ('SHIPMENTS.SHIPMENT_DETAILS.IMPORT_VALUE_TOOLTIP' | translate : { currency: shipment.ClientCurrencyInput })
+              : ''
+          "
+        >
+          <svg-icon key="value" *appDetailCardIcon></svg-icon>
+          {{ shipment.value | currency : currency }}
+        </app-detail-card>
+        <app-detail-card [label]="'SHIPMENTS.SHIPMENT_DETAILS.CHARGEABLE_WEIGHT' | translate">
+          <svg-icon key="weight" *appDetailCardIcon></svg-icon>
+          {{ shipment.estimatedWeight | number : '1.0-2' }} {{ 'COMMON.KG' | translate }}
+        </app-detail-card>
+        <app-detail-card *ngIf="localVatRegistration" [label]="'SHIPMENTS.SHIPMENT_DETAILS.VAT_REGISTRATION' | translate">
+          <svg-icon key="id" *appDetailCardIcon></svg-icon>
+          {{ localVatRegistration?.registeredEntityName }}
+        </app-detail-card>
+      </div>
+
+      <!-- PICK-UP ADDRESSES -->
+      <div class="card-details-container">
+        <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-40">
+          {{ 'SHIPMENTS.SHIPMENT_DETAILS.PICK_UP_ADDRESS' | translate }}
+        </h5>
+        <ng-container
+          *ngIf="shipment.pickUpAddress.length === 0"
+          [ngTemplateOutlet]="noValueYet"
+          [ngTemplateOutletContext]="{
+            $implicit: {
+              text: 'SHIPMENTS.SHIPMENT_DETAILS.NO_ADDRESS_YET',
+              link: 'SHIPMENTS.SHIPMENT_DETAILS.ADD_PICK_UP_ADDRESS',
+              action: onPickUpAddressEditClick.bind(this)
+            }
+          }"
+        >
+        </ng-container>
+        <div *ngIf="shipment.pickUpAddress.length > 0" class="address-card-container mt-40">
+          <app-detail-address-card [address]="shipment.pickUpAddress[0]" (delete)="onPickupAddressDelete()"></app-detail-address-card>
+        </div>
+      </div>
+
+      <!-- LINE ITEMS -->
+      <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-40">
+        {{ 'SHIPMENTS.SHIPMENT_DETAILS.LINE_ITEMS' | translate }}
+      </h5>
+      <div class="details">
+        <app-detail-card
+          [label]="'SHIPMENTS.SHIPMENT_DETAILS.CURRENCY' | translate"
+          [tooltip]="'SHIPMENTS.SHIPMENT_DETAILS.CURRENCY_TOOLTIP' | translate : { currency: shipment.ClientCurrencyInput || 'USD' }"
+        >
+          <svg-icon key="currency" *appDetailCardIcon></svg-icon>
+          {{ shipment.ClientCurrencyInput || 'USD' }}
+        </app-detail-card>
+        <app-detail-card [label]="'SHIPMENTS.SHIPMENT_DETAILS.STORE_FEES_AVAILABLE' | translate">
+          <svg-icon key="value" *appDetailCardIcon></svg-icon>
+          {{ (shipment.StoreFeesAvailable ? 'COMMON.YES' : 'COMMON.NO') | translate }}
+        </app-detail-card>
+      </div>
+      <ng-container
+        *ngIf="!shipment.lineItems.length"
+        [ngTemplateOutlet]="noValueYet"
+        [ngTemplateOutletContext]="{
+          $implicit: { text: 'SHIPMENTS.SHIPMENT_DETAILS.NO_LINE_ITEMS' }
+        }"
+      >
+      </ng-container>
+      <div *ngIf="shipment.lineItems.length" class="line-items mt-40">
+        <div class="horizontal-scroll">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>{{ 'QUOTE.LINE_ITEMS.PRODUCT_CODE' | translate }}</th>
+                <th>{{ 'QUOTE.LINE_ITEMS.DESCRIPTION' | translate }}</th>
+                <th>{{ 'QUOTE.LINE_ITEMS.QUANTITY' | translate }}</th>
+                <th *ngIf="shipment.Valuation_Method__c === ValuationMethod.COST_METHOD">
+                  {{
+                    'SHIPMENTS.SHIPMENT_DETAILS.UNIT_PRICE_SELECTED_CURRENCY'
+                      | translate : { currency: shipment.ClientCurrencyInput || 'USD' }
+                  }}
+                </th>
+                <th *ngIf="shipment.Valuation_Method__c !== ValuationMethod.COST_METHOD">
+                  {{
+                    'SHIPMENTS.SHIPMENT_DETAILS.SELLING_PRICE_SELECTED_CURRENCY'
+                      | translate : { currency: shipment.ClientCurrencyInput || 'USD' }
+                  }}
+                </th>
+                <th *ngIf="shipment.Valuation_Method__c !== ValuationMethod.COST_METHOD && shipment.StoreFeesAvailable">
+                  {{
+                    'SHIPMENTS.SHIPMENT_DETAILS.STORE_FEES_SELECTED_CURRENCY'
+                      | translate : { currency: shipment.ClientCurrencyInput || 'USD' }
+                  }}
+                </th>
+                <th>{{ 'QUOTE.LINE_ITEMS.HS_CODE' | translate }}</th>
+                <th>{{ 'QUOTE.LINE_ITEMS.COUNTRY_OF_ORIGIN' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let lineItem of shipment.lineItems">
+                <td>{{ lineItem[LineItemsColumn.ProductCode] }}</td>
+                <td>{{ lineItem[LineItemsColumn.Description] }}</td>
+                <td class="text-right">{{ lineItem[LineItemsColumn.Quantity] }}</td>
+                <td class="text-right">
+                  <strong>{{ lineItem[LineItemsColumn.UnitPrice] }}</strong>
+                </td>
+                <td class="text-right" *ngIf="shipment.Valuation_Method__c !== ValuationMethod.COST_METHOD && shipment.StoreFeesAvailable">
+                  <strong>{{ lineItem[LineItemsColumn.StoreFees] }}</strong>
+                </td>
+                <td>{{ lineItem[LineItemsColumn.HsCode] }}</td>
+                <td>{{ lineItem[LineItemsColumn.CountryOfOrigin] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!--SHIPPING METHOD-->
+      <div class="card-details-container">
+        <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-40">
+          {{ 'SHIPMENTS.SHIPMENT_DETAILS.SHIPPING_METHOD' | translate }}
+        </h5>
+        <div class="address-card-container mt-40">
+          <div class="shipping-method-card p-3">
+            <div class="text-reduced-bold title mb-2">{{ shipment.selectedShipmentMethod | getShipmentMethod }}</div>
+            <div class="text-micro-regular shipping-method-data">{{ shipment.selectedShipmentMethod | getShipmentMethod : 'long' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PACKAGES -->
+      <div class="card-details-container">
+        <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-40">
+          {{ 'SHIPMENTS.SHIPMENT_DETAILS.PACKAGES' | translate }}
+        </h5>
+        <ng-container
+          *ngIf="!shipment.packages.length"
+          [ngTemplateOutlet]="noValueYet"
+          [ngTemplateOutletContext]="{
+            $implicit: {
+              text: 'SHIPMENTS.SHIPMENT_DETAILS.NO_PACKAGES_ADDED',
+              link: 'SHIPMENTS.SHIPMENT_DETAILS.ADD_PACKAGE_DETAILS',
+              action: onAddPackageDetailsClick.bind(this)
+            }
+          }"
+        >
+        </ng-container>
+        <div *ngIf="shipment.packages.length">
+          <div
+            *ngFor="let packageItem of shipment.packages; let i = index"
+            class="package d-flex align-items-center justify-content-between px-0 py-3 mt-40"
+          >
+            <app-package-closed-content-card
+              [packageNumber]="i + 1"
+              [package]="$any(packageItem)"
+              [weightUnit]="$any(packageItem).weightUnit"
+              [lengthUnit]="$any(packageItem).lengthUnit"
+              [disableDelete]="true"
+              [isEditable]="false"
+              (edit)="onAddPackageDetailsClick(i)"
+            ></app-package-closed-content-card>
+          </div>
+        </div>
+      </div>
+
+      <!-- DELIVERY ADDRESSES -->
+      <div class="card-details-container">
+        <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-40">
+          {{ 'SHIPMENTS.SHIPMENT_DETAILS.DELIVERY_ADDRESS' | translate }}
+        </h5>
+        <ng-container
+          *ngIf="!shipment.deliveryAddresses.length"
+          [ngTemplateOutlet]="noValueYet"
+          [ngTemplateOutletContext]="{
+            $implicit: {
+              text: 'SHIPMENTS.SHIPMENT_DETAILS.NO_DELIVERY_ADDRESS_PROVIDED_YET',
+              link: 'SHIPMENTS.SHIPMENT_DETAILS.ADD_DELIVERY_ADDRESS',
+              action: onShipToLocationsEditClick.bind(this)
+            }
+          }"
+        ></ng-container>
+        <div *ngIf="shipment.deliveryAddresses.length" class="address-card-container mt-40">
+          <app-detail-address-card *ngFor="let address of shipment.deliveryAddresses" [address]="address"></app-detail-address-card>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #noValueYet let-data>
+  <div class="d-flex align-items-baseline no-items">
+    <span class="text-small-regular color-text-secondary mr-2">{{ data.text | translate }}</span>
+    <span *ngIf="data.link" class="text-link sm-dark" (click)="data.action()">{{ data.link | translate }}</span>
+  </div>
+</ng-template>

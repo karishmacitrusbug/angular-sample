@@ -1,0 +1,43 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+@use 'sass:map';
+
+.card-container {
+  max-height: 80vh;
+  overflow-y: scroll;
+}
+
+ol {
+  color: map.get(colors.$color, 'text-primary');
+  counter-reset: item;
+  margin: 16px 0;
+  padding: 0;
+}
+
+li {
+  display: block;
+  font-size: map.get(variables.$font-size, 'reduced');
+  font-weight: normal;
+  letter-spacing: 0.2;
+  margin: 8px 0;
+  padding-left: 40px;
+}
+
+.unordered-item {
+  color: map.get(colors.$color, 'text-primary');
+  font-size: map.get(variables.$font-size, 'reduced');
+  font-weight: normal;
+  letter-spacing: 0.2;
+  margin: 16px 0;
+  padding-left: 40px;
+}
+
+li::before {
+  content: counters(item, '.') '. ';
+  counter-increment: item;
+}
+
+ol,
+ul {
+  margin: 16px 0;
+}

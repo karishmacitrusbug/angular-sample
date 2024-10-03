@@ -1,0 +1,26 @@
+<app-page-container>
+  <ng-container *appPageContainerTitle>
+    <h1 class="page-title">
+      {{ profileName$ | async }}
+    </h1>
+  </ng-container>
+  <div *appPageContainerLeftSidebar>
+    <div class="menu">
+      <a
+        *ngFor="let profileMenuItem of profileMenuItems"
+        [routerLink]="profileMenuItem.link"
+        [routerLinkActive]="'active'"
+        class="menu-item d-flex align-items-center mb-3"
+      >
+        <div class="menu-icon mr-2">
+          <svg-icon [key]="profileMenuItem.icon"></svg-icon>
+        </div>
+        <div class="menu-title d-flex align-items-center">
+          <span class="text-small-regular">{{ profileMenuItem.title | translate }}</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+</app-page-container>

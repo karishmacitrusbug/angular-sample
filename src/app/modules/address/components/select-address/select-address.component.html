@@ -1,0 +1,92 @@
+<!-- HEADER -->
+<div class="d-flex header">
+  <div class="title">
+    {{ title }}
+  </div>
+</div>
+
+<ng-container [ngSwitch]="type">
+  <ng-container *ngSwitchCase="SelectAddressDialogType.PickUpAddress" [ngTemplateOutlet]="customAddressList"></ng-container>
+  <ng-container *ngSwitchCase="SelectAddressDialogType.DefaultAddress" [ngTemplateOutlet]="customAddressList"></ng-container>
+  <ng-container *ngSwitchCase="SelectAddressDialogType.LocationAddresses">
+    <mat-tab-group class="address-tabs mt-3">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{ 'SELECT_ADDRESS.FULFILLMENT_CENTERS' | translate }}
+        </ng-template>
+        <div class="wrapper">
+          <div class="filter mt-3 px-0">
+            <ng-container [ngTemplateOutlet]="filterInput"></ng-container>
+          </div>
+          <div class="addresses px-0">
+            <!-- ADDRESS LIST -->
+            <app-address-card
+              *ngFor="let address of filterFulfillmentCenters"
+              (selectAddressWithRadio)="onToggleAddress($event)"
+              [address]="address"
+              [isSelected]="address.id === selectedAddress?.id"
+              [isMultipleChoiceEnabled]="false"
+              [canEdit]="false"
+            ></app-address-card>
+          </div>
+          <div class="gradient"></div>
+        </div>
+      </mat-tab>
+      <mat-tab *ngIf="allowCustomizedFinalDeliveries$ | async">
+        <ng-template mat-tab-label>
+          {{ 'SELECT_ADDRESS.CUSTOM_ADDRESSES' | translate }}
+        </ng-template>
+        <ng-container [ngTemplateOutlet]="customAddressList"></ng-container>
+      </mat-tab>
+    </mat-tab-group>
+  </ng-container>
+
+  <ng-template #customAddressList>
+    <div class="wrapper">
+      <!-- FILTER SECTION -->
+      <div class="container mt-3 filter">
+        <div class="row align-items-end">
+          <div class="col-6">
+            <ng-container [ngTemplateOutlet]="filterInput"></ng-container>
+          </div>
+          <div class="d-flex flex-column col-6 align-items-end">
+            <div class="button-hint">{{ 'SELECT_ADDRESS.DONT_HAVE_IN_THE_LIST' | translate }}</div>
+            <button mat-button class="secondary-button mt-1" (click)="onAddNewAddressClick()">
+              {{ 'SELECT_ADDRESS.ADD_NEW_ADDRESS' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="hasAddresses; else noAddresses" class="addresses">
+        <!-- ADDRESS LIST -->
+        <app-address-card
+          *ngFor="let address of filteredAddressList"
+          (selectAddressWithRadio)="onToggleAddress($event)"
+          (editAddressCard)="onEditAddressCard($event)"
+          [address]="address"
+          [isSelected]="address.id === selectedAddress?.id"
+          [isMultipleChoiceEnabled]="false"
+        ></app-address-card>
+      </div>
+
+      <ng-template #noAddresses>
+        <div class="no-addresses">
+          {{ 'SELECT_ADDRESS.NO_ADDRESSES_YET' | translate }}
+          <button class="text-link md-dark" (click)="onAddNewAddressClick()">{{ 'SELECT_ADDRESS.CREATE_ONE' | translate }}</button>
+        </div>
+      </ng-template>
+      <div class="gradient"></div>
+    </div>
+  </ng-template>
+</ng-container>
+
+<ng-template #filterInput>
+  <input
+    [ngModel]="searchText"
+    type="text"
+    [placeholder]="'COMMON.SEARCH' | translate"
+    class="form-control-input px-0"
+    (ngModelChange)="searchAddresses($event)"
+  />
+</ng-template>

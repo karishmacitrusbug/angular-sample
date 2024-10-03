@@ -1,0 +1,55 @@
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+  <path 
+    d="M20.8894 5.95511C19.8472 4.42241 18.4263 3.18523 16.7649 2.36368C15.1034 1.54213 13.2577 1.16413 11.407 1.26637C9.55635 1.36861 7.76355 1.94762 6.20267 2.94718C4.6418 3.94675 3.36589 5.33291 2.49881 6.97109C1.63174 8.60927 1.20295 10.4438 1.25409 12.2966C1.30523 14.1494 1.83456 15.9575 2.79068 17.5453C3.7468 19.1332 5.09723 20.4469 6.71086 21.3588C8.32449 22.2708 10.1465 22.75 12 22.75" 
+    stroke="url(#paint0_linear)" 
+    stroke-width="1.5" 
+    stroke-linecap="round"
+  />
+
+  <path 
+    d="M15.2015 7.89673V9.03475C15.2004 9.20284 15.1619 9.3686 15.0887 9.52011C15.0156 9.67163 14.9096 9.80513 14.7785 9.91103L9.41253 14.1938C9.21813 14.3486 9.06106 14.5448 8.9529 14.768C8.84474 14.9912 8.78822 15.2357 8.78752 15.4835V16.8112" 
+    stroke="currentColor" 
+    stroke-width="1.5" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+
+  <path 
+    d="M8.78752 7.89673V9.03475C8.7874 9.20507 8.82569 9.37325 8.89956 9.52688C8.97344 9.68051 9.08101 9.81567 9.21436 9.92241L14.5765 14.1824C14.7716 14.3391 14.929 14.5373 15.0371 14.7625C15.1452 14.9876 15.2014 15.234 15.2015 15.4835V16.8036" 
+    stroke="currentColor" 
+    stroke-width="1.5" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+
+  <rect 
+    x="8" 
+    y="17" 
+    width="8" 
+    height="1" 
+    stroke="currentColor" 
+    stroke-width="1.5" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+
+  <rect 
+    x="8" 
+    y="6" 
+    width="8" 
+    height="1" 
+    stroke="currentColor" 
+    stroke-width="1.5" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+
+  <defs>
+    <linearGradient id="paint0_linear" x1="12" y1="2" x2="12" y2="24.5" gradientUnits="userSpaceOnUse">
+    <stop stop-color="currentColor"/>
+    <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+</svg>

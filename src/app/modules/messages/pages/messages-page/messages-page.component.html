@@ -1,0 +1,144 @@
+<div class="messages-container">
+  <div class="message-threads">
+    <div class="header d-flex justify-content-between align-items-center">
+      <div class="text-normal-bold">{{ 'MESSAGES.MESSAGES' | translate | uppercase }}</div>
+      <div class="right d-flex pr-3">
+        <div *ngIf="isSortAvailable$ | async" class="d-flex align-items-center">
+          <div class="text-tiny-bold color-text-primary">{{ 'MESSAGES.SORT_BY' | translate }}</div>
+          <div class="d-flex mr-3">
+            <app-select
+              [data]="[
+                { value: MessagesSortBy.Shipments, viewValue: 'MESSAGES.SHIPMENTS' | translate },
+                { value: MessagesSortBy.Date, viewValue: 'MESSAGES.MOST_RECENT' | translate }
+              ]"
+              [formControl]="sortByFormControl"
+              class="color-text-secondary form-control-input ml-3 sort-by-select"
+            ></app-select>
+          </div>
+        </div>
+        <button mat-button class="primary-button" type="button" (click)="onNewMessageClick()">
+          {{ 'MESSAGES.NEW_MESSAGE' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <mat-tab-group class="mt-4" [selectedIndex]="selectedTabIndex$ | async" (selectedIndexChange)="onTabSelectionChange($event)">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{ 'MESSAGES.LIVE_SHIPMENTS' | translate }}
+          <span class="pl-1">
+            <strong>
+              <ng-container *ngIf="(unreadLiveShipmentsMessageThreadsNumber$ | async) !== 0; else messageThreadsCounter">
+                ({{ 'MESSAGES.NEW' | translate : { count: unreadLiveShipmentsMessageThreadsNumber$ | async } }})
+              </ng-container>
+              <ng-template #messageThreadsCounter> ({{ liveShipmentsMessageThreadsNumber$ | async }}) </ng-template>
+            </strong>
+          </span>
+        </ng-template>
+        <ng-template matTabContent>
+          <app-messages-tab-content
+            *ngIf="(areMessageThreadsLoading$ | async) === false; else loading"
+            [messageThreadGroups]="liveShipmentMessageThreadGroups$ | async"
+            [sortBy]="sortByFormControl.value"
+            [openedMessageThreadId]="openedMessageThreadId$ | async"
+            (messageThreadClick)="onMessageThreadClick($event)"
+          ></app-messages-tab-content>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{ 'MESSAGES.QUOTES' | translate }}
+          <span class="pl-1">
+            <strong>
+              <ng-container *ngIf="(unreadQouteMessageThreadsNumber$ | async) !== 0; else messageThreadsCounter">
+                ({{ 'MESSAGES.NEW' | translate : { count: unreadQouteMessageThreadsNumber$ | async } }})
+              </ng-container>
+              <ng-template #messageThreadsCounter> ({{ qouteMessageThreadsNumber$ | async }}) </ng-template>
+            </strong>
+          </span>
+        </ng-template>
+        <ng-template matTabContent>
+          <app-messages-tab-content
+            *ngIf="(areMessageThreadsLoading$ | async) === false; else loading"
+            [messageThreadGroups]="qouteMessageThreadGroups$ | async"
+            [sortBy]="sortByFormControl.value"
+            [openedMessageThreadId]="openedMessageThreadId$ | async"
+            (messageThreadClick)="onMessageThreadClick($event)"
+          ></app-messages-tab-content>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{ 'MESSAGES.GENERIC_SUPPORT' | translate }}
+          <span class="pl-1">
+            <strong>
+              <ng-container *ngIf="(unreadGenericSupportMessageThreadsNumber$ | async) !== 0; else messageThreadsCounter">
+                ({{ 'MESSAGES.NEW' | translate : { count: unreadGenericSupportMessageThreadsNumber$ | async } }})
+              </ng-container>
+              <ng-template #messageThreadsCounter> ({{ genericSupportMessageThreadsNumber$ | async }}) </ng-template>
+            </strong>
+          </span>
+        </ng-template>
+        <ng-template matTabContent>
+          <app-messages-tab-content
+            *ngIf="(areMessageThreadsLoading$ | async) === false; else loading"
+            [messageThreadGroups]="genericSupportMessageThreadGroups$ | async"
+            [sortBy]="sortByFormControl.value"
+            [openedMessageThreadId]="openedMessageThreadId$ | async"
+            (messageThreadClick)="onMessageThreadClick($event)"
+          ></app-messages-tab-content>
+        </ng-template>
+      </mat-tab>
+      <mat-tab>
+        <!-- <ng-template mat-tab-label>
+          {{ 'MESSAGES.ARCHIVED' | translate }}
+          <span class="pl-1">
+            <strong>({{ archivedMessageThreadsNumber$ | async }})</strong>
+          </span>
+        </ng-template> -->
+        <ng-template mat-tab-label>
+          {{ 'MESSAGES.ARCHIVED' | translate }}
+          <span class="pl-1">
+            <strong>
+              <ng-container *ngIf="(unreadArchivedMessageThreadsNumber$ | async) !== 0; else messageThreadsCounter">
+                ({{ 'MESSAGES.NEW' | translate : { count: unreadArchivedMessageThreadsNumber$ | async } }})
+              </ng-container>
+              <ng-template #messageThreadsCounter> ({{ archivedMessageThreadsNumber$ | async }}) </ng-template>
+            </strong>
+          </span>
+        </ng-template>
+        <ng-template matTabContent>
+          <app-messages-tab-content
+            *ngIf="(areMessageThreadsLoading$ | async) === false; else loading"
+            [messageThreadGroups]="archivedMessageThreadGroups$ | async"
+            [sortBy]="sortByFormControl.value"
+            [openedMessageThreadId]="openedMessageThreadId$ | async"
+            (messageThreadClick)="onMessageThreadClick($event)"
+          ></app-messages-tab-content>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="right-container">
+    <ng-container *ngIf="(isMessageThreadLoading$ | async) === false; else loading">
+      <app-sendbird-message-thread
+        *ngIf="SendbirdMessages$ | async as SendbirdMessages"
+        [messageThread]="messageThread$ | async"
+        [sendbirdMessage]="SendbirdMessages || []"
+        [sendbirdchannel]="selectedSendbirdChannel$ | async"
+        [sendbirdparticiapant]="participantonsendbird$ | async"
+        [isguestUserEnabled]="guestUserEnabled$ | async"
+        (sendsendbirdMessage)="onMessageSendSendbird($event)"
+        (S3fileMessageDownload)="downloadS3Message($event)"
+        [teamMembers]="teamMembers$ | async"
+        [defaultParticipantSectionFlag]="false"
+      ></app-sendbird-message-thread>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="d-flex align-items-center justify-content-center loader">
+    <app-loading-indicator></app-loading-indicator>
+  </div>
+</ng-template>

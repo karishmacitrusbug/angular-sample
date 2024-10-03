@@ -1,0 +1,70 @@
+<div class="card-container compliance-status">
+  <div>
+    <button *ngIf="shipmentStatus === ShipmentStatus.Tracking" mat-icon-button type="button" (click)="onArrowClick()">
+      <svg-icon key="arrow-down" class="arrow-icon color-secondary" [class.opened]="isOpen"></svg-icon>
+    </button>
+    <div class="m-4" [class.pt-3]="shipmentStatus !== ShipmentStatus.Tracking">
+      <div class="d-flex align-items-center" [ngSwitch]="shipmentStatus">
+        <svg-icon
+          [key]="trackingState ? stateIcons[trackingState] : 'shipments-pending'"
+          *ngSwitchCase="ShipmentStatus.CompliancePending"
+          class="state-icon"
+        ></svg-icon>
+        <ng-container *ngSwitchCase="ShipmentStatus.Tracking">
+          <div class="state-icon">
+            <svg-icon [key]="stateIcons[trackingState]"></svg-icon>
+          </div>
+        </ng-container>
+        <svg-icon key="package" *ngSwitchCase="ShipmentStatus.Completed" class="state-icon"></svg-icon>
+        <h5 class="font-weight-regular color-text-primary pl-2">
+          {{ statusTitle | translate }}<span *ngIf="shipmentSubStatus"> - {{ shipmentSubStatus }}</span>
+        </h5>
+      </div>
+      <div class="d-flex flex-column flex-md-row compliance-info">
+        <div *ngIf="shipmentStatus === ShipmentStatus.CompliancePending; else tracker" class="col-md-4 info-cell">
+          <app-shipment-state-indicator-circles
+            [shipmentTaskStates]="shipmentTaskStates"
+            [dotSize]="20"
+            [hasTitle]="true"
+            [isCancelled]="trackingState === TrackingState.Cancelled"
+          ></app-shipment-state-indicator-circles>
+        </div>
+        <ng-template #tracker>
+          <div class="col-5 info-cell">
+            <app-tracker [state]="trackingState" size="large"></app-tracker>
+          </div>
+        </ng-template>
+        <div
+          class="text-reduced-regular color-text-primary info-cell"
+          [class.col-5]="isPaymentPending || shipmentStatus === ShipmentStatus.Completed"
+        >
+          {{ statusUpdates.description }}
+        </div>
+        <div
+          *ngIf="isPaymentPending || shipmentStatus === ShipmentStatus.Completed"
+          class="info-cell d-flex justify-content-end align-items-center text-right"
+        >
+          <h5 class="color-text-primary">
+            <ng-container *ngIf="isPaymentPending">
+              {{ 'SHIPMENTS.SHIPMENT_DETAILS.PAYMENT_PENDING' | translate }}
+            </ng-container>
+            <ng-container *ngIf="!isPaymentPending && shipmentStatus === ShipmentStatus.Completed">
+              {{ statusUpdates.finalDeliveryDate | date : 'd MMMM y' }}
+            </ng-container>
+          </h5>
+        </div>
+      </div>
+      <!-- TODO: removed temporarily for ZUB-48 -->
+      <!--      <div *ngIf="trackingNumber">-->
+      <!--        <button mat-button class="secondary-button" (click)="onShowTrackingNumberClick()">-->
+      <!--          {{ 'COMMON.SHOW_TRACKING_NUMBER' | translate }}-->
+      <!--        </button>-->
+      <!--      </div>-->
+    </div>
+    <div *ngIf="isOpen" class="col-9 px-0 logs" [@toggleContentOpacity]>
+      <div *ngFor="let log of completedLogs" class="log-card">
+        <app-tracking-log-card [log]="log"></app-tracking-log-card>
+      </div>
+    </div>
+  </div>
+</div>

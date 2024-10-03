@@ -1,0 +1,210 @@
+<ng-container *ngIf="validationErrors$ | async as validationErrors">
+  <app-message-card *ngIf="validationErrors.length" type="error" class="mb-4">
+    <div *appMessageCardDescription>
+      <p
+        *ngFor="let error of validationErrors; let last = last"
+        [innerHTML]="error.messageKey | translate : error.messageData"
+        class="m-0"
+        [class.mb-2]="!last"
+      ></p>
+    </div>
+  </app-message-card>
+</ng-container>
+<ng-container *ngIf="validationErrorsWithLink$ | async as validationErrors">
+  <ng-container *ngFor="let error of validationErrors; let last = last">
+    <app-message-card
+      *ngIf="validationErrors.length"
+      type="error"
+      class="mb-4"
+      [linkText]="error.messageCTA.label | translate"
+      linkTextColor="red"
+      (linkClick)="onErrorMessageLinkClick(error.messageCTA.type)"
+    >
+      <div *appMessageCardDescription>
+        <p [innerHTML]="error.messageKey | translate : error.messageData" class="m-0" [class.mb-2]="!last"></p>
+      </div>
+    </app-message-card>
+  </ng-container>
+</ng-container>
+
+<form class="d-flex flex-column" [formGroup]="formGroup" (ngSubmit)="onSubmit()" autocomplete="off">
+  <!-- FROM -->
+  <div class="d-flex flex-column flex-md-row align-items-end mt-4">
+    <app-form-control class="col-12 col-md-8 px-0" [error]="fromError$ | async">
+      <span appFormControlLabel>{{ 'COMMON.FROM' | translate }}</span>
+      <svg-icon key="plane-take-off" appFormControlIcon></svg-icon>
+      <app-dropdown [formControl]="fromControl" [data]="allCountries" appFormControlInput class="form-control-input"></app-dropdown>
+      <div *ngIf="fromControl.disabled" appFormControlReadonlyValue class="color-text-secondary">
+        {{ fromControl.value.viewValue }}
+      </div>
+    </app-form-control>
+
+    <div *ngIf="pickUpAddressEnabled" class="link-container d-flex align-items-center max-available-width">
+      <div
+        *ngIf="pickUpAddressControl.value.length === 0; else pickupAddress"
+        class="text-link sm-dark"
+        [class.disabled]="!hasFromCountry"
+        (click)="onAddPickUpAddressClick()"
+      >
+        {{ 'QUOTE.BASICS.ADD_PICKUP_ADDRESS' | translate }}
+      </div>
+      <ng-template #pickupAddress>
+        <div class="max-available-width">
+          <div class="text-tiny-regular title">{{ 'QUOTE.BASICS.PICKUP_ADDRESS' | translate }}:</div>
+          <div class="text-micro-bold text-truncate mt-1">{{ pickUpAddressControl.value[0].tag }}</div>
+        </div>
+        <button mat-icon-button type="button" class="edit-icon ml-1" (click)="onEditPickupAddressClick()">
+          <svg-icon key="pen"></svg-icon>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- TO -->
+  <div class="d-flex flex-column flex-md-row align-items-end mt-4">
+    <app-form-control class="col-12 col-md-8 px-0" [error]="toError$ | async">
+      <span appFormControlLabel>{{ 'COMMON.TO' | translate }}</span>
+      <svg-icon key="plane-landing" appFormControlIcon></svg-icon>
+      <app-dropdown [formControl]="toControl" [data]="destinationCountries" appFormControlInput class="form-control-input"></app-dropdown>
+      <div *ngIf="toControl.disabled" appFormControlReadonlyValue class="color-text-secondary">
+        {{ toControl.value.viewValue }}
+      </div>
+    </app-form-control>
+
+    <div *ngIf="localVatEnabled" class="link-container d-flex align-items-center max-available-width">
+      <div
+        *ngIf="!localVatRegistrationControl.value; else hasVatRegistration"
+        [class.disabled]="!toControl.value"
+        class="text-link sm-dark"
+        (click)="onAddLocalVatRegistrationClick()"
+      >
+        {{ 'QUOTE.BASICS.ADD_LOCAL_VAT_REGISTRATION' | translate }}
+      </div>
+      <ng-template #hasVatRegistration>
+        <div class="max-available-width">
+          <div class="text-tiny-regular title">{{ 'QUOTE.BASICS.LOCAL_VAT_REGISTRATION' | translate }}:</div>
+          <div class="text-micro-bold text-truncate mt-1">{{ localVatRegistrationControl.value.registeredEntityName }}</div>
+        </div>
+        <button
+          mat-icon-button
+          type="button"
+          class="edit-icon ml-1"
+          (click)="onEditLocalVatRegistrationClick(localVatRegistrationControl.value)"
+        >
+          <svg-icon key="pen"></svg-icon>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+
+  <!--  Disabled for ZUB-141 -->
+  <!-- TYPE OF GOODS -->
+  <!--  <app-form-control *ngIf="showTypeOfGoodsQuestion$ | async" class="col-12 col-md-8 px-0 mt-4" [error]="typeOfGoodsError$ | async">-->
+  <!--    <span-->
+  <!--      [class.type-of-goods-highlight]="(typeOfGoodsErrorPresent$ | async) === false"-->
+  <!--      appFormControlLabel-->
+  <!--      [innerHTML]="'QUOTE.BASICS.DOES_IT_CONTAIN_QUESTION' | translate"-->
+  <!--    ></span>-->
+  <!--    <app-selection-->
+  <!--      [items]="[-->
+  <!--        { value: TypeOfGoods.SecondHand, viewValue: 'QUOTE.BASICS.SECOND_HAND' | translate },-->
+  <!--        { value: TypeOfGoods.Refurbished, viewValue: 'QUOTE.BASICS.REFURBISHED' | translate },-->
+  <!--        { value: TypeOfGoods.New, viewValue: 'QUOTE.BASICS.NEITHER_OF_THEM' | translate }-->
+  <!--      ]"-->
+  <!--      [formControl]="typeOfGoodsControl"-->
+  <!--      [isHighlighted]="true"-->
+  <!--      appFormControlInput-->
+  <!--    ></app-selection>-->
+  <!--    <svg-icon-->
+  <!--      key="second-hand-goods"-->
+  <!--      appFormControlIcon-->
+  <!--      [class.type-of-goods-highlight]="(typeOfGoodsErrorPresent$ | async) === false"-->
+  <!--    ></svg-icon>-->
+  <!--  </app-form-control>-->
+
+  <!-- ESTIMATED CHARGABLE WEIGHT -->
+  <div class="d-flex flex-column flex-md-row align-items-end mt-4">
+    <div class="col-12 col-md-8 px-0 estimated-weight-container">
+      <app-form-control [error]="estimatedWeightError$ | async">
+        <span appFormControlLabel>{{ 'QUOTE.BASICS.ESTIMATED_WEIGHT' | translate }}</span>
+        <svg-icon key="weight" appFormControlIcon></svg-icon>
+        <input
+          *ngIf="!hasPackageGroups; else disabledInput"
+          appFormControlInput
+          [formControl]="estimatedWeightControl"
+          type="number"
+          class="form-control-input text-input-appearance"
+          appPositiveNumbersOnlyInput
+          data-hj-allow
+        />
+        <ng-template #disabledInput>
+          <input
+            appFormControlInput
+            value="{{ estimatedWeightControl.value | number : '1.0-2' }} {{ 'COMMON.KG' | translate }}"
+            type="text"
+            class="form-control-input"
+            disabled
+            data-hj-allow
+          />
+        </ng-template>
+        <span [appFormControlTooltip]="'QUOTE.BASICS.ESTIMATED_WEIGHT_TOOLTIP' | translate"></span>
+      </app-form-control>
+      <app-form-control *ngIf="!hasPackageGroups" class="select-unit">
+        <app-selection
+          [items]="[
+            { value: WeightUnit.Kg, viewValue: 'COMMON.KG' | translate },
+            { value: WeightUnit.Lbs, viewValue: 'COMMON.LBS' | translate }
+          ]"
+          [formControl]="estimatedWeightUnitControl"
+          appFormControlInput
+        ></app-selection>
+      </app-form-control>
+    </div>
+
+    <div *ngIf="weightCalculatorEnabled" class="link-container d-flex align-items-center">
+      <div *ngIf="!hasPackageGroups; else packageAdded" class="text-link sm-dark" (click)="onUseWeightCalculatorClick()">
+        {{ 'QUOTE.BASICS.USE_WEIGHT_CALCULATOR' | translate }}
+      </div>
+      <ng-template #packageAdded>
+        <div>
+          <div class="text-micro-bold">{{ 'QUOTE.BASICS.PACKAGE_GROUPS' | translate : { count: packages.value.length } }}</div>
+          <div class="text-tiny-regular title mt-1">{{ 'COMMON.ADDED' | translate | titlecase }}</div>
+        </div>
+        <button mat-icon-button type="button" class="edit-icon ml-1" (click)="onEditPackagesClick()">
+          <svg-icon key="pen"></svg-icon>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- PROJECT REFERENCE -->
+  <div class="d-flex flex-column flex-md-row align-items-end">
+    <div class="col-12 col-md-8 px-0">
+      <app-form-control
+        *ngFor="let projectReference of projectReferences$ | async; let first = first; let i = index"
+        class="mt-4"
+        [error]="projectReference.errors$ | async"
+      >
+        <span *ngIf="first; else additionalReferenceLabel" appFormControlLabel>{{ 'QUOTE.BASICS.PROJECT_REFERENCE' | translate }}</span>
+        <ng-template #additionalReferenceLabel>
+          <span *ngIf="!first" appFormControlLabel>{{ 'QUOTE.BASICS.ADDITIONAL_PROJECT_REFERENCE' | translate : { index: i + 1 } }}</span>
+        </ng-template>
+        <svg-icon key="reference-number" appFormControlIcon></svg-icon>
+        <input [formControl]="projectReference.formControl" type="text" class="form-control-input" appFormControlInput data-hj-allow />
+        <span appFormControlHint class="d-flex justify-content-end" [class.justify-content-between]="first">
+          <span *ngIf="first">{{ 'QUOTE.BASICS.ADD_YOUR_IDENTIFIER' | translate }}</span>
+
+          <span
+            >{{ projectReferencesArray.controls[i].value.length }}/{{ MAX_PROJECT_NAME_REFERENCE_LENGTH }}
+            {{ 'COMMON.CHARACTERS' | translate }}</span
+          >
+        </span>
+        <span *ngIf="first" [appFormControlTooltip]="'QUOTE.BASICS.PROJECT_REFERENCE_TOOLTIP' | translate"></span>
+      </app-form-control>
+    </div>
+
+    <div *ngIf="canAddProjectReference" class="link-container text-link sm-dark" (click)="onAddProjectReferenceClick()">
+      {{ 'QUOTE.BASICS.ADD_ANOTHER_REFERENCE' | translate }}
+    </div>
+  </div>
+</form>

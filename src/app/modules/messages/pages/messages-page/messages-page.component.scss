@@ -1,0 +1,66 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+
+:host {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+
+  &::before {
+    border-right: 2rem solid transparent;
+    border-top: 2rem solid map-get(colors.$color, 'navigation-background');
+    content: '';
+    height: 0;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 0;
+  }
+}
+
+.header {
+  min-height: 34px;
+}
+
+.loader {
+  height: 100%;
+}
+
+.messages-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  height: 100%;
+  min-height: 0;
+
+  .message-threads {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+    padding: 2.5rem 0 0 1rem;
+
+    mat-tab-group {
+      flex: 1;
+      overflow: auto;
+
+      /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+      ::ng-deep .mat-tab-body-wrapper {
+        flex: 1;
+      }
+    }
+  }
+
+  .right-container {
+    background-color: map-get(colors.$color, 'background-04');
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+.sort-by-select {
+  background-color: white;
+  border-bottom: none;
+  min-width: 200px;
+  padding: 8px;
+}

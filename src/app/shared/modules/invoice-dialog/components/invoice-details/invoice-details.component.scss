@@ -1,0 +1,46 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+@use 'abstracts/bootstrap';
+
+.dialog-title {
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 25px;
+  min-height: 20px;
+}
+
+.divider {
+  background-color: map-get(colors.$color, 'divider');
+  height: 1px;
+  margin: 24px 0;
+}
+
+.divider-v {
+  background-color: map-get(colors.$color, 'divider');
+  height: 32px;
+  margin: 0 8px;
+  width: 1px;
+  display: none;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    display: block;
+  }
+}
+
+.custom-card {
+  padding: 24px 20px;
+
+  svg-icon {
+    font-size: 24px;
+    margin-right: 4px;
+    opacity: 0.8;
+  }
+}
+
+.mr-16 {
+  margin-right: 16px;
+}
+
+.link {
+  cursor: pointer;
+}

@@ -1,0 +1,76 @@
+<h5 class="mb-40">{{ 'PROFILE.NOTIFICATIONS.YOUR_PROFILE' | translate }}</h5>
+<div *ngIf="isLoading; else content" class="loading-container">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+<ng-template #content>
+  <div class="d-flex mb-40">
+    <div class="card-container card d-flex flex-column p-3 mr-4">
+      <div class="card-content d-flex align-items-center">
+        <img class="profile-picture picture mr-3" [src]="user.profilePicture | profilePicture" />
+        <div class="profile-data">
+          <div class="text-normal-bold title">{{ user.firstName }} {{ user.lastName }}</div>
+          <div class="text-small-regular subtitle mt-2">{{ user.role }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-container card d-flex flex-column p-3">
+      <div class="text-link sm-dark font-weight-bold align-self-end mb-2" (click)="onRequestChange()">
+        <svg-icon key="pen-2" class="link-icon mr-1"></svg-icon>
+        {{ 'PROFILE.NOTIFICATIONS.UPDATE_PROFILE_DETAILS' | translate }}
+      </div>
+      <div class="card-content d-flex flex-column justify-content-center">
+        <div class="text-normal-bold title">{{ user.email }}</div>
+        <div class="text-small-regular subtitle mt-2">{{ user.phoneNumber }}</div>
+      </div>
+    </div>
+  </div>
+  <h5 class="mb-3">{{ 'PROFILE.NOTIFICATIONS.NOTIFICATIONS' | translate }}</h5>
+  <div class="text-small-regular subtitle mb-40">{{ 'PROFILE.NOTIFICATIONS.EMAIL_NOTIFICATION_PREFERENCES' | translate }}</div>
+
+  <div class="checkbox-container">
+    <div class="card-container checkbox-group">
+      <div class="group-header">
+        <div class="text-normal-bold title">{{ 'PROFILE.NOTIFICATIONS.SHIPMENT_UPDATES' | translate }}</div>
+        <div class="text-tiny-regular subtitle mt-1">{{ 'PROFILE.NOTIFICATIONS.SHIPMENT_UPDATES_DESCRIPTION' | translate }}</div>
+      </div>
+      <div class="divider-line my-3"></div>
+      <div class="sub-checkboxes">
+        <ng-container
+          [ngTemplateOutlet]="checkboxTemplate"
+          [ngTemplateOutletContext]="{
+            $implicit: {
+              control: majorChangesControl,
+              title: 'PROFILE.NOTIFICATIONS.MAJOR_UPDATES',
+              description: 'PROFILE.NOTIFICATIONS.MAJOR_UPDATES_DESCRIPTION',
+              isSubCheckbox: true
+            }
+          }"
+        ></ng-container>
+
+        <ng-container
+          [ngTemplateOutlet]="checkboxTemplate"
+          [ngTemplateOutletContext]="{
+            $implicit: {
+              control: minorChangesControl,
+              title: 'PROFILE.NOTIFICATIONS.MINOR_UPDATES',
+              description: 'PROFILE.NOTIFICATIONS.MINOR_UPDATES_DESCRIPTION',
+              isSubCheckbox: true
+            }
+          }"
+        ></ng-container>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #checkboxTemplate let-data>
+    <label class="d-flex">
+      <mat-checkbox [formControl]="data.control" class="checkbox mr-2"></mat-checkbox>
+      <div>
+        <div class="text-normal-bold title" [class.text-small-bold]="data.isSubCheckbox">
+          {{ data.title | translate }}
+        </div>
+        <div class="text-tiny-regular subtitle mt-1">{{ data.description | translate }}</div>
+      </div>
+    </label>
+  </ng-template>
+</ng-template>

@@ -1,0 +1,59 @@
+<div class="card-container root">
+  <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center header">
+    <a [routerLink]="shipmentLink" class="text-small-bold color-secondary text-decoration-none mr-2">{{ shipmentOrder.name }}</a>
+    <div class="text-small-regular color-text-primary">{{ shipmentOrder.reference }}</div>
+    <div class="ml-0 ml-md-auto mt-4 mt-md-0 d-flex flex-column justify-content-start">
+      <ng-container [ngSwitch]="shipmentOrder.status">
+        <ng-container *ngSwitchCase="ShipmentStatus.CompliancePending">
+          <span class="text-micro-bold color-text-secondary">
+            {{ 'TASKS.COMPLIANCE_PENDING' | translate }}
+          </span>
+          <app-shipment-state-indicator-circles
+            class="d-block mt-1"
+            [shipmentTaskStates]="shipmentOrder.shipmentTaskStates"
+          ></app-shipment-state-indicator-circles>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="ShipmentStatus.Tracking">
+          <app-tracker [state]="shipmentOrder.trackingState"></app-tracker>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column flex-md-row details">
+    <div class="d-flex align-items-center detail mt-4 mt-md-0">
+      <svg-icon key="date"></svg-icon>
+      <div class="text-tiny-regular color-text-primary">{{ shipmentOrder.acceptanceDate | date : 'LLL d' }}</div>
+    </div>
+
+    <div class="d-flex align-items-center detail mt-4 mt-md-0">
+      <svg-icon key="value"></svg-icon>
+      <div class="text-tiny-regular color-text-primary">{{ shipmentOrder.amount | cost }}</div>
+    </div>
+
+    <div class="d-flex align-items-center detail mt-4 mt-md-0">
+      <svg-icon key="weight"></svg-icon>
+      <div class="text-tiny-regular color-text-secondary">
+        {{ 'TASKS.INVOICE.EST_WEIGHT' | translate }}:
+        <strong class="color-text-primary"
+          >{{ shipmentOrder.estimatedWeight | number : '1.0-2' }} {{ shipmentOrder.estimetedWeightUnit | weightUnit | async }}</strong
+        >
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center detail mt-4 mt-md-0">
+      <svg-icon key="doc"></svg-icon>
+      <div class="text-tiny-regular color-text-secondary">
+        {{ 'TASKS.INVOICE.LINE_ITEMS' | translate }}: <strong class="color-text-primary">{{ shipmentOrder.numberOfLineItems }}</strong>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center detail mt-4 mt-md-0">
+      <svg-icon key="shipping"></svg-icon>
+      <div class="text-tiny-regular color-text-secondary">
+        {{ 'TASKS.SHIPPING_METHOD' | translate }}: <strong class="color-text-primary">{{ shipmentOrder.preferredFreightMethod }}</strong>
+      </div>
+    </div>
+  </div>
+</div>

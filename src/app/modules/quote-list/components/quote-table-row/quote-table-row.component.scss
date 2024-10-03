@@ -1,0 +1,71 @@
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'abstracts/colors';
+
+.overflow-container {
+  overflow: hidden;
+  /* stylelint-disable-next-line plugin/no-unsupported-browser-features */
+  word-break: break-all;
+}
+
+.list-table > .body {
+  .row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 2fr 1.5fr;
+    min-height: 56px;
+    padding-left: 30px;
+    position: relative;
+  }
+
+  .references {
+    align-items: center;
+    display: grid;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    word-break: break-all; // stylelint-disable-line plugin/no-unsupported-browser-features
+
+    .bottom {
+      align-self: end;
+    }
+
+    .top {
+      align-self: start;
+    }
+  }
+}
+
+.action-icon {
+  font-size: 16px;
+}
+
+.quote-id-cell {
+  a {
+    text-decoration: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  .quote-id {
+    color: map-get(colors.$color, 'secondary');
+    cursor: pointer;
+
+    &:hover {
+      color: map-get(colors.$color, 'secondary-light');
+    }
+
+    &.expired {
+      color: map-get(colors.$color, 'text-primary');
+      cursor: unset;
+    }
+  }
+}
+
+.country:not(:first-of-type) {
+  margin-top: 8px;
+}
+
+.calculating-icon {
+  font-size: 24px;
+}

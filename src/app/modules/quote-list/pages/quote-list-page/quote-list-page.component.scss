@@ -1,0 +1,75 @@
+@use 'abstracts/variables';
+
+:host {
+  flex: 1;
+}
+
+.loading-spinner {
+  height: 100%;
+}
+
+.content {
+  padding: 0 4rem 2.5rem;
+
+  .page-content {
+    position: relative;
+  }
+
+  .quote-table {
+    width: 100%;
+  }
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep mat-tab-header {
+    width: 68%;
+  }
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep .mat-table th.mat-header-cell:last-child {
+    padding-right: 0 !important; // stylelint-disable-line declaration-no-important
+  }
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep .mat-table tr.mat-row.element-row td.mat-cell:last-child {
+    padding-right: 0 !important; // stylelint-disable-line declaration-no-important
+  }
+
+  .filter-section {
+    position: absolute;
+    right: 0;
+    transform: translateZ(0); // prevents unnecessary painting
+    z-index: 1;
+    align-items: center;
+  }
+
+  .owner-switch {
+    margin: 1rem 2rem;
+    width: 220px;
+
+    /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+    ::ng-deep .text-tiny-bold {
+      /* stylelint-disable-next-line declaration-no-important */
+      font-size: map-get(variables.$font-size, 'micro') !important;
+      padding: 0;
+    }
+
+    &.small {
+      margin: 1rem 0.5rem;
+      width: 210px;
+    }
+  }
+
+  .search-bar {
+    margin-top: 16px;
+    width: 280px;
+  }
+
+  .quote-list {
+    margin-top: 58px;
+  }
+}
+
+.close-icon {
+  font-size: 18px;
+  padding: 0 !important; // stylelint-disable-line declaration-no-important
+}

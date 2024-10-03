@@ -1,0 +1,146 @@
+<div class="referral-program-section">
+  <div class="message-icon info">
+    <svg-icon key="referralProgram"></svg-icon>
+  </div>
+  <div class="referral-program-section-text grid-container">
+    <span class="referral-program-discount-shipping-text">
+      <b> {{ 'QUOTE_DETAILS.WANT_DISCOUNTED_SHIPPING' | translate }} </b>
+    </span>
+    <span class="referral-program-dont-miss-it-out-text">
+      {{ 'QUOTE_DETAILS.JOIN_OUR_REFERRAL_PROGRAM' | translate }}
+    </span>
+    <a href="{{ referralProgramLink }}" target="_blank" class="referral-program-btn">
+      <span>
+        <b> {{ 'QUOTE_DETAILS.JOIN_REFERRAL_PROGRAM' | translate }} </b>
+      </span>
+    </a>
+  </div>
+</div>
+
+<ng-container *ngIf="vm$ | async as vm">
+  <div *ngIf="vm.isLoading; else finalCosts" class="d-flex h-100 justify-content-center align-items-center">
+    <app-loading-indicator></app-loading-indicator>
+  </div>
+
+  <ng-template #finalCosts>
+    <div class="card-container">
+      <!-- HEADER -->
+      <div class="card-header d-flex align-items-center justify-content-between">
+        <div class="d-flex flex-column flex-md-row justify-content-start justify-content-md-between w-100">
+          <span
+            >{{ vm.quoteReference }}
+            <ng-container *ngIf="vm.state === FinalCostsState.ReadyProForma"
+              >-<span class="color-primary font-weight-regular">{{ 'NEW_QUOTE.FINAL_COSTS.PRO_FORMA' | translate }}</span></ng-container
+            ></span
+          >
+
+          <div class="d-flex align-items-center mt-2 mt-md-0">
+            <span>{{ vm.costs.totalIncludingEstimatedTaxAndDuty | cost : CurrencyCode.USD }}</span>
+          </div>
+        </div>
+        <app-context-menu class="ml-4 color-secondary icon-navigation">
+          <app-context-menu-item (click)="onReuseDataClick()">{{ 'QUOTE_DETAILS.REUSE_DATA' | translate }}</app-context-menu-item>
+          <app-context-menu-item (click)="onCancelOrderClick()">{{ 'QUOTE_DETAILS.CANCEL_ORDER' | translate }}</app-context-menu-item>
+        </app-context-menu>
+      </div>
+
+      <div class="card-content mt-4">
+        <!-- ESTIMATED WEIGHT & ACTIONS -->
+        <div class="d-flex justify-content-between">
+          <div class="d-flex align-items-center">
+            <app-based-on-weight
+              [hasPackages]="vm.hasPackages"
+              [weight]="vm.chargeableWeight"
+              [weightUnit]="vm.weightUnit"
+              (addPackage)="onAddPackages()"
+            ></app-based-on-weight>
+          </div>
+          <app-action-buttons
+            (downloadClick)="onDownloadClick()"
+            (messageClick)="onSendEmailClick()"
+            [for]="'COMMON.QUOTE' | translate"
+          ></app-action-buttons>
+        </div>
+
+        <!-- MESSAGES -->
+        <ng-container [ngSwitch]="vm.state">
+          <app-message-card *ngSwitchCase="FinalCostsState.ReadyProForma" type="info" class="mt-4">
+            <div *appMessageCardTitle>
+              <div>{{ 'NEW_QUOTE.FINAL_COSTS.PRO_FORMA_MESSAGE_TITLE' | translate }}</div>
+              <div class="text-small-regular pt-1">
+                {{ vm.reasonForProForma }}
+              </div>
+            </div>
+          </app-message-card>
+
+          <app-message-card *ngSwitchDefault type="info" class="mt-4">
+            <div *appMessageCardTitle>{{ 'NEW_QUOTE.FINAL_COSTS.VALIDITY_MESSAGE_TITLE' | translate }}</div>
+            <div *appMessageCardDescription>
+              {{ 'NEW_QUOTE.FINAL_COSTS.VALIDITY_MESSAGE_DESCRIPTION' | translate : { days: vm.expirationDays } }}
+            </div>
+          </app-message-card>
+        </ng-container>
+
+        <app-costs-table
+          [costs]="vm.costs"
+          (changeShipmentMethod)="onChangeShipmentMethod()"
+          (toggleLiabilityCoverFee)="onLiabilityCoverFeeToggle($event)"
+          [liabilityCoverFeeEnabled]="vm.liabilityCoverFeeEnabled"
+          class="mt-5 px-4"
+        ></app-costs-table>
+      </div>
+    </div>
+
+    <div class="card-container mt-4 pl-4">
+      <div class="card-content pr-3">
+        <!-- ESTIMATIONS & SHIPPING TABLE -->
+        <app-estimations-and-shipping-table
+          [timeline]="vm.timeline"
+          [etaDisclaimer]="vm.etaDisclaimer"
+          [shippingNotes]="vm.shippingNotes"
+        ></app-estimations-and-shipping-table>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end align-items-center mt-4">
+      <div
+        *ngIf="vm.isVatRegistrationRequired && !vm.hasLocalVatRegistration && (isOnboardingVisible | async) === false"
+        class="disabled-accept-button-hint text-tiny-regular color-text-tertiary mr-4"
+      >
+        {{ 'QUOTE.DISABLED_ACCEPT_QUOTE_HINT' | translate }}
+        <div class="d-flex justify-content-end mt-1">
+          <button class="text-link sm-dark pr-0" (click)="onAddLocalVatRegistrationClick()">
+            {{ 'QUOTE.DISABLED_ACCEPT_QUOTE_BUTTON_LABEL' | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="isOnboardingVisible | async" class="mr-3">
+        <span
+          class="text-tiny-regular color-text-tertiary d-inline-block mr-2"
+          [innerHtml]="(onboardingStatus$ | async).processText"
+        ></span>
+        <a
+          *ngIf="(onboardingStatus$ | async).dashboardLinkVisible"
+          class="text-micro-bold color-secondary mt-2"
+          [routerLink]="['/', RouteSegment.Dashboard]"
+          >{{ 'ONBOARDING.GO_TO_TASKS' | translate }}</a
+        >
+        <!-- Commented out until backend ready  -->
+        <!-- <div class="text-micro-bold mt-3">
+          {{ 'ONBOARDING.NEED_HELP' | translate }}
+        </div>
+        <div class="d-flex flex-column schedule-meeting mt-2">
+          <button mat-button type="button" class="secondary-button">
+            {{ 'ONBOARDING.SCHEDULE_BUTTON' | translate }}
+          </button>
+          <p class="text-tiny-regular color-text-tertiary">Your next meeting: 13 Dec 2021, 13:15</p>
+        </div> -->
+      </div>
+
+      <button mat-button class="primary-button" [disabled]="isQuoteAcceptanceDisabled(vm)" (click)="onAcceptQuoteClick()">
+        {{ 'NEW_QUOTE.FINAL_COSTS.ACCEPT_QUOTE' | translate }}
+      </button>
+    </div>
+  </ng-template>
+</ng-container>

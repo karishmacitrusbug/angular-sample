@@ -1,0 +1,11 @@
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M6.72145 9.6712C6.88218 8.70683 7.71656 8 8.69424 8L12 8L15.3057 8C16.2834 8 17.1178 8.70683 17.2785 9.6712L18.8059 18.8356C18.9075 19.4451 18.4375 20 17.8195 20L6.18044 20C5.56251 20 5.09246 19.4451 5.19405 18.8356L6.72145 9.6712Z"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <circle cx="12" cy="6" r="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
+  

@@ -1,0 +1,60 @@
+@use 'abstracts/variables';
+@use 'abstracts/bootstrap';
+
+.mb-40 {
+  margin-bottom: 2.5rem;
+}
+
+.mt-40 {
+  margin-top: 2.5rem;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.tab-content {
+  app-search-field {
+    width: 100%;
+    min-width: 250px;
+
+    @include bootstrap.media-breakpoint-up(md) {
+      width: auto;
+    }
+  }
+}
+
+.card-container {
+  .cards {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+}
+
+.accordion {
+  overflow: hidden;
+
+  .header {
+    cursor: pointer;
+    padding: 14px 0;
+
+    .svg-icon-arrow-down {
+      transition: transform 125ms;
+
+      &.up {
+        transform: rotate(180deg);
+      }
+    }
+  }
+}
+
+.empty-state-button {
+  .svg-icon-add {
+    font-size: 16px;
+  }
+}

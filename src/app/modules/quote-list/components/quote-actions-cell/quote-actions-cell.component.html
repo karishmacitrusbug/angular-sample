@@ -1,0 +1,24 @@
+<a
+  *ngIf="quoteState === QuoteState.Expired; else notExpiredActions"
+  class="text-link sm-dark d-flex flex-grow-1 justify-content-center"
+  (click)="onReuseQuoteDetailsClick()"
+>
+  {{ 'QUOTE_LIST.REUSE_QUOTE_DETAILS' | translate }}
+</a>
+
+<ng-template #notExpiredActions>
+  <div class="actions">
+    <app-action-buttons
+      (downloadClick)="onDownloadIconClick()"
+      (messageClick)="onMessageIconClick()"
+      [for]="'COMMON.QUOTE' | translate"
+    ></app-action-buttons>
+    <mat-checkbox
+      *ngIf="quoteState === QuoteState.Complete"
+      class="checkbox"
+      [checked]="isSelected"
+      [disabled]="isQuoteSelectionDisabled"
+      (change)="onCheckboxChange()"
+    ></mat-checkbox>
+  </div>
+</ng-template>

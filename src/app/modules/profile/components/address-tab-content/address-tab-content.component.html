@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-between mt-40 tab-content">
+  <app-search-field
+    [ngModel]="filterText"
+    [placeholder]="'PROFILE.ADDRESS_BOOK.SEARCH_PLACEHOLDER' | translate"
+    (ngModelChange)="onSearch($event)"
+  ></app-search-field>
+  <button mat-button type="button" class="secondary-button d-none d-md-inline-block" (click)="onAddNewAddressClick()">
+    {{ 'PROFILE.ADDRESS_BOOK.ADD_NEW_ADDRESS' | translate }}
+  </button>
+</div>
+<div *ngIf="filteredAddressGroups.length; else emptyState" class="accordions mt-20">
+  <div
+    *ngFor="let addressGroup of filteredAddressGroups; let i = index"
+    class="accordion"
+    [@toggleContent]="isGroupExpanded(addressGroup) ? 'open' : 'closed'"
+  >
+    <div
+      class="header d-flex align-items-center justify-content-between justify-content-lg-start"
+      (click)="onToggleAddressGroupClick(addressGroup)"
+    >
+      <div class="text-normal-bold">{{ addressGroup.countryName }} ({{ addressGroup.addresses.length }})</div>
+      <button type="button" mat-icon-button class="color-secondary">
+        <svg-icon key="arrow-down" [class.up]="isGroupExpanded(addressGroup)"></svg-icon>
+      </button>
+    </div>
+    <div *ngIf="isGroupExpanded(addressGroup)" [@toggleContentOpacity] class="card-container mt-20 mb-20">
+      <div class="cards">
+        <app-address-card
+          *ngFor="let address of addressGroup.addresses"
+          (editAddressCard)="onAddressCardEdit($event)"
+          (deleteAddressCard)="onAddressCardDelete(address)"
+          [address]="address"
+          layout="row"
+          [canDelete]="true"
+          [isSelectable]="false"
+        ></app-address-card>
+      </div>
+      <button type="button" class="text-link sm-dark empty-state-button mt-4" (click)="onAddNewAddressClick(addressGroup)">
+        <div class="d-flex align-items-center">
+          <svg-icon key="add" class="mr-1"></svg-icon>
+          {{ 'PROFILE.ADDRESS_BOOK.ADD_NEW_ADDRESS_TO_COUNTRY' | translate : { country: addressGroup.countryName } }}
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<app-bottom-bar
+  (opened)="onAddNewAddressClick($event)"
+  [translationMessage]="'PROFILE.ADDRESS_BOOK.ADD_NEW_ADDRESS' | translate"
+></app-bottom-bar>
+
+<ng-template #emptyState>
+  <div class="mt-40 mb-40 text-small-regular color-text-primary">You have no addresses in this country yet.</div>
+  <button type="button" class="text-link sm-dark empty-state-button" (click)="onAddNewAddressClick()">
+    <div class="d-flex align-items-center">
+      <svg-icon key="add" class="mr-1"></svg-icon>
+      {{ 'PROFILE.ADDRESS_BOOK.ADD_NEW' | translate }}
+    </div>
+  </button>
+</ng-template>

@@ -1,0 +1,99 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+
+.dialog-content {
+  padding-bottom: 0;
+
+  .plane-icon {
+    font-size: 88px;
+  }
+
+  .title {
+    color: map-get(colors.$color, 'background-05');
+    font-size: 32px;
+    font-weight: bold;
+    padding-top: 20px;
+    text-align: center;
+  }
+
+  .sub-title {
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 32px;
+    padding-top: 16px;
+
+    a {
+      padding-top: 2px;
+      text-decoration: none;
+    }
+  }
+
+  .quote-list {
+    margin-top: 50px;
+    max-height: 300px;
+    padding-bottom: 40px;
+
+    .quote-item {
+      border: 1px solid rgba(29, 69, 104, 24%);
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(29, 69, 104, 12%);
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-columns: 5fr 2fr 3fr 0.5fr;
+      padding: 8px 40px;
+
+      &:not(:first-of-type) {
+        margin-top: 16px;
+      }
+    }
+
+    .quote-id {
+      color: map-get(colors.$color, 'text-primary');
+      font-size: 12px;
+      font-weight: bold;
+      line-height: 17px;
+    }
+
+    .action-icon {
+      font-size: 18px;
+    }
+  }
+
+  .quote-cell {
+    align-items: center;
+    display: flex;
+    height: 40px;
+
+    &:not(:last-of-type) {
+      border-right: 1px solid rgba(29, 69, 104, 12%);
+    }
+
+    &:not(:first-of-type) {
+      padding-left: 8px;
+    }
+
+    &.eta-status {
+      padding-right: 8px;
+    }
+  }
+}
+
+.gradient {
+  position: relative;
+
+  &::before {
+    background-image: linear-gradient(to top, #fff, rgba(#fff, 0));
+    bottom: 100%;
+    content: '';
+    height: 40px;
+    left: 0;
+    position: absolute;
+    right: 0;
+  }
+}
+
+.dialog-footer {
+  .actions {
+    padding: 40px 0;
+  }
+}

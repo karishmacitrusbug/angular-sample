@@ -1,0 +1,136 @@
+<app-page-container>
+  <ng-container *appPageContainerTitle>
+    <h1 class="page-title">
+      {{ 'QUOTE_LIST.TITLE' | translate }}
+    </h1>
+  </ng-container>
+
+  <div *ngIf="isLoading$ | async; else siteContent" class="d-flex align-items-center justify-content-center flex-grow-1 loading-spinner">
+    <app-loading-indicator></app-loading-indicator>
+  </div>
+
+  <ng-template #siteContent>
+    <div class="content">
+      <div class="d-flex page-content">
+        <div class="quote-table">
+          <mat-tab-group class="mt-2" [selectedIndex]="selectedTabIndex" (selectedIndexChange)="onSelectedTabIndexChange($event)">
+            <mat-tab>
+              <!-- COMPLETE QUOTES -->
+              <ng-container *ngIf="completedTableData$ | async as completedTableData">
+                <ng-template mat-tab-label>
+                  {{ 'QUOTE_LIST.COMPLETE' | translate }}
+                  <span class="count">({{ completedTableData.length }})</span>
+                </ng-template>
+                <div class="quote-list">
+                  <app-quote-list-table
+                    [isSearching]="filterText.length !== 0"
+                    [state]="QuoteState.Complete"
+                    [quoteTab]="selectedTabIndex"
+                    [quotes]="completedTableData"
+                    [isAcceptQuotesDisabled]="(user$ | async).isVetted === false"
+                    [columnSorted]="(sortingPreferences$ | async).complete"
+                    (acceptQuotes)="onAcceptQuotes($event)"
+                    (downloadClick)="downloadQuote($event)"
+                    (messageClick)="sendMessage($event)"
+                    (openAccountActivationModal)="onOpenAccountActivationModal()"
+                    (addLocalVatRegistrationClick)="onAddLocalVatRegistrationClick($event)"
+                    (sortDirectionChange)="onSortDirectionChange($event)"
+                  ></app-quote-list-table>
+                </div>
+              </ng-container>
+            </mat-tab>
+            <mat-tab>
+              <!-- EXPIRED QUOTES -->
+              <ng-container *ngIf="expiredTableData$ | async as expiredTableData">
+                <ng-template mat-tab-label>
+                  {{ 'QUOTE_LIST.EXPIRED' | translate }}
+                  <span class="count">({{ expiredTableData.length }})</span>
+                </ng-template>
+                <div class="quote-list">
+                  <app-quote-list-table
+                    [isSearching]="filterText.length !== 0"
+                    [state]="QuoteState.Expired"
+                    [quoteTab]="selectedTabIndex"
+                    [quotes]="expiredTableData"
+                    [columnSorted]="(sortingPreferences$ | async).expired"
+                    (downloadClick)="downloadQuote($event)"
+                    (messageClick)="sendMessage($event)"
+                    (reuseClick)="reuseClick($event)"
+                    (addLocalVatRegistrationClick)="onAddLocalVatRegistrationClick($event)"
+                    (sortDirectionChange)="onSortDirectionChange($event)"
+                  ></app-quote-list-table>
+                </div>
+              </ng-container>
+            </mat-tab>
+            <mat-tab *ngIf="(numberOfFilters$ | async) > 0">
+              <!-- FILTERED QUOTES -->
+              <ng-container *ngIf="filteredTableData$ | async as filteredTableData">
+                <ng-template mat-tab-label>
+                  {{ 'QUOTE_LIST.FILTERED_RESULTS' | translate }}
+                  <span class="count">({{ filteredTableData.length }})</span>
+                </ng-template>
+                <div class="quote-list">
+                  <app-quote-list-table
+                    [isSearching]="filterText.length !== 0"
+                    [quoteTab]="selectedTabIndex"
+                    [state]="QuoteState.Mixed"
+                    [quotes]="filteredTableData$ | async"
+                    [columnSorted]="(sortingPreferences$ | async).mixed"
+                    (downloadClick)="downloadQuote($event)"
+                    (messageClick)="sendMessage($event)"
+                    (reuseClick)="reuseClick($event)"
+                    (addLocalVatRegistrationClick)="onAddLocalVatRegistrationClick($event)"
+                    (sortDirectionChange)="onSortDirectionChange($event)"
+                  ></app-quote-list-table>
+                </div>
+              </ng-container>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+        <!-- FILTERS -->
+        <div class="d-flex justify-content-between filter-section">
+          <app-selection
+            class="owner-switch"
+            [class.small]="(numberOfFilters$ | async) > 0"
+            [items]="[
+              { value: false, viewValue: 'COMMON.ALL' | translate },
+              { value: true, viewValue: 'COMMON.OWNED_BY_ME' | translate }
+            ]"
+            [formControl]="ownerSwitchControl"
+          ></app-selection>
+          <div class="d-flex align-items-end flex-column">
+            <app-search-field
+              [(ngModel)]="filterText"
+              placeholder="{{ 'QUOTE_LIST.SEARCH_FOR' | translate }}"
+              class="search-bar"
+              (ngModelChange)="onSearch($event)"
+            ></app-search-field>
+            <div
+              *ngIf="(numberOfFilters$ | async) === 0; else showFilters"
+              class="text-link sm-dark mt-2"
+              (click)="onAdvancedFiltersClick()"
+            >
+              {{ 'QUOTE_LIST.ADVANCED_FILTERS' | translate }}
+            </div>
+            <ng-template #showFilters>
+              <div class="d-flex mt-2">
+                <div class="text-link sm-dark" (click)="onAdvancedFiltersClick()">
+                  {{ 'QUOTE_LIST.FILTERS_APPLIED' | translate : { number: numberOfFilters$ | async } }}
+                </div>
+                <button mat-icon-button type="button" class="ml-1 close-icon">
+                  <svg-icon key="close" class="color-secondary text-center" (click)="onRemoveFiltersClick()"></svg-icon>
+                </button>
+              </div>
+            </ng-template>
+            <div class="d-flex mt-2" *ngIf="hasSorting(selectedTabIndex, sortingPreferences$ | async)">
+              <span class="text-link sm-dark" (click)="onClearSortingClick()">
+                {{ 'SHIPMENTS.SHIPMENTS_LIST.SORTING_APPLIED' | translate }}
+                <svg-icon key="close" class="text-center ml-1 close-icon"></svg-icon>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</app-page-container>

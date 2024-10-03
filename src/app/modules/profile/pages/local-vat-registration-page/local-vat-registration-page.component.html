@@ -1,0 +1,53 @@
+<div class="d-flex mb-40">
+  <h5>{{ 'PROFILE.LOCAL_VAT_REGISTRATIONS.TITLE' | translate }}</h5>
+</div>
+
+<div *ngIf="isLoading$ | async; else siteContent" class="d-flex align-items-center justify-content-center flex-grow-1 loading-spinner">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+<ng-template #siteContent>
+  <div class="d-flex justify-content-between mb-40 tab-content">
+    <app-search-field
+      [ngModel]="filterText"
+      [placeholder]="'PROFILE.LOCAL_VAT_REGISTRATIONS.SEARCH_PLACEHOLDER' | translate"
+      (ngModelChange)="onSearch($event)"
+    ></app-search-field>
+    <div>
+      <div class="hint-text text-micro-regular color-text-tertiary mb-1">
+        {{ 'PROFILE.LOCAL_VAT_REGISTRATIONS.DONT_HAVE_IT_IN_THE_LIST' | translate }}
+      </div>
+      <button mat-button type="button" class="secondary-button" (click)="onAddNewRegistration()">
+        {{ 'PROFILE.LOCAL_VAT_REGISTRATIONS.ADD_NEW_REGISTRATION' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div class="card-container mt-20 mb-20">
+    <ng-container *ngIf="filterText; else allRegistrations">
+      <div *ngFor="let localVat of filteredLocalVats$ | async" class="vat-card mb-3">
+        <ng-container [ngTemplateOutlet]="vatCardContent" [ngTemplateOutletContext]="{ localVat }"></ng-container>
+      </div>
+    </ng-container>
+    <ng-template #allRegistrations>
+      <div *ngFor="let localVat of localVats$ | async" class="vat-card mb-3">
+        <ng-container [ngTemplateOutlet]="vatCardContent" [ngTemplateOutletContext]="{ localVat }"></ng-container>
+      </div>
+    </ng-template>
+  </div>
+</ng-template>
+
+<ng-template #vatCardContent let-localVat="localVat">
+  <div>
+    <div class="text-reduced-bold mb-1">{{ localVat.registeredEntityName }}</div>
+    <div class="text-reduced-regular">{{ localVat.vatNumber }}</div>
+  </div>
+  <div class="text-micro-regular">
+    <div class="pt-2">{{ localVat.registeredAddress }}</div>
+    <div>{{ localVat.registeredCity }}</div>
+    <div>{{ localVat.registeredState }}</div>
+  </div>
+  <div class="text-reduced-bold country mr-3">{{ localVat.toCountry }}</div>
+  <div class="icon-container">
+    <svg-icon key="pen" class="action-icon color-secondary" (click)="onEditClick(localVat)"></svg-icon>
+  </div>
+</ng-template>

@@ -1,0 +1,285 @@
+<div class="quote-card-container" [@toggleContent]="isOpen || !isCollapsable ? 'open' : 'closed'">
+  <div *ngIf="isCollapsable" class="header d-flex p-2" (click)="onHeaderClick()">
+    <button mat-icon-button type="button" class="arrow-icon color-secondary mr-2">
+      <svg-icon key="arrow-down" [class.up]="isOpen"></svg-icon>
+    </button>
+    <div *ngIf="!isOpen" class="details" [@toggleContentOpacity]>
+      <app-detail-card [label]="'COMMON.TO' | translate">
+        <svg-icon key="plane-landing" *appDetailCardIcon></svg-icon>
+        {{ quote.to }}
+      </app-detail-card>
+      <app-detail-card [label]="'QUOTE_DETAILS.VALUE' | translate">
+        <svg-icon key="value" *appDetailCardIcon></svg-icon>
+        {{ quote.shipmentValue | cost : currency }}
+      </app-detail-card>
+      <app-detail-card [label]="'QUOTE_DETAILS.SHIPPING_METHOD' | translate">
+        <svg-icon key="shipping" *appDetailCardIcon></svg-icon>
+        {{ quote.selectedShipmentMethod | getShipmentMethod }}
+      </app-detail-card>
+      <app-detail-card [label]="'QUOTE_DETAILS.WEIGHT' | translate">
+        <svg-icon key="weight" *appDetailCardIcon></svg-icon>
+        {{ quote.estimatedWeight | number : '1.0-2' }} {{ 'COMMON.KG' | translate }}
+      </app-detail-card>
+      <app-detail-card [label]="'QUOTE_DETAILS.LINE_ITEMS' | translate">
+        <svg-icon key="line-items" *appDetailCardIcon></svg-icon>
+        {{ quote.lineItems.length }}
+      </app-detail-card>
+    </div>
+  </div>
+  <div *ngIf="isOpen || !isCollapsable" [@toggleContentOpacity] class="content" [class.mt-5]="!isCollapsable">
+    <!-- DETAILS -->
+    <h5 class="d-flex align-items-center font-weight-regular color-text-primary mb-5">
+      {{ 'COMMON.BASICS' | translate }}
+      <button *ngIf="isCollapsable" mat-icon-button type="button" class="ml-2 color-secondary" (click)="onEditBasicsClick()">
+        <svg-icon key="pen"></svg-icon>
+      </button>
+    </h5>
+    <div class="details">
+      <app-detail-card [label]="'COMMON.FROM' | translate">
+        <svg-icon key="plane-take-off" *appDetailCardIcon></svg-icon>
+        {{ quote.from }}
+      </app-detail-card>
+      <app-detail-card [label]="'COMMON.TO' | translate">
+        <svg-icon key="plane-landing" *appDetailCardIcon></svg-icon>
+        {{ quote.to }}
+      </app-detail-card>
+      <app-detail-card [label]="'QUOTE_DETAILS.VALUE' | translate">
+        <button
+          *ngIf="quote.clientCurrencyInput !== currency"
+          detailCardTooltip
+          mat-icon-button
+          class="color-secondary text-reduced-medium"
+          [appTooltip]="'QUOTE_DETAILS.VALUE_TOOLTIP' | translate : { currency: quote.clientCurrencyInput || 'USD' }"
+        >
+          <svg-icon key="info"></svg-icon>
+        </button>
+        <svg-icon key="value" *appDetailCardIcon></svg-icon>
+        {{ quote.shipmentValue | cost : currency }}
+      </app-detail-card>
+      <app-detail-card [label]="'QUOTE_DETAILS.WEIGHT' | translate">
+        <svg-icon key="weight" *appDetailCardIcon></svg-icon>
+        {{ quote.estimatedWeight | number : '1.0-2' }} {{ 'COMMON.KG' | translate }}
+      </app-detail-card>
+      <app-detail-card
+        *ngIf="!quote.isExpired && (localVatRegistration || (!localVatRegistration && isVatRegistrationRequired))"
+        [label]="'QUOTE_DETAILS.LOCAL_VAT_REGISTRATION' | translate"
+      >
+        <svg-icon key="id" *appDetailCardIcon></svg-icon>
+        <ng-container *ngIf="localVatRegistration">
+          {{ localVatRegistration.registeredEntityName }}
+        </ng-container>
+        <button
+          *ngIf="isVatRegistrationRequired && !localVatRegistration"
+          class="text-link sm-dark pl-0"
+          (click)="onAddLocalVatRegistrationClick()"
+        >
+          {{ 'QUOTE_DETAILS.ADD_LOCAL_VAT_REGISTRATION' | translate }}
+        </button>
+      </app-detail-card>
+      <app-detail-card *ngIf="quote.projectReference1" [label]="'QUOTE_DETAILS.PROJECT_REFERENCE' | translate">
+        <svg-icon key="reference-number" *appDetailCardIcon></svg-icon>
+        {{ quote.projectReference1 }}
+      </app-detail-card>
+      <app-detail-card *ngIf="quote.projectReference2" [label]="'QUOTE_DETAILS.PROJECT_REFERENCE_TWO' | translate">
+        <svg-icon key="reference-number" *appDetailCardIcon></svg-icon>
+        {{ quote.projectReference2 }}
+      </app-detail-card>
+    </div>
+
+    <!-- LINE ITEMS -->
+    <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-5">
+      {{ 'QUOTE_DETAILS.LINE_ITEMS' | translate }}
+      <button
+        *ngIf="quote.lineItems.length && isCollapsable"
+        mat-icon-button
+        type="button"
+        class="ml-2 color-secondary"
+        (click)="onEditLineItemsClick()"
+      >
+        <svg-icon key="pen"></svg-icon>
+      </button>
+    </h5>
+    <div class="details mb-3">
+      <app-detail-card [label]="'QUOTE_DETAILS.CURRENCY' | translate">
+        <button
+          *ngIf="quote.clientCurrencyInput !== currency"
+          detailCardTooltip
+          mat-icon-button
+          class="color-secondary text-reduced-medium"
+          [appTooltip]="'QUOTE_DETAILS.CURRENCY_TOOLTIP' | translate : { currency: quote.clientCurrencyInput || 'USD' }"
+        >
+          <svg-icon key="info"></svg-icon>
+        </button>
+        <svg-icon key="currency" *appDetailCardIcon></svg-icon>
+        {{ quote.clientCurrencyInput || 'USD' }}
+      </app-detail-card>
+      <app-detail-card *ngIf="!isCostMethod" [label]="'QUOTE_DETAILS.STORE_FEES_AVAILABLE' | translate">
+        <svg-icon key="store-fee" *appDetailCardIcon></svg-icon>
+        {{ (quote.storeFeesAvailable ? 'COMMON.YES' : 'COMMON.NO') | translate }}
+      </app-detail-card>
+    </div>
+    <div *ngIf="quote.lineItems.length" class="line-items">
+      <div class="horizontal-scroll">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ 'QUOTE.LINE_ITEMS.PRODUCT_CODE' | translate }}</th>
+              <th>{{ 'QUOTE.LINE_ITEMS.DESCRIPTION' | translate }}</th>
+              <th>{{ 'QUOTE.LINE_ITEMS.QUANTITY' | translate }}</th>
+              <th *ngIf="isCostMethod">
+                {{ 'QUOTE.LINE_ITEMS.UNIT_PRICE' | translate : { currency: quote.clientCurrencyInput || 'USD' } }}
+              </th>
+              <th *ngIf="!isCostMethod">
+                {{ 'QUOTE.LINE_ITEMS.SELLING_PRICE' | translate : { currency: quote.clientCurrencyInput || 'USD' } }}
+              </th>
+              <th *ngIf="!isCostMethod && quote.storeFeesAvailable">
+                {{ 'QUOTE.LINE_ITEMS.STORE_FEES' | translate : { currency: quote.clientCurrencyInput || 'USD' } }}
+              </th>
+              <th>{{ 'QUOTE.LINE_ITEMS.HS_CODE' | translate }}</th>
+              <th>{{ 'QUOTE.LINE_ITEMS.COUNTRY_OF_ORIGIN' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let lineItem of quote.lineItems">
+              <td>{{ lineItem[LineItemsColumn.ProductCode] }}</td>
+              <td>{{ lineItem[LineItemsColumn.Description] }}</td>
+              <td class="text-right">{{ lineItem[LineItemsColumn.Quantity] }}</td>
+              <td class="text-right">
+                <strong>{{ lineItem[LineItemsColumn.UnitPrice] | cost : quote.clientCurrencyInput || 'USD' }}</strong>
+              </td>
+              <td *ngIf="!isCostMethod && quote.storeFeesAvailable" class="text-right">
+                <strong>{{ lineItem[LineItemsColumn.StoreFees] | cost : quote.clientCurrencyInput || 'USD' }}</strong>
+              </td>
+              <td>{{ lineItem[LineItemsColumn.HsCode] }}</td>
+              <td>{{ lineItem[LineItemsColumn.CountryOfOrigin] }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SHIPPING METHOD -->
+    <div class="card-details-container">
+      <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-5">
+        {{ 'QUOTE_DETAILS.SHIPPING_METHOD' | translate }}
+        <button *ngIf="isCollapsable" mat-icon-button type="button" class="ml-2 color-secondary" (click)="onChangeShipmentMethodClick()">
+          <svg-icon key="pen"></svg-icon>
+        </button>
+      </h5>
+      <div class="mt-2 text-reduced-bold shipment-method">{{ quote.selectedShipmentMethod | getShipmentMethod : 'long' }}</div>
+    </div>
+
+    <!-- PACKAGES -->
+    <div class="card-details-container">
+      <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-5">
+        {{ 'QUOTE_DETAILS.PACKAGES' | translate }}
+        <button
+          *ngIf="quote.packages.length && isCollapsable"
+          mat-icon-button
+          type="button"
+          class="ml-2 color-secondary"
+          (click)="onPackageEditClick()"
+        >
+          <svg-icon key="pen"></svg-icon>
+        </button>
+      </h5>
+      <ng-container
+        *ngIf="!quote.packages.length"
+        [ngTemplateOutlet]="noValueYet"
+        [ngTemplateOutletContext]="{
+          $implicit: {
+            text: isCollapsable ? 'QUOTE_DETAILS.NO_PACKAGES_YET' : 'QUOTE_DETAILS.NO_PACKAGES',
+            link: 'QUOTE_DETAILS.ADD_PACKAGE_DETAILS',
+            action: onPackageEditClick.bind(this)
+          }
+        }"
+      >
+      </ng-container>
+      <div *ngIf="quote.packages.length">
+        <div
+          *ngFor="let package of quote.packages; let i = index"
+          class="package d-flex align-items-center justify-content-between px-0 py-3 mt-5"
+        >
+          <app-package-closed-content-card
+            [packageNumber]="i + 1"
+            [package]="$any(package)"
+            [weightUnit]="$any(package).weightUnit"
+            [lengthUnit]="$any(package).lengthUnit"
+            [disableDelete]="true"
+          ></app-package-closed-content-card>
+        </div>
+      </div>
+    </div>
+
+    <!-- PICK-UP ADDRESSES -->
+    <div class="card-details-container">
+      <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-5">
+        {{ 'QUOTE_DETAILS.PICK_UP_ADDRESS' | translate }}
+        <button
+          *ngIf="quote.pickUpAddress.length && !quote.pickUpAddress[0].isDefault && isCollapsable"
+          mat-icon-button
+          type="button"
+          class="ml-2 color-secondary"
+          (click)="onPickUpAddressEditClick()"
+        >
+          <svg-icon key="pen"></svg-icon>
+        </button>
+      </h5>
+      <ng-container
+        *ngIf="quote.pickUpAddress.length === 0 || quote.pickUpAddress[0].isDefault"
+        [ngTemplateOutlet]="noValueYet"
+        [ngTemplateOutletContext]="{
+          $implicit: {
+            text: isCollapsable ? 'QUOTE_DETAILS.NO_ADDRESS_YET' : 'QUOTE_DETAILS.NO_ADDRESS',
+            link: 'QUOTE_DETAILS.ADD_PICK_UP_ADDRESS',
+            action: onPickUpAddressEditClick.bind(this)
+          }
+        }"
+      >
+      </ng-container>
+      <div *ngIf="quote.pickUpAddress.length > 0 && !quote.pickUpAddress[0].isDefault" class="address-card-container mt-4">
+        <app-detail-address-card [address]="quote.pickUpAddress[0]" (delete)="onPickupAddressDelete()"></app-detail-address-card>
+      </div>
+    </div>
+
+    <!-- DELIVERY ADDRESS -->
+    <div class="card-details-container">
+      <h5 class="font-weight-regular color-text-primary d-flex align-items-center mb-3 mt-5">
+        <span>
+          {{ 'QUOTE_DETAILS.DELIVERY_ADDRESS' | translate }}
+        </span>
+        <button
+          *ngIf="quote.locationAddresses.length && isCollapsable"
+          mat-icon-button
+          type="button"
+          class="ml-2 color-secondary"
+          (click)="onShipToLocationsEditClick()"
+        >
+          <svg-icon key="pen"></svg-icon>
+        </button>
+      </h5>
+      <ng-container
+        *ngIf="!quote.locationAddresses.length"
+        [ngTemplateOutlet]="noValueYet"
+        [ngTemplateOutletContext]="{
+          $implicit: {
+            text: isCollapsable ? 'QUOTE_DETAILS.NOT_PROVIDED_YET' : 'QUOTE_DETAILS.NOT_PROVIDED',
+            link: 'QUOTE_DETAILS.ADD_DELIVERY_ADDRESS',
+            action: onShipToLocationsEditClick.bind(this)
+          }
+        }"
+      >
+      </ng-container>
+      <div *ngIf="quote.locationAddresses.length" class="address-card-container mt-4">
+        <app-detail-address-card *ngFor="let address of quote.locationAddresses" [address]="address"></app-detail-address-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noValueYet let-data>
+  <div class="d-flex align-items-baseline no-items">
+    <span class="text-small-regular color-text-secondary mr-2">{{ data.text | translate }}</span>
+    <span *ngIf="isCollapsable" class="text-link sm-dark" (click)="data.action()">{{ data.link | translate }}</span>
+  </div>
+</ng-template>

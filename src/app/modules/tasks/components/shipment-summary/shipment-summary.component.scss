@@ -1,0 +1,36 @@
+@use 'abstracts/colors';
+@use 'abstracts/bootstrap';
+
+:host {
+  display: block;
+}
+
+.root {
+  background-color: map-get(colors.$color, 'background-04');
+  padding: 0;
+
+  .header {
+    box-shadow: 0 0 40px rgba(20, 72, 118, 8%);
+    padding: 8px 24px;
+  }
+
+  .details {
+    padding: 20px 16px;
+  }
+
+  .detail {
+    padding: 0 8px;
+
+    &:not(:last-child) {
+      @include bootstrap.media-breakpoint-up(md) {
+        border-right: 1px solid map-get(colors.$color, 'divider');
+      }
+    }
+
+    svg-icon {
+      font-size: 24px;
+      margin-right: 4px;
+      opacity: 0.8;
+    }
+  }
+}

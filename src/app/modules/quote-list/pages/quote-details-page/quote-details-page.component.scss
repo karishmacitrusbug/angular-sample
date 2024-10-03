@@ -1,0 +1,173 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+@use 'abstracts/bootstrap';
+
+.header {
+  .left-content {
+    .parent-reference {
+      font-size: 22px;
+    }
+  }
+
+  .icon-navigation {
+    cursor: pointer;
+    font-size: 20px;
+  }
+}
+
+.owner-select {
+  background-color: white;
+  border-bottom: none;
+  font-weight: bold;
+  min-width: 200px;
+  padding: 8px;
+}
+
+.info-messages-container {
+  display: grid;
+  gap: 1rem;
+  grid-template-areas: 'info' 'messages';
+  grid-template-columns: 1fr;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    grid-template-areas: 'info messages';
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &.with-multiple-messages {
+    grid-template-areas: 'info .' 'messages messages';
+    row-gap: 2.5rem;
+  }
+}
+
+.info {
+  grid-area: info;
+}
+
+.messages {
+  grid-area: messages;
+}
+
+.messages-container.multiple {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+app-message-envelope {
+  cursor: pointer;
+}
+
+.quote-info {
+  background-color: map-get(colors.$color, 'background-04');
+  border-radius: 2px;
+  box-shadow: 0 0 40px rgba(20, 72, 118, 8%);
+  padding: 2.5rem;
+}
+
+.note-input {
+  background-color: map-get(colors.$color, 'background-04');
+  border-radius: 2px;
+  box-shadow: 0 0 40px rgba(20, 72, 118, 8%);
+  padding: 1rem 2.5rem 2.5rem;
+}
+
+.icon-action-button:not(:disabled) {
+  color: map-get(colors.$color, 'secondary');
+
+  &:hover {
+    color: map-get(colors.$color, 'secondary-light');
+  }
+}
+
+.accept-button-container {
+  position: relative;
+  width: min-content; // stylelint-disable-line plugin/no-unsupported-browser-features
+}
+
+.disabled-accept-button-hint {
+  position: absolute;
+  width: 100%;
+}
+
+.referral-program-section {
+  box-sizing: border-box;
+  height: 140px;
+  border: 3px solid map-get(colors.$color, 'background-01');
+  border-radius: 2px;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    height: 72px;
+  }
+
+  .referral-program-section-text {
+    height: 18px;
+    font-style: normal;
+    font-size: 14px;
+    line-height: 16px;
+    color: map-get(colors.$color, 'text-secondary');
+    align-items: center;
+    align-self: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: -22px;
+    justify-items: center;
+
+    @include bootstrap.media-breakpoint-up(md) {
+      grid-template-columns: 240px auto 275px;
+      justify-items: unset;
+    }
+
+    .referral-program-discount-shipping-text {
+      @include bootstrap.media-breakpoint-up(md) {
+        justify-self: end;
+      }
+    }
+
+    .referral-program-dont-miss-it-out-text {
+      @include bootstrap.media-breakpoint-up(md) {
+        padding-left: 5px;
+      }
+    }
+  }
+
+  .referral-program-btn {
+    align-items: center;
+    text-align: center;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    border: 1px solid map-get(colors.$color, 'secondary');
+    border-radius: 2px;
+    flex-direction: row;
+    padding: 12px 40px;
+    gap: 4px;
+    text-decoration: none;
+    color: map-get(colors.$color, 'secondary');
+
+    @include bootstrap.media-breakpoint-up(md) {
+      margin-right: 40px;
+    }
+  }
+}
+
+.message-icon {
+  color: map-get(colors.$color, 'background-04');
+  padding: 4px;
+  position: relative;
+  width: 72px;
+  height: 36px;
+  left: -6px;
+  top: -6px;
+  padding-left: 14px;
+  background: map-get(colors.$color, 'warning');
+  border-radius: 4px;
+  clip-path: polygon(0% 0%, 100% 0, 100% 0, 53% 100%, 0% 100%);
+  font-size: 25px;
+}
+
+.footer-actions {
+  @include bootstrap.media-breakpoint-up(md) {
+    padding: 0 10rem;
+  }
+}

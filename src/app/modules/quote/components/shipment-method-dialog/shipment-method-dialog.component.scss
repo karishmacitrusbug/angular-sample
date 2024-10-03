@@ -1,0 +1,20 @@
+.header {
+  padding: 2.5rem;
+}
+
+.shipment-method {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+
+  button {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+  }
+}

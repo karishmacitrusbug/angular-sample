@@ -1,0 +1,25 @@
+<div class="background-patterns">
+  <div class="bg-pattern-left">
+    <img src="assets/images/background.svg" alt="background pattern" />
+  </div>
+  <div class="bg-pattern-right">
+    <img src="assets/images/background.svg" alt="background pattern" />
+  </div>
+</div>
+
+<app-onboarding-header title="REGISTRATION.ACCOUNT_SUCCESSFULLY_CREATED"></app-onboarding-header>
+
+<div class="registration-page">
+  <div class="card-container d-flex flex-column align-items-center">
+    <svg-icon key="email"></svg-icon>
+    <div class="title text-center color-blue font-weight-bold mt-3">{{ 'REGISTRATION.SENT_YOU_EMAIL' | translate }}</div>
+    <div class="details color-text-secondary font-weight-light mt-40 text-center">
+      {{ 'REGISTRATION.SUCCESS_DETAILS' | translate : { email: email }
+      }}<span class="font-weight-bold"> {{ 'REGISTRATION.CLICK_ON_LINK' | translate }} </span>{{ 'REGISTRATION.IN_THE_EMAIL' | translate }}
+    </div>
+    <div class="footer d-flex flex-column flex-sm-row align-items-center mt-4">
+      <div class="details font-weight-light color-text-secondary mr-2 mt-2">{{ 'REGISTRATION.HAVING_TROUBLE' | translate }}</div>
+      <a [href]="contactUsLink" class="text-link md-dark font-weight-bold mt-2">{{ 'REGISTRATION.CONTACT_US' | translate }}</a>
+    </div>
+  </div>
+</div>

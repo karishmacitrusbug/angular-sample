@@ -1,0 +1,38 @@
+<h5 class="mb-40">{{ 'PROFILE.ADDRESS_BOOK.TITLE' | translate }}</h5>
+<div *ngIf="isLoading" class="d-flex justify-content-center">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+<div [hidden]="isLoading">
+  <mat-tab-group>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        {{ 'PROFILE.ADDRESS_BOOK.PICK_UP_ADDRESSES' | translate }}
+        <span class="count">({{ pickUpAddressCount }})</span>
+      </ng-template>
+      <!-- Lazy loading is needed for the content's animations to work properly -->
+      <ng-template matTabContent>
+        <app-address-tab-content
+          [addressGroups]="pickUpAddresses"
+          (createAddress)="onCreatePickupAddress($event)"
+          (editAddress)="onEditPickupAddress($event)"
+          (deleteAddress)="onDeleteAddress($event)"
+        ></app-address-tab-content>
+      </ng-template>
+    </mat-tab>
+    <mat-tab *ngIf="showDeliveryAddresses$ | async">
+      <ng-template mat-tab-label>
+        {{ 'PROFILE.ADDRESS_BOOK.DELIVERY_ADDRESSES' | translate }}
+        <span class="count">({{ deliveryAddressCount }})</span>
+      </ng-template>
+      <!-- Lazy loading is needed for the content's animations to work properly -->
+      <ng-template matTabContent>
+        <app-address-tab-content
+          [addressGroups]="deliveryAddresses"
+          (createAddress)="onCreateDeliveryAddress($event)"
+          (editAddress)="onEditDeliveryAddress($event)"
+          (deleteAddress)="onDeleteAddress($event)"
+        ></app-address-tab-content>
+      </ng-template>
+    </mat-tab>
+  </mat-tab-group>
+</div>

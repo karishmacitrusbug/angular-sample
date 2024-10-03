@@ -1,0 +1,105 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+@use 'abstracts/bootstrap';
+
+.details-card-container {
+  background: map-get(colors.$color, 'background-04');
+  border-radius: 2px;
+  box-shadow: 0 0 40px rgba(20, 72, 118, 8%);
+  overflow: hidden;
+}
+
+.header {
+  // This should match with the height in the animation config.
+  cursor: pointer;
+  height: 60px;
+
+  .arrow-icon {
+    align-self: center;
+
+    .svg-icon-arrow-down {
+      transition: transform 0.125s;
+
+      &.up {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .details {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    width: 100%;
+  }
+
+  app-detail-card {
+    border-left: 1px solid map-get(colors.$color, 'divider');
+  }
+}
+
+.content {
+  padding: 0 2.5rem 2.5rem;
+
+  .details {
+    display: grid;
+    gap: 1rem 0;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+
+    @include bootstrap.media-breakpoint-up(md) {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    &::before {
+      background-color: map-get(colors.$color, 'background-04');
+      content: '';
+      height: 100%;
+      position: absolute;
+      right: 0;
+      width: 1px;
+    }
+
+    app-detail-card:not(:last-child) {
+      @include bootstrap.media-breakpoint-up(md) {
+        border-right: 1px solid map-get(colors.$color, 'divider');
+      }
+    }
+  }
+
+  .line-items {
+    overflow-x: auto;
+
+    .horizontal-scroll {
+      min-width: 780px;
+    }
+  }
+
+  .address-card-container {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .package {
+    background: map-get(colors.$color, 'background-04');
+    border: 1px solid rgba(29, 69, 104, 12%);
+    border-radius: 2px;
+    box-shadow: 0 0 24px rgba(29, 69, 104, 8%);
+  }
+}
+
+.shipment-method {
+  border: 1px solid rgba(29, 69, 104, 12%);
+  max-width: 275px;
+  padding: 1rem;
+}
+
+.card-details-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: baseline;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}

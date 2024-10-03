@@ -1,0 +1,127 @@
+@use 'sass:math';
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+
+.shipment-methods-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+
+  > :not(:last-child) {
+    margin-right: 16px;
+  }
+}
+
+.shipment-method-card-container {
+  max-width: 128px;
+}
+
+.best-rates {
+  line-height: 0.5rem;
+}
+
+.shipment-method-card {
+  cursor: pointer;
+}
+
+.couriers-container {
+  margin-top: 24px;
+}
+
+.searching-rates {
+  position: relative;
+}
+
+.searching-rates-overlay {
+  align-items: center;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+
+  &::after {
+    $corner-size: 40px;
+
+    background: map-get(colors.$color, 'navigation-background');
+    content: ' ';
+    height: $corner-size;
+    position: absolute;
+    right: -#{math.div($corner-size, 2)};
+    top: -#{math.div($corner-size, 2)};
+    transform: rotate(45deg);
+    width: $corner-size;
+    z-index: 1;
+  }
+}
+
+.searching-rates-overlay-background {
+  background-color: map-get(colors.$color, 'background-02');
+  height: 100%;
+  opacity: 0.8;
+  position: absolute;
+  width: 100%;
+}
+
+.searching-rates-description {
+  color: map-get(colors.$color, 'text-secondary');
+  font-size: 12px;
+  margin-top: 16px;
+  position: relative;
+}
+
+.searching-rates-dummy-couriers {
+  filter: blur(3px);
+  padding: 8px;
+}
+
+.couriers-title {
+  color: map-get(colors.$color, 'text-primary');
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.couriers-description {
+  color: map-get(colors.$color, 'text-secondary');
+  font-size: 14px;
+  line-height: 16px;
+  margin-top: 8px;
+}
+
+.courier-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+
+  > :not(:last-child) {
+    margin-bottom: 12px;
+  }
+}
+
+.cb-courier-title,
+.third-party-courier-title {
+  color: map-get(colors.$color, 'text-primary');
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+}
+
+.cb-courier-transit-time,
+.third-party-courier-description {
+  color: map-get(colors.$color, 'text-secondary');
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.third-party-courier-list {
+  list-style-type: square;
+
+  li::marker {
+    color: map-get(colors.$color, 'primary');
+  }
+}

@@ -1,0 +1,39 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+
+.link-container {
+  align-self: center;
+  margin-left: 40px;
+
+  .title {
+    color: map-get(colors.$color, 'text-tertiary');
+    letter-spacing: 0.2px;
+  }
+}
+
+.estimated-weight-container {
+  align-items: end;
+  column-gap: 1rem;
+  display: grid;
+  grid-template-columns: 1fr max-content;
+}
+
+.shipment-currency {
+  margin-left: 35px;
+}
+
+.text-link {
+  font-weight: bold;
+}
+
+.edit-icon {
+  color: map-get(colors.$color, 'secondary');
+
+  &:hover {
+    color: map-get(colors.$color, 'background-05');
+  }
+}
+
+.type-of-goods-highlight {
+  color: map-get(colors.$color, 'warning');
+}

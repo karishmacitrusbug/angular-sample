@@ -1,0 +1,48 @@
+@use 'abstracts/variables';
+
+.top-section {
+  margin-top: 40px;
+}
+
+.overflow {
+  overflow-x: auto;
+}
+
+.upload-icon {
+  font-size: 50px;
+}
+
+.info-icon {
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.actions {
+  margin-top: 20px;
+
+  .new-items {
+    .svg-icon-add {
+      font-size: 16px;
+      line-height: 1em;
+    }
+  }
+}
+
+.legend {
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep .state-dot {
+    box-shadow: none !important; // stylelint-disable-line declaration-no-important
+    margin: 0;
+  }
+}
+
+.catalog-table {
+  margin-top: 24px;
+  min-width: 780px;
+}
+
+.t-body {
+  td {
+    padding: 12px 10px;
+  }
+}

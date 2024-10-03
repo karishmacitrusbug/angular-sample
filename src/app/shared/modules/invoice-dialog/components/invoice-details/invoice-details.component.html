@@ -1,0 +1,170 @@
+<!-- HEADER -->
+<div class="dialog-title">
+  <ng-container *ngIf="hasCreditNoteTitle; else invoiceTitle">
+    <p>
+      {{ 'INVOICE_DIALOG.OPEN_CREDITS_TITLE' | translate }} {{ invoice.name }}{{ showStatus(invoice.status) ? ' - ' + invoice.status : '' }}
+    </p>
+  </ng-container>
+  <ng-template #invoiceTitle>
+    <p>
+      {{ 'INVOICE_DIALOG.OUTSTANDING_TITLE' | translate }} {{ invoice.name }}{{ showStatus(invoice.status) ? ' - ' + invoice.status : '' }}
+    </p>
+  </ng-template>
+</div>
+
+<!-- DETAILS -->
+<div class="d-flex justify-content-between justify-content-md-start d-flex mb-3">
+  <ng-container [ngSwitch]="invoice.type">
+    <ng-container *ngSwitchCase="InvoiceType.Outstanding">
+      <div class="d-flex flex-column mr-4">
+        <div class="text-tiny-regular color-text-tertiary">{{ 'INVOICE_DIALOG.AMOUNT_OUTSTANDING' | translate }}</div>
+        <div class="text-normal-bold">{{ invoice.amount | cost }}</div>
+      </div>
+
+      <div class="d-flex flex-column mr-4">
+        <div class="text-tiny-regular color-text-tertiary">{{ 'INVOICE_DIALOG.DUE_DATE' | translate }}</div>
+        <div class="text-normal-bold" [class.color-error]="isPastDate(invoice.dueDate)">
+          {{ 'INVOICE_DIALOG.DUE_ON' | translate : { date: getDueDate(invoiceDetails?.details) | date : DATE_FORMAT } }}
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="InvoiceType.OpenCredits">
+      <div class="d-flex flex-column mr-4">
+        <div class="text-tiny-regular color-text-tertiary">{{ 'INVOICE_DIALOG.AMOUNT_UNAPPLIED' | translate }}</div>
+        <div class="text-normal-bold">{{ invoice.amount | unsigned | cost }}</div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>
+      <div class="d-flex flex-column mr-4">
+        <div class="text-tiny-regular color-text-tertiary">{{ 'INVOICE_DIALOG.TOTAL_INVOICE_AMOUNT' | translate }}</div>
+        <div class="text-normal-bold">{{ invoice.amount | cost }}</div>
+      </div>
+
+      <div class="d-flex flex-column mr-4">
+        <div class="text-tiny-regular color-text-tertiary">{{ 'INVOICE_DIALOG.DATE_CLOSED' | translate }}</div>
+        <div class="text-normal-bold">
+          {{ getDueDate(invoiceDetails?.details) | date : DATE_FORMAT }}
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+
+  <app-action-buttons
+    (downloadClick)="onDownloadClick()"
+    (messageClick)="onMessageClick()"
+    [for]="'COMMON.INVOICE' | translate : { invoices: 1 }"
+  ></app-action-buttons>
+
+  <div class="d-none d-md-flex flex-fill justify-content-end">
+    <app-message-button
+      *ngIf="invoiceDetails?.defaultTeamMember"
+      [user]="invoiceDetails?.defaultTeamMember"
+      (buttonClick)="onMessageManager()"
+    ></app-message-button>
+  </div>
+</div>
+
+<div *ngIf="isLoadingDetails; else details" class="d-flex justify-content-center py-4">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+
+<ng-template #details>
+  <!-- HEADER CARD -->
+  <div *ngIf="invoiceDetails?.shipmentOrder" class="card-container custom-card mb-3">
+    <div class="d-flex flex-column"></div>
+
+    <div class="d-flex mb-3">
+      <div class="text-small-bold text-link sm-dark mr-2" [routerLink]="shipmentDetailsRouterLink" (click)="onShipmentOrderNameClick()">
+        {{ invoiceDetails.shipmentOrder.name }}
+      </div>
+      <div class="text-small-regular color-text-primary">{{ invoiceDetails.shipmentOrder.poNumber }}</div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row">
+      <div class="d-flex align-items-center mb-3 mb-md-0">
+        <svg-icon key="value"></svg-icon>
+        <div class="text-tiny-regular color-text-primary">{{ invoiceDetails.shipmentOrder.shipmentValue | cost }}</div>
+        <div class="divider-v"></div>
+      </div>
+
+      <div class="d-flex align-items-center mb-3 mb-md-0">
+        <svg-icon key="invoice"></svg-icon>
+        <div class="text-tiny-regular color-text-secondary">
+          {{ 'INVOICE_DIALOG.LINE_ITEMS' | translate }}:
+          <strong class="color-text-primary">
+            <ng-container *ngIf="invoiceDetails.shipmentOrder.numberOfLineItems; else emptyValue">
+              {{ invoiceDetails.shipmentOrder.numberOfLineItems }}
+            </ng-container>
+          </strong>
+        </div>
+        <div class="divider-v"></div>
+      </div>
+
+      <div class="d-flex align-items-center mb-3 mb-md-0">
+        <svg-icon key="weight"></svg-icon>
+        <div class="text-tiny-regular color-text-secondary">
+          {{ 'INVOICE_DIALOG.EST_WEIGHT' | translate }}:
+          <strong class="color-text-primary">
+            <ng-container *ngIf="invoiceDetails.shipmentOrder.estimatedWeight; else emptyValue">
+              {{ invoiceDetails.shipmentOrder.estimatedWeight | number : '1.0-2' }} {{ weightUnit | weightUnit | async }}
+            </ng-container>
+          </strong>
+        </div>
+        <div class="divider-v"></div>
+      </div>
+
+      <div class="d-flex align-items-center mb-3 mb-md-0">
+        <svg-icon key="shipping"></svg-icon>
+        <div class="text-tiny-regular color-text-secondary">
+          {{ 'INVOICE_DIALOG.SHIPPING_METHOD' | translate }}:
+          <strong class="color-text-primary">
+            <ng-container *ngIf="invoiceDetails.shipmentOrder.selectedShipmentMethod; else emptyValue">
+              {{ invoiceDetails.shipmentOrder.selectedShipmentMethod | getShipmentMethod : 'long' }}
+            </ng-container>
+          </strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="invoiceDetails?.details" class="card-container">
+    <ng-container
+      *ngFor="let fee of fees"
+      [ngTemplateOutlet]="feeTemplate"
+      [ngTemplateOutletContext]="{ $implicit: { label: fee.label | translate, value: fee.value } }"
+    ></ng-container>
+
+    <!-- DIVIDER -->
+    <div class="divider"></div>
+
+    <!-- TOTAL -->
+    <div class="d-flex justify-content-between mb-3">
+      <div class="text-reduced-regular">{{ 'INVOICE_DIALOG.TOTAL_INVOICE_AMOUNT' | translate }}</div>
+      <div class="text-reduced-regular">{{ invoiceDetails.details.totalInvoiceAmount | cost }}</div>
+    </div>
+    <div class="d-flex justify-content-between mb-3">
+      <div class="text-reduced-regular">{{ 'INVOICE_DIALOG.APPLIED_AMOUNT' | translate }}</div>
+      <div class="text-reduced-regular">{{ invoiceDetails.details.appliedAmount | cost }}</div>
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="divider"></div>
+
+    <!-- FOOTER -->
+    <div class="d-flex justify-content-between">
+      <div class="text-reduced-bold">{{ 'INVOICE_DIALOG.TOTAL' | translate }}</div>
+      <div class="text-reduced-bold">{{ invoiceDetails.details.total | cost }}</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template let-context #feeTemplate>
+  <div class="d-flex justify-content-between mb-3">
+    <div class="text-tiny-regular color-text-secondary" [class.color-success]="context.value < 0">{{ context.label }}</div>
+    <div class="text-tiny-bold color-text-primary" [class.color-success]="context.value < 0">{{ context.value | unsigned | cost }}</div>
+  </div>
+</ng-template>
+
+<ng-template #emptyValue>-</ng-template>

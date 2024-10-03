@@ -1,0 +1,96 @@
+@use 'abstracts/colors';
+@use 'abstracts/bootstrap';
+
+.list-table {
+  transform: translateZ(0); // prevents unnecessary painting
+}
+
+.list-table > .body {
+  .row {
+    grid-template-columns: 1fr;
+    min-height: 56px;
+    padding: 1rem;
+
+    @include bootstrap.media-breakpoint-up(md) {
+      grid-template-columns: var(--shipments-table-columns);
+      padding-left: 30px;
+    }
+
+    :not(:first-child):not(.no-border)::before {
+      @include bootstrap.media-breakpoint-down(sm) {
+        background-color: unset;
+        bottom: unset;
+        content: unset;
+        left: unset;
+        position: unset;
+        top: unset;
+        width: unset;
+      }
+    }
+  }
+
+  .cell {
+    font-size: 12px;
+    margin-bottom: 1rem;
+    padding-left: 0;
+
+    @include bootstrap.media-breakpoint-up(md) {
+      margin-bottom: 0;
+      padding-left: 0.5rem;
+    }
+  }
+
+  .cell-content {
+    transform: translateZ(0); // prevents unnecessary painting
+  }
+}
+
+.action-icon {
+  font-size: 16px;
+}
+
+.indicator-circle {
+  cursor: pointer;
+}
+
+.shipment-id {
+  cursor: pointer;
+
+  &:hover {
+    color: map-get(colors.$color, 'secondary-light');
+  }
+}
+
+.references {
+  padding-bottom: 4px;
+  padding-top: 4px;
+  word-break: break-all; // stylelint-disable-line plugin/no-unsupported-browser-features
+}
+
+.client-todos {
+  column-gap: 0.5rem;
+  display: inline-grid;
+  grid-auto-flow: column;
+
+  .total-tasks {
+    position: relative;
+
+    &::before {
+      background-color: rgba(map-get(colors.$color, 'background-05'), 0.12);
+      bottom: 0.5rem;
+      content: '';
+      left: -5px;
+      position: absolute;
+      top: 0.5rem;
+      width: 1px;
+    }
+  }
+}
+
+.pay-invoice {
+  font-size: 14px;
+
+  svg-icon {
+    margin-right: 10px;
+  }
+}

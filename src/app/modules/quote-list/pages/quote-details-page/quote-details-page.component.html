@@ -1,0 +1,235 @@
+<app-page-container *ngIf="vm$ | async as vm" [hasContentPadding]="true">
+  <div class="pb-5">
+    <ng-container *ngIf="!vm.isLoading; else loading">
+      <div class="header d-flex justify-content-between align-items-start align-items-md-center">
+        <a [routerLink]="quoteListRouterLink"
+          ><button mat-icon-button type="button" class="color-secondary"><svg-icon key="arrow-left"></svg-icon></button
+        ></a>
+        <div
+          class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-start justify-content-md-between w-100"
+        >
+          <h5 class="ml-2 mr-3">{{ vm.quote.name }}</h5>
+          <h5 class="reference color-text-primary font-weight-regular">{{ vm.quote.projectReference1 }}</h5>
+
+          <div class="d-flex align-items-center mt-3 mt-md-0">
+            <div class="text-small-regular flex-shrink-0 color-text-primary assigned-text">
+              {{ 'QUOTE_DETAILS.ASSIGNED_TO' | translate }}:
+            </div>
+            <app-select [data]="vm.contacts" [formControl]="clientControl" class="form-control-input ml-3 owner-select"></app-select>
+          </div>
+          <app-message-button
+            class="ml-4 d-none d-md-block"
+            [user]="vm.quote.defaultTeamMember"
+            (buttonClick)="onMessageManager()"
+          ></app-message-button>
+        </div>
+        <app-context-menu class="ml-4 color-secondary icon-navigation">
+          <app-context-menu-item (click)="onReuseDataClick(vm.quote)">{{ 'QUOTE_DETAILS.REUSE_DATA' | translate }}</app-context-menu-item>
+          <app-context-menu-item (click)="onCancelOrderClick(vm.quote)">{{
+            'QUOTE_DETAILS.CANCEL_ORDER' | translate
+          }}</app-context-menu-item>
+        </app-context-menu>
+      </div>
+      <ng-container *ngIf="!vm.quote.isExpired; else expiredQuoteDetails">
+        <div class="mt-5">
+          <app-quote-details-card
+            [quote]="$any(vm.quote)"
+            [isVatRegistrationRequired]="vm.isVatRegistrationRequired"
+            [localVatRegistration]="vm.localVatRegistration"
+          ></app-quote-details-card>
+        </div>
+        <div class="mt-5 info-messages-container" [class.with-multiple-messages]="vm.quote.messages.length > 1">
+          <div class="info">
+            <ng-container *ngIf="vm.isVatRegistrationRequired && !vm.localVatRegistration; else showExpiryInfo">
+              <h3 class="mb-4">{{ 'QUOTE_DETAILS.LOCAL_VAT_REGISTRATION' | translate | uppercase }}</h3>
+              <app-message-card type="info">
+                <div *appMessageCardTitle>{{ 'QUOTE_DETAILS.VAT_REGISTRATION_MISSING_TITLE' | translate }}</div>
+                <div *appMessageCardDescription class="d-flex align-items-center justify-content-between">
+                  {{ 'QUOTE_DETAILS.VAT_REGISTRATION_MISSING_DESCRIPTION' | translate }}
+                  <button type="button" class="text-link md-dark ml-2 text-uppercase" (click)="onAddVatRegistrationClick()">
+                    {{ 'QUOTE_DETAILS.ADD_VAT_REGISTRATION' | translate }}
+                  </button>
+                </div>
+              </app-message-card>
+            </ng-container>
+            <ng-template #showExpiryInfo>
+              <h3 class="mb-4">{{ 'QUOTE_DETAILS.EXPIRY' | translate | uppercase }}</h3>
+              <app-message-card type="info">
+                <div *appMessageCardTitle>
+                  {{ 'QUOTE_DETAILS.EXPIRY_CARD_TITLE' | translate : { numberOfDays: remainingDays(vm.quote) } }}
+                </div>
+                <div *appMessageCardDescription>
+                  {{ 'QUOTE_DETAILS.EXPIRY_CARD_DESCRIPTION' | translate : { date: vm.quote.expiryDate | date : 'dd MMM y' } }}
+                </div>
+              </app-message-card>
+            </ng-template>
+          </div>
+          <div class="messages">
+            <h3 class="mb-4">{{ 'QUOTE_DETAILS.MESSAGES' | translate | uppercase }}</h3>
+            <div *ngIf="!vm.quote.messages.length" class="text-small-regular color-text-secondary">
+              {{ 'QUOTE_DETAILS.NO_MESSAGES_YET' | translate }}
+            </div>
+            <div *ngIf="vm.quote.messages.length" class="messages-container" [class.multiple]="vm.quote.messages.length > 1">
+              <app-message-envelope
+                *ngFor="let message of vm.quote.messages"
+                [message]="message"
+                (click)="onMessageEnvelopeClick(message)"
+              ></app-message-envelope>
+            </div>
+          </div>
+        </div>
+        <h3 class="mt-5">{{ 'QUOTE_DETAILS.YOUR_QUOTE' | translate | uppercase }}</h3>
+        <div class="mt-5 referral-program-section">
+          <div class="message-icon info">
+            <svg-icon key="referralProgram"></svg-icon>
+          </div>
+          <div class="referral-program-section-text">
+            <span class="referral-program-discount-shipping-text">
+              <b> {{ 'QUOTE_DETAILS.WANT_DISCOUNTED_SHIPPING' | translate }} </b>
+            </span>
+            <span class="referral-program-dont-miss-it-out-text mt-3 mt-md-0">
+              {{ 'QUOTE_DETAILS.JOIN_OUR_REFERRAL_PROGRAM' | translate }}
+            </span>
+            <a href="{{ referralProgramLink }}" target="_blank" class="referral-program-btn mt-3 mt-md-0">
+              <span>
+                <b> {{ 'QUOTE_DETAILS.JOIN_REFERRAL_PROGRAM' | translate }} </b>
+              </span>
+            </a>
+          </div>
+        </div>
+        <div class="quote-info mt-5">
+          <div class="d-flex align-items-center">
+            <div class="d-flex align-items-baseline justify-content-between flex-grow-1">
+              <h5 class="font-weight-regular color-text-primary">
+                {{ 'QUOTE_DETAILS.QUOTE' | translate : { quoteName: vm.quote.name } }}
+                <span *ngIf="vm.quote.orderType === OrderType.PRO_FORMA_QUOTE && vm.quote.lineItems?.length !== 0"
+                  >- <span class="color-secondary">{{ 'QUOTE_DETAILS.PRO_FORMA' | translate }}</span></span
+                >
+              </h5>
+              <div class="d-flex align-items-center">
+                <h5 class="d-none d-md-block text-right mr-3">
+                  <span *ngIf="showCostRanges(vm.quote); else fixTotalCost"
+                    >{{ vm.quote.totalCost.min | cost : currency }} - {{ vm.quote.totalCost.max | cost : currency }}</span
+                  >
+                  <ng-template #fixTotalCost>
+                    <span>{{ vm.quote.costs?.totalIncludingEstimatedTaxAndDuty | cost : currency }}</span>
+                  </ng-template>
+                </h5>
+                <app-action-buttons
+                  class="mr-3"
+                  (messageClick)="onMessageClick(vm.quote)"
+                  (downloadClick)="onDownloadClick(vm.quote)"
+                  [for]="'COMMON.QUOTE' | translate"
+                ></app-action-buttons>
+              </div>
+            </div>
+            <div class="d-none d-md-block accept-button-container">
+              <button mat-button class="primary-button" [disabled]="isQuoteAcceptanceDisabled(vm)" (click)="onAcceptClick(vm.quote)">
+                {{ 'QUOTE_DETAILS.ACCEPT' | translate }}
+              </button>
+              <div
+                *ngIf="vm.isVatRegistrationRequired && !vm.localVatRegistration && (isOnBoardingVisible | async) === false"
+                class="disabled-accept-button-hint text-tiny-regular color-text-tertiary mt-2"
+              >
+                {{ 'QUOTE.DISABLED_ACCEPT_QUOTE_HINT' | translate }}
+              </div>
+              <div *ngIf="isOnBoardingVisible | async" class="disabled-accept-button-hint mt-3">
+                <div class="text-tiny-regular color-text-tertiary" [innerHtml]="(onboardingStatus$ | async).processText"></div>
+                <a
+                  *ngIf="(onboardingStatus$ | async).dashboardLinkVisible"
+                  class="text-micro-bold color-secondary mt-2"
+                  [routerLink]="['/', RouteSegment.Dashboard]"
+                  >{{ 'ONBOARDING.GO_TO_TASKS' | translate }}</a
+                >
+                <!-- Commented out until backend ready  -->
+                <!-- <div class="text-micro-bold mt-3">
+                  {{ 'ONBOARDING.NEED_HELP' | translate }}
+                </div> -->
+                <div class="d-flex flex-column schedule-meeting mt-2">
+                  <!-- Commented out until backend ready  -->
+                  <!-- <button mat-button type="button" class="secondary-button">
+                    {{ 'ONBOARDING.SCHEDULE_BUTTON' | translate }}
+                  </button>
+                  <p class="text-tiny-regular color-text-tertiary">Your next meeting: 13 Dec 2021, 13:15</p> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="quote-content">
+            <app-your-quote-content
+              [quote]="vm.quote"
+              (accept)="onAcceptClick(vm.quote)"
+              (download)="onDownloadClick(vm.quote)"
+              (sendEmail)="onMessageClick(vm.quote)"
+              (changeShipmentMethod)="onChangeShipmentMethod()"
+              (addPackage)="onAddPackages($event)"
+              (toggleLiabilityCoverFee)="onLiabilityCoverFeeToggle($event)"
+            ></app-your-quote-content>
+          </div>
+          <div class="footer-actions mt-4 d-flex flex-row d-md-none justify-content-between align-items-center">
+            <button mat-button class="primary-button" [disabled]="isQuoteAcceptanceDisabled(vm)" (click)="onAcceptClick(vm.quote)">
+              {{ 'QUOTE_DETAILS.ACCEPT' | translate }}
+            </button>
+
+            <h5 class="text-right mr-3">
+              <span *ngIf="showCostRanges(vm.quote); else fixTotalCost"
+                >{{ vm.quote.totalCost.min | cost : currency }} - {{ vm.quote.totalCost.max | cost : currency }}</span
+              >
+              <ng-template #fixTotalCost>
+                <span>{{ vm.quote.costs?.totalIncludingEstimatedTaxAndDuty | cost : currency }}</span>
+              </ng-template>
+            </h5>
+          </div>
+        </div>
+
+        <h3 class="note mt-5">{{ 'QUOTE_DETAILS.YOUR_NOTES' | translate | uppercase }}</h3>
+        <ng-container *ngIf="!isNoteInEdit; else noteInput">
+          <div class="note-content d-flex align-items-center mt-4">
+            <div class="text-small-regular color-text-secondary mr-4">
+              {{ vm.quote.clientNote ? vm.quote.clientNote : ('QUOTE_DETAILS.NO_NOTES' | translate) }}
+            </div>
+            <button mat-button class="secondary-button" (click)="onNoteEditClick(vm.quote)">
+              {{ (vm.quote.clientNote ? 'COMMON.EDIT' : 'QUOTE_DETAILS.ADD_NOW') | translate }}
+            </button>
+          </div>
+        </ng-container>
+
+        <ng-template #noteInput>
+          <div class="note-input mt-4">
+            <app-form-control>
+              <svg-icon key="notes" class="input-icon" appFormControlIcon></svg-icon>
+              <input [formControl]="noteControl" type="text" class="form-control-input" appFormControlInput data-hj-allow />
+            </app-form-control>
+            <div class="d-flex justify-content-end">
+              <button mat-button class="text-link sm-dark mr-4" (click)="onCancelNoteEdit()">{{ 'COMMON.CANCEL' | translate }}</button>
+              <button mat-button class="primary-button" (click)="onSaveNote(vm.quote)">{{ 'QUOTE_DETAILS.SAVE_NOTE' | translate }}</button>
+            </div>
+          </div>
+        </ng-template>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <ng-template #expiredQuoteDetails>
+    <app-message-card type="info" class="col-6 pl-0 mt-5">
+      <div *appMessageCardTitle>{{ 'QUOTE_DETAILS.EXPIRED.THIS_QUOTE_IS_EXPIRED' | translate }}</div>
+      <div *appMessageCardDescription class="d-flex">
+        <div class="mr-5">{{ 'QUOTE_DETAILS.EXPIRED.EXPIRY_DESCRIPTION' | translate }}</div>
+        <button type="button" mat-button class="primary-button" (click)="onReuseDataClick(vm.quote)">
+          {{ 'QUOTE_DETAILS.REUSE_DATA' | translate }}
+        </button>
+      </div>
+    </app-message-card>
+
+    <!-- QUOTE DETAILS -->
+    <div class="mt-5">
+      <app-quote-details-card [quote]="$any(vm.quote)" [isCollapsable]="false"></app-quote-details-card>
+    </div>
+  </ng-template>
+</app-page-container>
+
+<ng-template #loading>
+  <div class="d-flex h-100 align-items-center justify-content-center flex-grow-1">
+    <app-loading-indicator></app-loading-indicator>
+  </div>
+</ng-template>

@@ -1,0 +1,6 @@
+@use 'abstracts/colors';
+
+.divider {
+  background-color: map-get(colors.$color, 'divider');
+  height: 1px;
+}

@@ -1,0 +1,32 @@
+<app-dashboard-header
+  [isLoading]="isLoadingCounts$ | async"
+  [importantTasksCount]="importantTasksCount$ | async"
+  [quoteUpdatesCount]="quoteUpdatesCount$ | async"
+  [compliancePendingShipmentsCount]="compliancePendingShipmentsCount$ | async"
+  [trackingShipmentsCount]="trackingShipmentsCount$ | async"
+  [completedShipmentsCount]="completedShipmentsCount$ | async"
+  (complianceClick)="onComplianceClick()"
+  (trackingClick)="onTrackingClick()"
+  (completedClick)="onCompletedClick()"
+></app-dashboard-header>
+<div class="dashboard-container">
+  <app-dashboard-tabs
+    [yourTasks]="yourTasks$ | async"
+    [quoteUpdates]="quoteUpdates$ | async"
+    [progressUpdates]="progressUpdates$ | async"
+    [numberOfAdvancedFilters]="numberOfAdvancedFilters$ | async"
+    [user]="user$ | async"
+    (toggleFilter)="onToggleFilter()"
+    (taskClick)="onTaskClick($event)"
+    (search)="onSearch($event)"
+    (openAdvancedFilters)="onOpenAdvancedFilters()"
+    (removeFilters)="onRemoveFilters()"
+  ></app-dashboard-tabs>
+  <app-dashboard-messages
+    [messageThreads]="messageThreads$ | async"
+    [sendbirdMessageThreads]="sendbirdUnreadChannels$ | async"
+    [areMessagesLoading]="areMessagesLoading$ | async"
+    (messageClick)="onMessageClick($event)"
+    (messageToAccountManagerClick)="onMessageToAccountManagerClick($event)"
+  ></app-dashboard-messages>
+</div>

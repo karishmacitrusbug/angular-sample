@@ -1,0 +1,73 @@
+import { CurrencyCode } from '@global/enums/currency-code.enum';
+import { LengthUnit } from '@global/enums/length-unit.enum';
+import { WeightUnit } from '@global/enums/weight-unit.enum';
+import { AddressCardAddressVM } from '@global/interfaces/address/address.vm';
+import { Costs } from '@global/interfaces/costs.interface';
+import { Freight } from '@global/interfaces/freight.interface';
+import { ChargeableWeightDialogPackageVM } from '@global/interfaces/package.vm';
+import { QuoteStatus } from '@global/modules/common-quote/enums/quote-status.enum';
+import { LineItem } from '@global/modules/common-quote/interfaces/line-item.interface';
+import { QuoteTimeline } from '@global/modules/common-quote/interfaces/quote-timeline.interface';
+import { MessageButtonUserVM } from '@global/modules/message-button/user.vm';
+import { MessageEnvelopeMessageVM } from '@global/modules/message-envelope/message.vm';
+import { ShipmentMethod } from '@modules/quote/interfaces/shipment-method.interface';
+import { FreightType, OrderType, ServiceType, ShippingStatus, TypeOfGoods, ValuationMethod } from '@CitT/data';
+
+export interface QuoteDetailsQuote {
+  id: string;
+  freightId: string;
+  name: string;
+  projectReference1: string;
+  projectReference2: string;
+  serviceType: ServiceType;
+  from: string;
+  pickUpAddress: AddressCardAddressVM[];
+  to: string;
+  shipmentValue: number;
+  shipmentValueCurrency: CurrencyCode;
+  estimatedWeight: number;
+  estimatedWeightUnit: WeightUnit;
+  lengthUnit: LengthUnit;
+  packages: ChargeableWeightDialogPackageVM[];
+  numberOfLocations: number;
+  locationAddresses: AddressCardAddressVM[];
+  nameOfAddressedEntity: {
+    id?: string;
+    name: string;
+  };
+  messages: MessageEnvelopeMessageVM[];
+  lineItemNumber: number;
+  lineItems?: LineItem[];
+  items?: QuoteDetailsQuote[];
+  parent?: {
+    id: string;
+    reference: string;
+  };
+  expiryDate: string;
+  citrShippingServiceFeeEnabled: boolean;
+  liabilityCoverFeeEnabled: boolean;
+  costs?: Costs;
+  timeline: QuoteTimeline;
+  shippingNotes?: string;
+  clientNote?: string;
+  status: QuoteStatus;
+  orderType: OrderType;
+  totalCost: {
+    min: number;
+    max: number;
+  };
+  shippingStatus?: ShippingStatus;
+  isExpired: boolean;
+  defaultTeamMember: MessageButtonUserVM;
+  typeOfGoods: TypeOfGoods;
+  etaDisclaimer?: string;
+  freight?: Freight;
+  reasonForProForma: string;
+  owner: string;
+  shipmentMethods: ShipmentMethod[];
+  selectedShipmentMethod: FreightType;
+  cpaId: string;
+  valuationMethod: ValuationMethod;
+  clientCurrencyInput: CurrencyCode;
+  storeFeesAvailable: boolean;
+}

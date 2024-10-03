@@ -1,0 +1,380 @@
+<app-page-container>
+  <div class="content pb-5">
+    <div *ngIf="isLoading$ | async; else siteContent" class="d-flex align-items-center justify-content-center flex-grow-1 loading-spinner">
+      <app-loading-indicator></app-loading-indicator>
+    </div>
+    <ng-template #siteContent>
+      <ng-container *ngIf="shipment$ | async as shipment">
+        <!-- HEADER SECTION -->
+        <div class="d-flex justify-content-between header">
+          <a [routerLink]="shipmentsListRouterLink"
+            ><button mat-icon-button type="button" class="color-secondary"><svg-icon key="arrow-left"></svg-icon></button
+          ></a>
+          <div class="left-content d-flex flex-column flex-md-row justify-content-between w-100">
+            <h5 class="ml-2 mr-3 d-flex">
+              {{ shipment.name }}
+            </h5>
+            <h5 class="ml-2 ml-md-0 mt-2 mt-md-0 color-text-primary font-weight-regular">{{ shipment.references[0] }}</h5>
+            <div class="ml-2 ml-md-0 mt-2 mt-md-0 d-flex align-items-center">
+              <div class="text-small-regular color-text-primary assigned-text">
+                {{ 'SHIPMENTS.SHIPMENT_DETAILS.ASSIGNED_TO' | translate }}:
+              </div>
+              <app-select
+                [data]="contacts$ | async"
+                [formControl]="clientControl"
+                class="form-control-input ml-3 owner-select"
+              ></app-select>
+            </div>
+          </div>
+          <app-context-menu class="ml-4 color-secondary icon-navigation">
+            <app-context-menu-item (click)="onReuseDataClick()">{{
+              'SHIPMENTS.SHIPMENT_DETAILS.REUSE_DATA_ACTION' | translate
+            }}</app-context-menu-item>
+          </app-context-menu>
+        </div>
+        <!-- COMPLIANCE STATUS / TRACKING SECTION -->
+        <div class="mt-40">
+          <app-compliance-status-header
+            [shipmentOrderId]="shipment.id"
+            [shipmentStatus]="shipment.status"
+            [shipmentSubStatus]="shipment.subStatus"
+            [shipmentTaskStates]="shipment.shipmentTaskStates"
+            [statusUpdates]="shipment.statusUpdates"
+            [trackingState]="shipment.trackingState"
+            [statusTitle]="shipment.mappedStatus"
+            [shipmentLogs]="shipment.logs"
+            [trackingNumber]="shipment.trackingNumber"
+            [newStatusDate]="shipment.newStatusDate"
+            [invoiceStatusRollup]="shipment.invoiceStatusRollup"
+          ></app-compliance-status-header>
+        </div>
+
+        <!-- SHIPMENT DETAILS EXPANDABLE CARD -->
+        <div class="mt-40">
+          <app-shipment-details-card
+            (reuseDataClick)="onReuseDataClick()"
+            [localVatRegistration]="localVatRegistration$ | async"
+          ></app-shipment-details-card>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row mt-40">
+          <!-- TASKS -->
+          <div *ngIf="shipment.status !== ShipmentStatus.Completed; else documents" class="col-md-6 pl-0 tasks">
+            <h3>{{ 'COMMON.TASKS' | translate | uppercase }}</h3>
+            <span
+              *ngIf="shipment.totalOutstandingTasks"
+              class="d-block mt-11 text-small-regular"
+              [innerHTML]="'SHIPMENTS.SHIPMENT_DETAILS.TOTAL_OUTSTANDING_TASKS' | translate : { tasks: shipment.totalOutstandingTasks }"
+            ></span>
+            <mat-tab-group class="{{ shipment.totalOutstandingTasks ? 'mt-11' : 'mt-40' }}">
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  {{ 'COMMON.OPEN' | translate }}
+                  <span class="pl-1">
+                    <strong>({{ clientPendingTasksNumber$ | async }})</strong>
+                  </span>
+                </ng-template>
+                <ng-container
+                  *ngIf="(openTasksNumber$ | async) === 0; else openTaskList"
+                  [ngTemplateOutlet]="emptyState"
+                  [ngTemplateOutletContext]="{
+                    $implicit: 'SHIPMENTS.SHIPMENT_DETAILS.TASK_EMPTY_STATE' | translate : { type: 'COMMON.OPEN' | translate | lowercase }
+                  }"
+                ></ng-container>
+                <ng-template #openTaskList>
+                  <div class="item-container">
+                    <div class="item" *ngFor="let task of openTasks$ | async">
+                      <app-shipment-task-item [task]="task" (click)="onTaskClick(task)"></app-shipment-task-item>
+                    </div>
+                  </div>
+                </ng-template>
+              </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label
+                  >{{ 'SHIPMENTS.SHIPMENT_DETAILS.UNDER_REVIEW' | translate }}
+                  <span class="pl-1">
+                    <strong>({{ underReviewTasksNumber$ | async }})</strong>
+                  </span>
+                </ng-template>
+                <ng-container
+                  *ngIf="(underReviewTasksNumber$ | async) === 0; else underReviewTaskList"
+                  [ngTemplateOutlet]="emptyState"
+                  [ngTemplateOutletContext]="{
+                    $implicit: 'SHIPMENTS.SHIPMENT_DETAILS.UNDER_REVIEW_TASK_EMPTY_STATE' | translate
+                  }"
+                ></ng-container>
+                <ng-template #underReviewTaskList>
+                  <div class="item-container">
+                    <div class="item" *ngFor="let task of underReviewTasks$ | async">
+                      <app-shipment-task-item [task]="task" (click)="onTaskClick(task)"></app-shipment-task-item>
+                    </div>
+                  </div>
+                </ng-template>
+              </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  {{ 'COMMON.CLOSED' | translate }}
+                  <span class="pl-1">
+                    <strong>({{ closedTasksNumber$ | async }})</strong>
+                  </span>
+                </ng-template>
+                <ng-container
+                  *ngIf="(closedTasksNumber$ | async) === 0; else closedTaskList"
+                  [ngTemplateOutlet]="emptyState"
+                  [ngTemplateOutletContext]="{
+                    $implicit: 'SHIPMENTS.SHIPMENT_DETAILS.TASK_EMPTY_STATE' | translate : { type: 'COMMON.CLOSED' | translate | lowercase }
+                  }"
+                ></ng-container>
+                <ng-template #closedTaskList>
+                  <div class="item-container">
+                    <div class="item" *ngFor="let task of closedTasks$ | async">
+                      <app-shipment-task-item [task]="task" (click)="onTaskClick(task)"></app-shipment-task-item>
+                    </div>
+                  </div>
+                </ng-template>
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+
+          <!-- DOCUMENTS -->
+          <ng-template #documents>
+            <div class="col-6 pl-0">
+              <h3>{{ 'COMMON.DOCUMENTS' | translate | uppercase }}</h3>
+              <mat-tab-group class="mt-40">
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    {{ 'SHIPMENTS.SHIPMENT_DETAILS.PODS' | translate }}
+                    <span *ngIf="(podDocNumber$ | async) > 0" class="pl-1">
+                      <strong>({{ podDocNumber$ | async }})</strong>
+                    </span>
+                  </ng-template>
+                  <ng-container
+                    *ngIf="(podDocNumber$ | async) === 0; else podDocList"
+                    [ngTemplateOutlet]="emptyState"
+                    [ngTemplateOutletContext]="{
+                      $implicit:
+                        'SHIPMENTS.SHIPMENT_DETAILS.DOCUMENT_EMPTY_STATE'
+                        | translate : { type: 'SHIPMENTS.SHIPMENT_DETAILS.POD' | translate | lowercase }
+                    }"
+                  ></ng-container>
+                  <ng-template #podDocList>
+                    <div class="item-container">
+                      <div *ngFor="let document of proofOfDeliveries$ | async" class="item">
+                        <app-shipment-document-item
+                          [document]="document"
+                          (download)="onDocumentDownload($event)"
+                        ></app-shipment-document-item>
+                      </div>
+                    </div>
+                  </ng-template>
+                </mat-tab>
+
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    {{ 'SHIPMENTS.SHIPMENT_DETAILS.CCD' | translate }}
+                    <span *ngIf="(ccdNumber$ | async) > 0" class="pl-1">
+                      <strong>({{ ccdNumber$ | async }})</strong>
+                    </span>
+                  </ng-template>
+                  <ng-container
+                    *ngIf="(ccdNumber$ | async) === 0; else ccdDocList"
+                    [ngTemplateOutlet]="emptyState"
+                    [ngTemplateOutletContext]="{
+                      $implicit: 'SHIPMENTS.SHIPMENT_DETAILS.DOCUMENT_EMPTY_STATE' | translate
+                    }"
+                  ></ng-container>
+                  <ng-template #ccdDocList>
+                    <div class="item-container">
+                      <div *ngFor="let document of customsClearances$ | async" class="item">
+                        <app-shipment-document-item
+                          [document]="document"
+                          (download)="onDocumentDownload($event)"
+                        ></app-shipment-document-item>
+                      </div>
+                    </div>
+                  </ng-template>
+                </mat-tab>
+
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    {{ 'SHIPMENTS.SHIPMENT_DETAILS.CLEARANCE_LETTER' | translate }}
+                    <span *ngIf="!hideClearanceLetters(ccdNumber$ | async, clearanceLetterNumber$ | async)" class="pl-1">
+                      <strong>({{ clearanceLetterNumber$ | async }})</strong>
+                    </span>
+                  </ng-template>
+                  <ng-container
+                    *ngIf="hideClearanceLetters(ccdNumber$ | async, clearanceLetterNumber$ | async); else clDocList"
+                    [ngTemplateOutlet]="emptyState"
+                    [ngTemplateOutletContext]="{
+                      $implicit: 'SHIPMENTS.SHIPMENT_DETAILS.DOCUMENT_EMPTY_STATE' | translate
+                    }"
+                  ></ng-container>
+                  <ng-template #clDocList>
+                    <div class="item-container">
+                      <div *ngFor="let document of clearanceLetters$ | async" class="item">
+                        <app-shipment-document-item
+                          [document]="document"
+                          (download)="onDocumentDownload($event)"
+                        ></app-shipment-document-item>
+                      </div>
+                    </div>
+                  </ng-template>
+                </mat-tab>
+              </mat-tab-group>
+            </div>
+          </ng-template>
+
+          <!-- MESSAGES -->
+          <div class="col-md-6 mt-4 mt-md-0 px-0">
+            <div class="d-flex align-items-center">
+              <h3>{{ 'COMMON.MESSAGES' | translate | uppercase }}</h3>
+              <a class="ml-4 text-link sm-dark" (click)="onNewMessageClick()">{{ 'MESSAGES.NEW_MESSAGE' | translate }}</a>
+            </div>
+            <mat-tab-group class="mt-40">
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  {{ 'COMMON.OPEN' | translate }}
+                  <span class="pl-1">
+                    <strong>({{ openMessagesNumber$ | async }})</strong>
+                  </span>
+                </ng-template>
+                <ng-container
+                  *ngIf="(openMessagesNumber$ | async) === 0; else openMessagesList"
+                  [ngTemplateOutlet]="emptyState"
+                  [ngTemplateOutletContext]="{
+                    $implicit:
+                      'SHIPMENTS.SHIPMENT_DETAILS.MESSAGE_EMPTY_STATE' | translate : { type: 'COMMON.OPEN' | translate | lowercase }
+                  }"
+                ></ng-container>
+                <ng-template #openMessagesList>
+                  <div class="item-container">
+                    <div *ngFor="let message of openMessages$ | async" class="message">
+                      <app-message-envelope [message]="message" (click)="onMessageEnvelopeClick(message)"></app-message-envelope>
+                    </div>
+                  </div>
+                </ng-template>
+              </mat-tab>
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  {{ 'COMMON.CLOSED' | translate }}
+                  <span class="pl-1">
+                    <strong>({{ closedMessagesNumber$ | async }})</strong>
+                  </span>
+                </ng-template>
+                <ng-container
+                  *ngIf="(closedMessagesNumber$ | async) === 0; else closedMessagesList"
+                  [ngTemplateOutlet]="emptyState"
+                  [ngTemplateOutletContext]="{
+                    $implicit:
+                      'SHIPMENTS.SHIPMENT_DETAILS.MESSAGE_EMPTY_STATE' | translate : { type: 'COMMON.CLOSED' | translate | lowercase }
+                  }"
+                ></ng-container>
+                <ng-template #closedMessagesList>
+                  <div class="item-container">
+                    <div *ngFor="let message of closedMessages$ | async" class="message">
+                      <app-message-envelope [message]="message" (click)="onMessageEnvelopeClick(message)"></app-message-envelope>
+                    </div>
+                  </div>
+                </ng-template>
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+        </div>
+
+        <!-- INVOICES -->
+        <div #invoicesAccordion *ngIf="shipment.invoices?.length" class="mt-40" [@toggleContent]="isInvoicesOpen ? 'open' : 'closed'">
+          <div class="d-inline-flex align-items-center pointer" (click)="onInvoicesToggleClick()">
+            <h3 class="color-text-main-title">
+              {{ 'COMMON.INVOICE' | translate : { invoices: shipment.invoices?.length } | uppercase }}
+              <span *ngIf="shipment.invoices?.length > 0">({{ shipment.invoices?.length }})</span>
+            </h3>
+            <button mat-icon-button type="button" class="color-secondary mr-2 arrow-icon">
+              <svg-icon key="arrow-down" [class.up]="isInvoicesOpen"></svg-icon>
+            </button>
+          </div>
+          <div *ngIf="isInvoicesOpen" class="mt-40" [@toggleContentOpacity]>
+            <div class="invoice" *ngFor="let invoice of shipment.invoices">
+              <app-shipment-invoice-item [shipmentInvoice]="invoice"></app-shipment-invoice-item>
+            </div>
+          </div>
+        </div>
+
+        <!-- TOTAL COSTS -->
+        <div class="mt-40" [@toggleContent]="isTotalCostsOpen ? 'open' : 'closed'">
+          <div class="d-inline-flex align-items-center pointer" (click)="onTotalCostsToggleClick()">
+            <h3 class="color-text-main-title">
+              {{
+                (shipment.totalCosts.isExcludedDutyAndTax
+                  ? 'SHIPMENTS.SHIPMENT_DETAILS.TOTAL_COSTS_EXCLUDING_DUTY_AND_TAX'
+                  : 'SHIPMENTS.SHIPMENT_DETAILS.TOTAL_COSTS'
+                )
+                  | translate
+                  | uppercase
+              }}
+            </h3>
+            <button mat-icon-button type="button" class="color-secondary mr-2 arrow-icon">
+              <svg-icon key="arrow-down" [class.up]="isTotalCostsOpen"></svg-icon>
+            </button>
+          </div>
+          <div *ngIf="isTotalCostsOpen" class="mt-40" [@toggleContentOpacity]>
+            <app-shipment-costs-table [shipment]="shipment"></app-shipment-costs-table>
+          </div>
+        </div>
+
+        <!-- SHIPMENT HISTORY -->
+        <div class="mt-40" [@toggleContent]="isShipmentHistoryOpen ? 'open' : 'closed'">
+          <div class="d-flex align-items-center pointer" (click)="onShipmentHistoryToggleClick()">
+            <h3 class="color-text-main-title">
+              {{ 'SHIPMENTS.SHIPMENT_DETAILS.SHIPMENT_HISTORY' | translate | uppercase }}
+              <span>({{ getShipmetnHistoryCount(shipment.history) }})</span>
+            </h3>
+            <button mat-icon-button type="button" class="color-secondary mr-2 arrow-icon">
+              <svg-icon key="arrow-down" [class.up]="isShipmentHistoryOpen"></svg-icon>
+            </button>
+          </div>
+          <div *ngIf="isShipmentHistoryOpen" [@toggleContentOpacity] class="mt-40">
+            <div *ngFor="let history of shipment.history" class="history-card mb-3">
+              <app-tracking-log-card [log]="$any(history)"></app-tracking-log-card>
+            </div>
+          </div>
+        </div>
+
+        <!-- YOUR NOTES -->
+        <div class="mt-40">
+          <h3 class="color-text-main-title">{{ 'SHIPMENTS.SHIPMENT_DETAILS.YOUR_NOTES' | translate | uppercase }}</h3>
+        </div>
+        <ng-container *ngIf="!isNoteInEdit; else noteInput">
+          <div class="note-content d-flex align-items-center mt-4">
+            <div class="text-small-regular color-text-secondary mr-4">
+              {{ shipment.note ? shipment.note : ('SHIPMENTS.SHIPMENT_DETAILS.NO_NOTES' | translate) }}
+            </div>
+            <button mat-button class="secondary-button" (click)="onNoteEditClick()">
+              {{ (shipment.note ? 'COMMON.EDIT' : 'SHIPMENTS.SHIPMENT_DETAILS.ADD_NOW') | translate }}
+            </button>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-template>
+  </div>
+</app-page-container>
+
+<ng-template #noteInput>
+  <div class="note-input mt-4">
+    <app-form-control>
+      <svg-icon key="notes" class="input-icon" appFormControlIcon></svg-icon>
+      <input [formControl]="noteControl" type="text" class="form-control-input" appFormControlInput />
+    </app-form-control>
+    <div class="d-flex justify-content-end">
+      <button mat-button class="text-link sm-dark mr-4" (click)="onCancelNoteEdit()">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-button class="primary-button" (click)="onSaveNote()">{{ 'SHIPMENTS.SHIPMENT_DETAILS.SAVE_NOTE' | translate }}</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #emptyState let-text>
+  <div class="d-flex align-items-center justify-content-center empty-state">
+    <div class="text-normal-light">
+      {{ text }}
+    </div>
+  </div>
+</ng-template>

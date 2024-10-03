@@ -1,0 +1,104 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+@use 'abstracts/bootstrap';
+
+$container-height: 305px;
+
+.owner-select {
+  background-color: white;
+  border-bottom: none;
+  font-weight: bold;
+  min-width: 200px;
+  padding: 8px;
+}
+
+.icon-navigation {
+  font-size: 25px;
+}
+
+.assigned-text {
+  width: 100%;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.mt-11 {
+  margin-top: 11px;
+}
+
+.tasks {
+  @include bootstrap.media-breakpoint-up(md) {
+    padding-right: 35px;
+  }
+}
+
+.item-container {
+  margin-top: 29px;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    height: $container-height;
+  }
+}
+
+.message {
+  cursor: pointer;
+
+  /* stylelint-disable-next-line selector-pseudo-element-no-unknown */
+  ::ng-deep .message-container {
+    height: 70px;
+  }
+}
+
+.item,
+.message {
+  padding: 10px;
+
+  @include bootstrap.media-breakpoint-up(md) {
+    padding-right: 10px;
+  }
+
+  &:not(:first-of-type) {
+    margin-top: 16px;
+  }
+}
+
+.empty-state {
+  background-color: rgba(255, 255, 255, 50%);
+  clip-path: polygon(0 2rem, 2rem 0, 100% 0, 100% 100%, 0 100%);
+  color: rgba(10, 24, 38, 80%);
+  height: $container-height;
+  margin-top: 29px;
+}
+
+.arrow-icon {
+  align-self: center;
+
+  .svg-icon-arrow-down {
+    transition: transform 0.125s;
+
+    &.up {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.invoice:not(:first-of-type) {
+  margin-top: 16px;
+}
+
+.note:not(:first-of-type) {
+  margin-top: 16px;
+}
+
+.note-input {
+  background-color: map-get(colors.$color, 'background-04');
+  border-radius: 2px;
+  box-shadow: 0 0 40px rgba(20, 72, 118, 8%);
+  padding: 1rem 2.5rem 2.5rem;
+}

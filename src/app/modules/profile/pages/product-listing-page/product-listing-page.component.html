@@ -1,0 +1,93 @@
+<div class="color-text-main-title text-increased-bold">{{ 'PROFILE.PRODUCT_LISTING.TITLE' | translate }}</div>
+<div class="d-flex align-items-center justify-content-between top-section">
+  <div class="d-flex align-items-center col-12 col-md-9 px-0">
+    <div class="upload-icon">
+      <svg-icon key="upload-big" class="upload-icon"></svg-icon>
+    </div>
+    <div class="text-small-regular color-text-main-title pl-3">
+      <div>{{ 'PROFILE.PRODUCT_LISTING.UPLOAD_YOUR_ITEMS' | translate }}</div>
+    </div>
+  </div>
+  <app-message-button class="d-none d-md-block" [user]="defaultTeamMember" (buttonClick)="onMessageClick()"></app-message-button>
+</div>
+<div class="d-flex align-items-center actions">
+  <button mat-button class="d-none d-md-block primary-button new-items" type="button" (click)="onAddNewItemClick()">
+    <div class="d-flex align-items-center">
+      <svg-icon key="add" class="mr-1"></svg-icon>
+      {{ 'PROFILE.PRODUCT_LISTING.SUBMIT_NEW_PRODUCTS' | translate }}
+    </div>
+  </button>
+  <div class="d-flex flex-column justify-content-center text-micro-bold legend ml-4">
+    <div class="d-flex align-items-center mb-1">
+      <app-state-indicator-circle [color]="StateIndicatorCircleState.Green"></app-state-indicator-circle>
+      <div class="color-success pl-1">{{ 'PROFILE.PRODUCT_LISTING.LEGEND_GREEN' | translate }}</div>
+    </div>
+    <div class="d-flex align-items-center">
+      <app-state-indicator-circle [color]="StateIndicatorCircleState.Yellow"></app-state-indicator-circle>
+      <div class="pl-1 color-warning">{{ 'PROFILE.PRODUCT_LISTING.LEGEND_YELLOW' | translate }}</div>
+    </div>
+  </div>
+</div>
+<div *ngIf="isLoading; else productCatalogTable" class="d-flex justify-content-center py-4">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+<app-bottom-bar
+  (opened)="onAddNewItemClick()"
+  [translationMessage]="'PROFILE.PRODUCT_LISTING.SUBMIT_NEW_PRODUCTS' | translate"
+></app-bottom-bar>
+<ng-template #productCatalogTable>
+  <div class="container-fluid overflow m-0">
+    <div class="row flex-row flex-nowrap">
+      <table class="table catalog-table">
+        <thead>
+          <tr>
+            <th>{{ 'PROFILE.PRODUCT_LISTING.REFERENCE' | translate }}</th>
+            <th>{{ 'PROFILE.PRODUCT_LISTING.PRODUCT_CODE' | translate }}</th>
+            <th>{{ 'PROFILE.PRODUCT_LISTING.DESCRIPTION' | translate }}</th>
+            <!-- Commented out because of the requirements of ZUB-118 -->
+            <!-- <th>{{ 'PROFILE.PRODUCT_LISTING.LIST_PRICE' | translate }}</th> -->
+            <th>{{ 'PROFILE.PRODUCT_LISTING.HS_CODE' | translate }}</th>
+            <th>
+              <div class="d-flex align-items-center justify-content-center">
+                {{ 'PROFILE.PRODUCT_LISTING.COO' | translate }}
+                <svg-icon
+                  key="info"
+                  class="info-icon color-secondary ml-1"
+                  [appTooltip]="'PROFILE.PRODUCT_LISTING.COO_TOOLTIP' | translate"
+                ></svg-icon>
+              </div>
+            </th>
+            <th>{{ 'PROFILE.PRODUCT_LISTING.STATUS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let product of productData | paginate : { itemsPerPage: itemsPerPage, currentPage: currentPage, id: paginationId }"
+            class="t-body"
+          >
+            <td class="text-tiny-bold">{{ product.internalReference }}</td>
+            <td>{{ product.productCode }}</td>
+            <td>{{ product.description }}</td>
+            <!-- Commented out because of the requirements of ZUB-118 -->
+            <!-- <td class="text-right text-tiny-bold">{{ product.listPrice | cost }}</td> -->
+            <td>{{ product.hsCode }}</td>
+            <td>{{ product.countryOfOrigin }}</td>
+            <td class="text-center">
+              <app-state-indicator-circle
+                [color]="product.isReviewFinished ? StateIndicatorCircleState.Green : StateIndicatorCircleState.Yellow"
+              ></app-state-indicator-circle>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <pagination-controls
+    *ngIf="productData.length > itemsPerPage"
+    class="pagination mb-5 mb-md-0 mt-2"
+    (pageChange)="onPageChange($event)"
+    [previousLabel]="'COMMON.PREVIOUS' | translate"
+    [nextLabel]="'COMMON.NEXT' | translate"
+    [id]="paginationId"
+  ></pagination-controls>
+</ng-template>

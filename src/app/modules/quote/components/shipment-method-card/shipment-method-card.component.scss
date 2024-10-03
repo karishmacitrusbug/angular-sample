@@ -1,0 +1,72 @@
+@use 'abstracts/variables';
+@use 'abstracts/colors';
+
+.shipment-method-name {
+  color: map-get(colors.$color, 'text-primary');
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 18px;
+}
+
+.shipment-method-card {
+  background-color: map-get(colors.$color, 'background-03');
+  border: 1px solid map-get(colors.$color, 'background-01');
+  border-radius: 2px;
+  box-shadow: 0 0 40px rgba(59, 101, 139, 8%);
+  padding: 10px 8px 40px;
+  position: relative;
+  text-align: center;
+  width: 128px;
+
+  &.selected {
+    background-color: map-get(colors.$color, 'background-04');
+    border-color: map-get(colors.$color, 'background-04');
+
+    &::after {
+      background-color: map-get(colors.$color, 'primary');
+      bottom: 0;
+      content: ' ';
+      height: 2px;
+      left: 8px;
+      position: absolute;
+      right: 8px;
+    }
+
+    .shipment-method-name {
+      color: map-get(colors.$color, 'primary');
+    }
+  }
+
+  .checkmark {
+    left: 10px;
+    position: absolute;
+    top: 8px;
+  }
+}
+
+.icon-container {
+  height: 12px;
+
+  > img {
+    height: 100%;
+  }
+}
+
+.shipment-method-fee {
+  color: map-get(colors.$color, 'text-tertiary');
+  font-size: 16px;
+  margin-top: 4px;
+}
+
+.shipment-method-transit-time-label {
+  color: map-get(colors.$color, 'text-tertiary');
+  font-size: 11px;
+  margin-top: 16px;
+}
+
+.shipment-method-transit-time {
+  color: map-get(colors.$color, 'text-secondary');
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 2px;
+}

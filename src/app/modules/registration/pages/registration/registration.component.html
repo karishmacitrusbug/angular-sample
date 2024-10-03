@@ -1,0 +1,46 @@
+<div class="background-patterns">
+  <div class="bg-pattern-left">
+    <img src="assets/images/background.svg" alt="background pattern" />
+  </div>
+  <div class="bg-pattern-right">
+    <img src="assets/images/background.svg" alt="background pattern" />
+  </div>
+</div>
+
+<app-onboarding-header title="REGISTRATION.AN_ACCOUNT" subtitle="REGISTRATION.CREATE"></app-onboarding-header>
+
+<div *ngIf="isLoading$ | async; else form" class="d-flex align-items-center justify-content-center flex-grow-1">
+  <app-loading-indicator></app-loading-indicator>
+</div>
+
+<ng-template #form>
+  <div>
+    <div class="registration-container d-flex flex-wrap flex-lg-nowrap justify-content-center">
+      <div class="registration-form-container">
+        <app-registration-form
+          [allCountries]="allCountries$ | async"
+          [allTypesOfEquipment]="allTypesOfEquipment"
+          [initialData]="initialData"
+          (submitForm)="onSubmit($event)"
+          (termsAndConditionsClick)="onTermsAndConditionsClick()"
+        ></app-registration-form>
+      </div>
+
+      <div class="mockup-with-list d-flex flex-column justify-content-center">
+        <img class="mockup-image align-self-center d-sm-block" src="assets/images/mockup-with-decor-desktop.png" alt="Mockup image" />
+        <div class="list mx-4">
+          <div class="d-flex align-items-center text-normal-light color-text-primary">
+            <svg-icon key="dot" class="color-primary mr-3"></svg-icon>{{ 'REGISTRATION.FULL_COMPLIANCE' | translate }}
+          </div>
+          <div class="d-flex align-items-center text-normal-light color-text-primary mt-4">
+            <svg-icon key="dot" class="color-primary mr-3"></svg-icon>{{ 'REGISTRATION.GET_REPORTS' | translate }}
+          </div>
+          <div class="d-flex align-items-center text-normal-light color-text-primary mt-4">
+            <svg-icon key="dot" class="color-primary mr-3"></svg-icon>
+            <span class="text">{{ 'REGISTRATION.TEAM_OF_EXPERTS' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

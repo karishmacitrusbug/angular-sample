@@ -1,0 +1,13 @@
+{
+  "apiBaseUrl": "https://alpha-citrus.api",
+  "sendMessageApiBaseUrl": "https://citrus--sendMessage/",
+  "loginRedirectUrl": "https://citrus--staging/login/",
+  "logoutRedirectUrl": "https://citrus--staging/logout/",
+  "googleMapsApiKey": "CBGoogleMapKey112255574477",
+  "enableReCaptcha": true,
+  "reCaptchaPublicSiteKey": "reCaptchaPublicSiteKey-CBNFDRDSS",
+  "sfCommunityId": "CBD005514sdDFfg",
+  "trackingUrl": "https://www.citrus.com/tracking",
+  "debugAuth": false,
+  "inspectletId": "54554557474"
+}

@@ -1,0 +1,24 @@
+<div class="shipment-method-card" [class.selected]="isSelected">
+  <div *ngIf="isSelected" class="checkmark">
+    <svg-icon key="check"></svg-icon>
+  </div>
+  <div class="icon-container">
+    <img *ngIf="shipmentMethod.isHandledByCb" src="assets/icons/logo.svg" />
+  </div>
+  <div class="shipment-method-name">
+    {{ shipmentMethodNameTranslationKey | translate }}
+  </div>
+  <div class="shipment-method-fee">
+    {{
+      shipmentMethod.isHandledByCb
+        ? (shipmentMethod.freightAmount | currency : currency)
+        : ('QUOTE.SHIPMENT_METHOD.THIRD_PARTY_FEE' | translate)
+    }}
+  </div>
+  <div class="shipment-method-transit-time-label">
+    {{ 'QUOTE.SHIPMENT_METHOD.TRANSIT_TIME' | translate }}
+  </div>
+  <div class="shipment-method-transit-time">
+    {{ shipmentMethod.transitTime }}
+  </div>
+</div>

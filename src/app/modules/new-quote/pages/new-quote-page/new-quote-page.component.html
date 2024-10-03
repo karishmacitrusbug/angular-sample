@@ -1,0 +1,71 @@
+<app-page-container *ngIf="vm$ | async as vm">
+  <ng-container *appPageContainerTitle>
+    <h1 class="page-title">
+      <ng-container *ngIf="vm.id; else newQuoteTitle">
+        {{ 'NEW_QUOTE.TITLE' | translate }}
+      </ng-container>
+      <ng-template #newQuoteTitle>
+        {{ 'NEW_QUOTE.TITLE_NEW' | translate }}
+      </ng-template>
+    </h1>
+
+    <div *ngIf="vm.id" class="text-tiny-regular subtitle">{{ vm.quoteReference }}</div>
+  </ng-container>
+
+  <div class="d-none w-100 justify-content-between align-items-center header">
+    {{ headerMessage$ | async | translate }}
+
+    <button
+      *ngIf="vm.canSave"
+      mat-ripple
+      class="d-inline-flex align-items-center text-reduced-regular save-and-close"
+      [routerLink]="['/', RouteSegment.Dashboard]"
+    >
+      <span class="d-inline-block"> {{ 'NEW_QUOTE.SAVE_AND_CLOSE' | translate }}</span>
+      <svg-icon key="close"></svg-icon>
+    </button>
+  </div>
+
+  <app-progress-tracker *appPageContainerLeftSidebar></app-progress-tracker>
+
+  <router-outlet></router-outlet>
+
+  <div *appPageContainerRightSidebar>
+    <div *ngIf="vm.showAcceptButton" class="mb-4 accept-quote-section">
+      <button mat-button class="primary-button mb-3" [disabled]="isQuoteAcceptanceDisabled(vm)" (click)="onAcceptQuoteClick()">
+        {{ 'COMMON.ACCEPT' | translate }}
+      </button>
+      <div
+        *ngIf="vm.isVatRegistrationRequired && !vm.hasLocalVatRegistration && (isOnboardingVisible | async) === false"
+        class="disabled-accept-button-hint text-tiny-regular color-text-tertiary mt-2"
+      >
+        {{ 'QUOTE.DISABLED_ACCEPT_QUOTE_HINT' | translate }}
+        <div class="d-flex mt-1">
+          <button class="text-link sm-dark pl-0" (click)="onAddLocalVatRegistrationClick()">
+            {{ 'QUOTE.DISABLED_ACCEPT_QUOTE_BUTTON_LABEL' | translate }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="isOnboardingVisible | async" class="disabled-accept-button-hint mt-3">
+        <div class="text-tiny-regular color-text-tertiary" [innerHtml]="(onboardingStatus$ | async).processText"></div>
+        <a
+          *ngIf="(onboardingStatus$ | async).dashboardLinkVisible"
+          class="text-micro-bold color-secondary mt-2"
+          [routerLink]="['/', RouteSegment.Dashboard]"
+          >{{ 'ONBOARDING.GO_TO_TASKS' | translate }}</a
+        >
+        <!-- Commented out until backend ready  -->
+        <!-- <div class="text-micro-bold mt-3">
+          {{ 'ONBOARDING.NEED_HELP' | translate }}
+        </div>
+        <div class="d-flex flex-column schedule-meeting mt-2">
+          <button mat-button type="button" class="secondary-button">
+            {{ 'ONBOARDING.SCHEDULE_BUTTON' | translate }}
+          </button>
+          <p class="text-tiny-regular color-text-tertiary">Your next meeting: 13 Dec 2021, 13:15</p>
+        </div> -->
+      </div>
+    </div>
+    <app-message-button [user]="teamMember" (buttonClick)="onMessageClick(vm)"></app-message-button>
+  </div>
+</app-page-container>

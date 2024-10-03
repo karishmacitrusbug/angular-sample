@@ -1,0 +1,21 @@
+<div class="dialog-container">
+  <div class="dialog-content">
+    <app-invoice-details [invoice]="invoice" (shipmentOrderNameClick)="onShipmentOrderNameClick()"></app-invoice-details>
+
+    <div *ngIf="invoice.needsPayment" class="d-flex justify-content-end mt-4">
+      <div>
+        <button #payWithEFTButton mat-button class="secondary-button" (click)="onPayWithEFTClick()">
+          {{ 'INVOICE_DIALOG.PAY_WITH_EFT' | translate }}
+        </button>
+        <div class="text-micro-regular color-text-tertiary mt-2" [style.width.px]="payWithEFTButton._getHostElement().offsetWidth">
+          {{ 'INVOICE_DIALOG.PAY_WITH_EFT_INFO' | translate }}
+        </div>
+      </div>
+      <div *ngIf="invoice.stripeUrl">
+        <button mat-button class="primary-button ml-4" (click)="onPayClick()">
+          <svg-icon key="card" class="mr-1"></svg-icon> {{ 'INVOICE_DIALOG.PAY_NOW' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+{
+  "apiBaseUrl": "https://citrus--staging.api",
+  "sendMessageApiBaseUrl": "https://citrus--sendMessage/",
+  "loginRedirectUrl": "https://citrus--staging/login/",
+  "logoutRedirectUrl": "https://citrus--staging/logout/",
+  "documentDownloadBaseUrl": "https://citrus--staging/download/",
+  "documentDownloadPath": "/sfc/",
+  "googleMapsApiKey": "CBGoogleMapKey112255574477",
+  "enableReCaptcha": true,
+  "reCaptchaPublicSiteKey": "reCaptchaPublicSiteKey-CBNFDRDSS",
+  "sfCommunityId": "CBD005514sdDFfg",
+  "debugAuth": true,
+  "inspectletId": "527684373",
+  "userpilotToken": "34py35w6",
+  "hotjarSiteId": "2560208",
+  "handsontableLicenseKey": "9c898-45943-12b31-e4738-61c14",
+  "intercomId": "lncstje5",
+  "trackingUrl": "https://www.citrus.com/tracking",
+  "verifyAccountTaskMasterId": "CB005524SS000c6ztAAA",
+  "signContractTaskMasterId": "CB01454114154545748ddf",
+  "specialShippingRequirementTaskMasterId": "CBajjggdsjjjjss",
+  "mixpanelToken": "CB11255444444",
+  "mobileApp": {
+    "openUri": "cb.uat://open",
+    "appStoreUrl": "https://apps.apple.com/bm/app/cb-import-logistics/id1590793996",
+    "playStoreUrl": "https://play.google.com/store/apps/details?id=co.cb.mobile"
+  },
+  "awsMessagingApiBaseUrl": "https://chat.a1.citrus.com/gw-staging/",
+  "appId": "CB9DDF69-56FB-4000-9000-30000JT1ATRE"
+}

@@ -1,0 +1,75 @@
+<div *ngIf="vm$ | async as vm" class="progress-container">
+  <div class="basic-container" [ngClass]="vm.basics.state">
+    <div class="text-small-bold el head">
+      1. {{ 'NEW_QUOTE.PROGRESS_TRACKER.BASICS' | translate }}
+      <button *ngIf="vm.basics.state === 'completed'" mat-icon-button (click)="onEditBasicsClick()" class="edit-icon">
+        <svg-icon key="pen"></svg-icon>
+      </button>
+    </div>
+    <ng-container *ngIf="vm.basics.state === 'completed'">
+      <div class="text-small-regular el sub"><svg-icon key="plane-take-off"></svg-icon> {{ vm.basics.from }}</div>
+      <div class="text-small-regular el sub"><svg-icon key="plane-landing"></svg-icon> {{ vm.basics.to }}</div>
+      <div class="text-small-regular el sub">
+        <svg-icon key="weight"></svg-icon>{{ vm.basics.packages.length ? '' : '±' }}{{ vm.basics.estimatedWeight | number : '1.0-2' }}
+        {{ vm.basics.estimatedWeightUnit | weightUnit | async }}
+      </div>
+    </ng-container>
+  </div>
+  <div class="line-items-container" [ngClass]="getLineItemsClass(vm.lineItems.state)">
+    <div class="text-small-bold el head">
+      2. {{ 'NEW_QUOTE.PROGRESS_TRACKER.LINE_ITEMS' | translate }}
+      <button *ngIf="vm.lineItems.state === LineItemsState.Completed" mat-icon-button (click)="editLineItemsClick()" class="edit-icon">
+        <svg-icon key="pen"></svg-icon>
+      </button>
+    </div>
+    <div *ngIf="vm.lineItems.state !== LineItemsState.NotCompleted" class="text-small-regular el sub">
+      <svg-icon key="line-items"></svg-icon>
+      <ng-container *ngIf="vm.lineItems.state === LineItemsState.Completed; else addLineItems">
+        {{ 'NEW_QUOTE.PROGRESS_TRACKER.NUMBER_OF_LINE_ITEMS' | translate : { numberOfLineItems: vm.lineItems.numberOfItems } }}
+      </ng-container>
+      <ng-template #addLineItems>
+        {{ 'NEW_QUOTE.PROGRESS_TRACKER.ADD_LINE_ITEMS' | translate }}
+      </ng-template>
+    </div>
+  </div>
+  <div class="shipment-method-container" [ngClass]="getShipmentMethodClass(vm.shipmentMethod.state)">
+    <div class="text-small-bold el head">
+      3. {{ 'NEW_QUOTE.PROGRESS_TRACKER.SHIPMENT_METHOD' | translate }}
+      <button
+        *ngIf="vm.shipmentMethod.state === ShipmentMethodState.Completed"
+        mat-icon-button
+        (click)="editShipmentMethod()"
+        class="edit-icon"
+      >
+        <svg-icon key="pen"></svg-icon>
+      </button>
+    </div>
+    <div *ngIf="vm.shipmentMethod.state !== ShipmentMethodState.NotCompleted" class="text-small-regular el sub">
+      <svg-icon key="freight"></svg-icon>
+      <ng-container *ngIf="vm.shipmentMethod.state === ShipmentMethodState.Completed; else addShipmentMethod">
+        {{ 'QUOTE.SHIPMENT_METHOD.FREIGHT' | translate : { freightType: vm.shipmentMethod.selectedShipmentMethodType } }}
+      </ng-container>
+      <ng-template #addShipmentMethod>
+        {{ 'NEW_QUOTE.PROGRESS_TRACKER.SELECT_SHIPMENT_METHOD' | translate }}
+      </ng-template>
+    </div>
+  </div>
+  <ng-container [ngSwitch]="vm.finalCosts.state">
+    <div *ngSwitchCase="FinalCostsState.NotCompleted" class="final not-completed">
+      <svg-icon key="quote-new"></svg-icon> {{ 'NEW_QUOTE.PROGRESS_TRACKER.FINAL_QUOTE' | translate }}
+    </div>
+    <div *ngSwitchCase="FinalCostsState.Calculating" class="final calculating">
+      <svg-icon key="pending"></svg-icon> {{ 'NEW_QUOTE.PROGRESS_TRACKER.CALCULATING' | translate }}
+    </div>
+    <div *ngSwitchCase="FinalCostsState.Ready" class="final completed">
+      <svg-icon key="quote-new"></svg-icon> {{ vm.finalCosts.value | cost : CurrencyCode.USD }}
+    </div>
+    <div *ngSwitchCase="FinalCostsState.ReadyProForma" class="final completed-pro-forma">
+      <svg-icon key="quote-new"></svg-icon>
+      <div>
+        {{ vm.finalCosts.value | cost : CurrencyCode.USD }}
+        <span class="d-block text-micro-regular">{{ 'NEW_QUOTE.PROGRESS_TRACKER.PRO_FORMA' | translate }}</span>
+      </div>
+    </div>
+  </ng-container>
+</div>

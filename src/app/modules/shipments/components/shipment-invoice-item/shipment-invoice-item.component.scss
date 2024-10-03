@@ -1,0 +1,42 @@
+@use 'abstracts/colors';
+
+.card-container {
+  display: grid;
+  grid-template-columns: 6fr 3fr max-content;
+  margin: 0 40px;
+  padding: 12px 16px;
+}
+
+.text-link {
+  font-size: 14px;
+}
+
+.cell {
+  border-right: 1px solid map-get(colors.$color, 'divider');
+  padding: 8px 16px 8px 24px;
+}
+
+.invoice-status {
+  color: map-get(colors.$color, 'success');
+
+  &.overdue {
+    color: map-get(colors.$color, 'error');
+  }
+}
+
+.action-icon {
+  color: map-get(colors.$color, 'secondary');
+  font-size: 24px;
+
+  :hover {
+    color: map-get(colors.$color, 'secondary-light');
+  }
+}
+
+.pay-invoice {
+  font-size: 14px;
+
+  svg-icon {
+    margin-right: 10px;
+  }
+}

@@ -1,0 +1,96 @@
+<app-page-container>
+  <ng-container *appPageContainerTitle>
+    <h1 class="page-title">
+      {{ 'INVOICES_PAGE.TITLE' | translate }}
+    </h1>
+  </ng-container>
+
+  <div *ngIf="isLoading; else content" class="d-flex justify-content-center align-items-center">
+    <app-loading-indicator></app-loading-indicator>
+  </div>
+
+  <ng-template #content>
+    <div class="header-section">
+      <app-statement-card
+        [statement]="statement"
+        (emailClick)="onSendAccountStatementEmailClick()"
+        (downloadClick)="onDownloadAccountStatementClick()"
+      ></app-statement-card>
+
+      <app-message-button class="message-button" [user]="teamMember" (buttonClick)="onMessageClick()"></app-message-button>
+    </div>
+
+    <div class="invoice-wrapper">
+      <mat-tab-group>
+        <!-- OUTSTANDING INVOICES -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ 'INVOICES_PAGE.OUTSTANDING_INVOICES' | translate }} <strong class="ml-1">({{ filteredInvoices.outstanding.length }})</strong>
+          </ng-template>
+          <app-outstanding-invoice-table
+            [invoices]="filteredInvoices.outstanding"
+            [itemsPerPage]="itemsPerPage"
+            (invoiceClick)="onOutstandingInvoiceClick($event)"
+            (emailClick)="onSendEmailClick($event)"
+            (downloadClick)="onDownloadClick($event)"
+          >
+            <div *appInvoiceTableAction="let invoice" class="d-flex align-items-center">
+              <a role="button" class="text-link sm-dark text-small-bold" (click)="onPayInvoiceClick(invoice)">
+                <svg-icon key="card" class="card-icon mr-2"></svg-icon>
+                <span>{{ 'INVOICES_PAGE.PAY_INVOICE' | translate }}</span>
+              </a>
+            </div>
+          </app-outstanding-invoice-table>
+        </mat-tab>
+
+        <!-- OPEN CREDITS -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ 'INVOICES_PAGE.OPEN_CREDITS' | translate }} <strong class="ml-1">({{ filteredInvoices.openCredit.length }})</strong>
+          </ng-template>
+          <app-open-credits-table
+            [invoices]="filteredInvoices.openCredit"
+            [itemsPerPage]="itemsPerPage"
+            (invoiceClick)="onOpenCreditInvoiceClick($event)"
+            (emailClick)="onSendEmailClick($event)"
+            (downloadClick)="onDownloadClick($event)"
+          ></app-open-credits-table>
+        </mat-tab>
+
+        <!-- CLOSED CREDITS -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ 'INVOICES_PAGE.CLOSED' | translate }} <strong class="ml-1">({{ filteredInvoices.closed.length }})</strong>
+          </ng-template>
+          <app-closed-invoices-table
+            [invoices]="filteredInvoices.closed"
+            [itemsPerPage]="itemsPerPage"
+            (invoiceClick)="onClosedInvoiceClick($event)"
+            (emailClick)="onSendEmailClick($event)"
+            (downloadClick)="onDownloadClick($event)"
+          ></app-closed-invoices-table>
+        </mat-tab>
+
+        <!-- PAYMENT HISTORY -->
+        <mat-tab>
+          <ng-template mat-tab-label>
+            {{ 'INVOICES_PAGE.PAYMENT_HISTORY' | translate }} <strong class="ml-1">({{ filteredInvoices.history.length }})</strong>
+          </ng-template>
+          <!-- Lazy loading is needed for the content's animations to work properly -->
+          <ng-template matTabContent>
+            <app-payment-history-table
+              [paymentHistoryItems]="filteredInvoices.history"
+              [itemsPerPage]="itemsPerPage"
+              (invoiceClick)="onHistoryInvoiceClick($event)"
+            ></app-payment-history-table>
+          </ng-template>
+        </mat-tab>
+      </mat-tab-group>
+      <app-search-field
+        ngModel
+        [placeholder]="'INVOICES_PAGE.SEARCH_INPUT_PLACEHOLDER' | translate"
+        (ngModelChange)="filterInvoices($event)"
+      ></app-search-field>
+    </div>
+  </ng-template>
+</app-page-container>

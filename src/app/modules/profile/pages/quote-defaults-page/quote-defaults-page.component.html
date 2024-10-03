@@ -1,0 +1,105 @@
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="color-blue title">{{ 'PROFILE.QUOTE_DEFAULTS.QUOTE_DEFAULTS' | translate }}</div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="defaultValues">
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col">
+          <div class="card-container defaults-card">
+            <div class="d-flex align-items-center">
+              <svg-icon key="preferences" class="preferences-icon"></svg-icon>
+              <div class="text-small-regular color-blue card-title">{{ 'PROFILE.QUOTE_DEFAULTS.SET_YOUR_PREFERENCES' | translate }}</div>
+            </div>
+
+            <!-- SHIP TO COUNTRY -->
+            <app-form-control class="col col-sm-7 px-0 mt-4">
+              <span appFormControlLabel>{{ 'PROFILE.QUOTE_DEFAULTS.SHIP_FROM_COUNTRY' | translate }}</span>
+              <svg-icon key="plane-take-off" appFormControlIcon></svg-icon>
+              <app-dropdown
+                [formControl]="shipFromCountryControl"
+                [data]="allCountries"
+                appFormControlInput
+                class="form-control-input"
+              ></app-dropdown>
+            </app-form-control>
+
+            <!-- PICK-UP ADDRESS -->
+            <app-form-control class="col col-sm-7 px-0 mt-4 pickup-address">
+              <span appFormControlLabel>{{ 'PROFILE.QUOTE_DEFAULTS.PICK_UP_ADDRESS' | translate }}</span>
+              <svg-icon key="location" appFormControlIcon class="location-icon"></svg-icon>
+              <div appFormControlInput>
+                <ng-container *ngIf="pickUpAddressControl.value as addressData; else addAddress">
+                  <div class="address-card p-3">
+                    <div class="text-reduced-bold title">{{ addressData.tag }}</div>
+                    <div class="text-reduced-regular addressed">{{ addressData.contactPerson }}</div>
+                    <div class="text-micro-regular color-text-secondary address-data">
+                      <div class="pt-2">{{ addressData.streetAddress }}</div>
+                      <div>{{ addressData.city }}</div>
+                      <div>{{ addressData.state }}</div>
+                      <div class="pt-2">{{ addressData.zip }}</div>
+                      <div class="mb-2">{{ addressData.country }}</div>
+                    </div>
+                    <button mat-button type="button" class="primary-button mt-2" (click)="onChangeDefaultAddressClick()">
+                      {{ 'PROFILE.QUOTE_DEFAULTS.CHANGE_DEFAULT_ADDRESS' | translate }}
+                    </button>
+                  </div>
+                </ng-container>
+                <ng-template #addAddress>
+                  <button
+                    mat-button
+                    type="button"
+                    class="secondary-button"
+                    [disabled]="formGroup.controls.shipFromCountry.invalid"
+                    (click)="onChangeDefaultAddressClick()"
+                  >
+                    {{ 'PROFILE.QUOTE_DEFAULTS.ADD_DEFAULT_ADDRESS' | translate }}
+                  </button>
+                </ng-template>
+              </div>
+            </app-form-control>
+
+            <!-- WEIGHT UNIT -->
+            <app-form-control class="mt-4">
+              <span appFormControlLabel>{{ 'PROFILE.QUOTE_DEFAULTS.WEIGHT_UNIT' | translate }}</span>
+              <svg-icon key="weight" appFormControlIcon></svg-icon>
+              <app-selection
+                [items]="[
+                  { value: WeightUnit.Kg, viewValue: 'COMMON.KG' | translate },
+                  { value: WeightUnit.Lbs, viewValue: 'COMMON.LBS' | translate }
+                ]"
+                [formControl]="weightUnitControl"
+                appFormControlInput
+              ></app-selection>
+            </app-form-control>
+
+            <!-- DIMENSION UNIT -->
+            <app-form-control class="mt-4">
+              <span appFormControlLabel>{{ 'PROFILE.QUOTE_DEFAULTS.DIMENSION_UNIT' | translate }}</span>
+              <svg-icon key="package-size" appFormControlIcon></svg-icon>
+              <app-selection
+                [items]="[
+                  { value: LengthUnit.Cm, viewValue: 'COMMON.CM' | translate },
+                  { value: LengthUnit.Inch, viewValue: 'COMMON.INCH' | translate }
+                ]"
+                [formControl]="dimensionUnitControl"
+                appFormControlInput
+              ></app-selection>
+            </app-form-control>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col d-flex justify-content-end">
+          <button mat-button class="primary-button" [disabled]="!canSave">
+            {{ 'PROFILE.QUOTE_DEFAULTS.SAVE_CHANGES' | translate }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</div>
